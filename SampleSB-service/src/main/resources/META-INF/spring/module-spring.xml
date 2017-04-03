@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="com.liferay.test.service.impl.SampleSBLocalServiceImpl" id="com.liferay.test.service.SampleSBLocalService" />
+	<bean class="com.liferay.test.service.persistence.impl.SampleSBPersistenceImpl" id="com.liferay.test.service.persistence.SampleSBPersistence" parent="basePersistence" />
+</beans>
