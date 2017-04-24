@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -96,6 +97,9 @@ public interface SampleSBLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB addSampleSB(SampleSB sampleSB);
 
+	public SampleSB addSampleSB(SampleSB validSampleSB,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
 	/**
 	* Creates a new sample sb with the primary key. Does not add the sample sb to the database.
 	*
@@ -147,6 +151,11 @@ public interface SampleSBLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SampleSB getSampleSB(long samplesbId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getSampleSBByUrlTitle(long groupId,
+		java.lang.String urlTitle, int status)
+		throws PortalException, SystemException;
+
 	/**
 	* Returns the sample sb matching the UUID and group.
 	*
@@ -159,6 +168,12 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public SampleSB getSampleSBByUuidAndGroupId(java.lang.String uuid,
 		long groupId) throws PortalException;
 
+	public SampleSB moveEntryToTrash(long userId, SampleSB entry)
+		throws PortalException, SystemException;
+
+	public SampleSB moveEntryToTrash(long userId, long entryId)
+		throws PortalException, SystemException;
+
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -167,6 +182,31 @@ public interface SampleSBLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB updateSampleSB(SampleSB sampleSB);
+
+	public SampleSB updateSampleSB(SampleSB validSampleSB,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
+	public SampleSB updateStatus(long userId, long entryId, int status,
+		ServiceContext serviceContext) throws PortalException, SystemException;
+
+	public int countAllInGroup(long groupId) throws SystemException;
+
+	public int countAllInUser(long userId) throws SystemException;
+
+	public int countAllInUserAndGroup(long userId, long groupId)
+		throws SystemException;
+
+	/**
+	* Get Company entries counts
+	*
+	* @param companyId
+	* @param status
+	* @return
+	* @throws SystemException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyEntriesCount(long companyId, int status)
+		throws SystemException;
 
 	/**
 	* Returns the number of sample sbs.
@@ -221,6 +261,75 @@ public interface SampleSBLocalService extends BaseLocalService,
 	*/
 	public <T> List<T> dynamicQuery(DynamicQuery dynamicQuery, int start,
 		int end, OrderByComparator<T> orderByComparator);
+
+	public List<SampleSB> findAllInGroup(long groupId)
+		throws SystemException;
+
+	public List<SampleSB> findAllInGroup(long groupId,
+		OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	public List<SampleSB> findAllInGroup(long groupId, int start, int end,
+		OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	/**
+	* Get a user information
+	*
+	* @param userId
+	* @return
+	* @throws SystemException
+	*/
+	public List<SampleSB> findAllInUser(long userId) throws SystemException;
+
+	public List<SampleSB> findAllInUser(long userId,
+		OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	public List<SampleSB> findAllInUser(long userId, int start, int end,
+		OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId)
+		throws SystemException;
+
+	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId,
+		OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId,
+		int start, int end, OrderByComparator<SampleSB> orderByComparator)
+		throws SystemException;
+
+	/**
+	* Get Company entries
+	*
+	* @param companyId Company Id
+	* @param status    Workflow status
+	* @param start     start index of entries
+	* @param end       end index of entries
+	* @return
+	* @throws SystemException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SampleSB> getCompanyEntries(long companyId, int status,
+		int start, int end) throws SystemException;
+
+	/**
+	* Get Company entries
+	*
+	* @param companyId Company Id
+	* @param status    Workflow status
+	* @param start     start index of entries
+	* @param end       end index of entries
+	* @param obc       Comparator for the order
+	* @return List of entries
+	* @throws SystemException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SampleSB> getCompanyEntries(long companyId, int status,
+		int start, int end, OrderByComparator<SampleSB> obc)
+		throws SystemException;
 
 	/**
 	* Returns a range of all the sample sbs.
@@ -279,4 +388,32 @@ public interface SampleSBLocalService extends BaseLocalService,
 	*/
 	public long dynamicQueryCount(DynamicQuery dynamicQuery,
 		Projection projection);
+
+	public void addEntryResources(SampleSB entry, boolean addGroupPermissions,
+		boolean addGuestPermissions) throws PortalException, SystemException;
+
+	public void addEntryResources(SampleSB entry,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws PortalException, SystemException;
+
+	public void addEntryResources(long entryId, boolean addGroupPermissions,
+		boolean addGuestPermissions) throws PortalException, SystemException;
+
+	public void addEntryResources(long entryId,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws PortalException, SystemException;
+
+	public void deleteSampleSBEntry(SampleSB fileobj)
+		throws PortalException, SystemException;
+
+	public void restoreEntryFromTrash(long userId, long entryId)
+		throws PortalException, SystemException;
+
+	public void updateAsset(long userId, SampleSB entry,
+		long[] assetCategoryIds, java.lang.String[] assetTagNames,
+		long[] assetLinkEntryIds) throws PortalException, SystemException;
+
+	public void updateEntryResources(SampleSB entry,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws PortalException, SystemException;
 }

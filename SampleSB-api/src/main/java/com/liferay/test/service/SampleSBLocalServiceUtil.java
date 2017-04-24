@@ -84,6 +84,14 @@ public class SampleSBLocalServiceUtil {
 		return getService().addSampleSB(sampleSB);
 	}
 
+	public static com.liferay.test.model.SampleSB addSampleSB(
+		com.liferay.test.model.SampleSB validSampleSB,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().addSampleSB(validSampleSB, serviceContext);
+	}
+
 	/**
 	* Creates a new sample sb with the primary key. Does not add the sample sb to the database.
 	*
@@ -147,6 +155,13 @@ public class SampleSBLocalServiceUtil {
 		return getService().getSampleSB(samplesbId);
 	}
 
+	public static com.liferay.test.model.SampleSB getSampleSBByUrlTitle(
+		long groupId, java.lang.String urlTitle, int status)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getSampleSBByUrlTitle(groupId, urlTitle, status);
+	}
+
 	/**
 	* Returns the sample sb matching the UUID and group.
 	*
@@ -161,6 +176,20 @@ public class SampleSBLocalServiceUtil {
 		return getService().getSampleSBByUuidAndGroupId(uuid, groupId);
 	}
 
+	public static com.liferay.test.model.SampleSB moveEntryToTrash(
+		long userId, com.liferay.test.model.SampleSB entry)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().moveEntryToTrash(userId, entry);
+	}
+
+	public static com.liferay.test.model.SampleSB moveEntryToTrash(
+		long userId, long entryId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().moveEntryToTrash(userId, entryId);
+	}
+
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
@@ -170,6 +199,50 @@ public class SampleSBLocalServiceUtil {
 	public static com.liferay.test.model.SampleSB updateSampleSB(
 		com.liferay.test.model.SampleSB sampleSB) {
 		return getService().updateSampleSB(sampleSB);
+	}
+
+	public static com.liferay.test.model.SampleSB updateSampleSB(
+		com.liferay.test.model.SampleSB validSampleSB,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().updateSampleSB(validSampleSB, serviceContext);
+	}
+
+	public static com.liferay.test.model.SampleSB updateStatus(long userId,
+		long entryId, int status,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().updateStatus(userId, entryId, status, serviceContext);
+	}
+
+	public static int countAllInGroup(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().countAllInGroup(groupId);
+	}
+
+	public static int countAllInUser(long userId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().countAllInUser(userId);
+	}
+
+	public static int countAllInUserAndGroup(long userId, long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().countAllInUserAndGroup(userId, groupId);
+	}
+
+	/**
+	* Get Company entries counts
+	*
+	* @param companyId
+	* @param status
+	* @return
+	* @throws SystemException
+	*/
+	public static int getCompanyEntriesCount(long companyId, int status)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getCompanyEntriesCount(companyId, status);
 	}
 
 	/**
@@ -240,6 +313,110 @@ public class SampleSBLocalServiceUtil {
 				   .dynamicQuery(dynamicQuery, start, end, orderByComparator);
 	}
 
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInGroup(
+		long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInGroup(groupId);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInGroup(
+		long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInGroup(groupId, orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInGroup(
+		long groupId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .findAllInGroup(groupId, start, end, orderByComparator);
+	}
+
+	/**
+	* Get a user information
+	*
+	* @param userId
+	* @return
+	* @throws SystemException
+	*/
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
+		long userId) throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInUser(userId);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
+		long userId,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInUser(userId, orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
+		long userId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInUser(userId, start, end, orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUserAndGroup(
+		long userId, long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().findAllInUserAndGroup(userId, groupId);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUserAndGroup(
+		long userId, long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .findAllInUserAndGroup(userId, groupId, orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUserAndGroup(
+		long userId, long groupId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> orderByComparator)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService()
+				   .findAllInUserAndGroup(userId, groupId, start, end,
+			orderByComparator);
+	}
+
+	/**
+	* Get Company entries
+	*
+	* @param companyId Company Id
+	* @param status    Workflow status
+	* @param start     start index of entries
+	* @param end       end index of entries
+	* @return
+	* @throws SystemException
+	*/
+	public static java.util.List<com.liferay.test.model.SampleSB> getCompanyEntries(
+		long companyId, int status, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getCompanyEntries(companyId, status, start, end);
+	}
+
+	/**
+	* Get Company entries
+	*
+	* @param companyId Company Id
+	* @param status    Workflow status
+	* @param start     start index of entries
+	* @param end       end index of entries
+	* @param obc       Comparator for the order
+	* @return List of entries
+	* @throws SystemException
+	*/
+	public static java.util.List<com.liferay.test.model.SampleSB> getCompanyEntries(
+		long companyId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.test.model.SampleSB> obc)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getCompanyEntries(companyId, status, start, end, obc);
+	}
+
 	/**
 	* Returns a range of all the sample sbs.
 	*
@@ -308,6 +485,71 @@ public class SampleSBLocalServiceUtil {
 		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
 		com.liferay.portal.kernel.dao.orm.Projection projection) {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
+	}
+
+	public static void addEntryResources(
+		com.liferay.test.model.SampleSB entry, boolean addGroupPermissions,
+		boolean addGuestPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.addEntryResources(entry, addGroupPermissions, addGuestPermissions);
+	}
+
+	public static void addEntryResources(
+		com.liferay.test.model.SampleSB entry,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().addEntryResources(entry, groupPermissions, guestPermissions);
+	}
+
+	public static void addEntryResources(long entryId,
+		boolean addGroupPermissions, boolean addGuestPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.addEntryResources(entryId, addGroupPermissions, addGuestPermissions);
+	}
+
+	public static void addEntryResources(long entryId,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.addEntryResources(entryId, groupPermissions, guestPermissions);
+	}
+
+	public static void deleteSampleSBEntry(
+		com.liferay.test.model.SampleSB fileobj)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().deleteSampleSBEntry(fileobj);
+	}
+
+	public static void restoreEntryFromTrash(long userId, long entryId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().restoreEntryFromTrash(userId, entryId);
+	}
+
+	public static void updateAsset(long userId,
+		com.liferay.test.model.SampleSB entry, long[] assetCategoryIds,
+		java.lang.String[] assetTagNames, long[] assetLinkEntryIds)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.updateAsset(userId, entry, assetCategoryIds, assetTagNames,
+			assetLinkEntryIds);
+	}
+
+	public static void updateEntryResources(
+		com.liferay.test.model.SampleSB entry,
+		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService()
+			.updateEntryResources(entry, groupPermissions, guestPermissions);
 	}
 
 	public static SampleSBLocalService getService() {
