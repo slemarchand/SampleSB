@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ReflectionUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -45,6 +46,8 @@ import com.liferay.test.model.impl.SampleSBModelImpl;
 import com.liferay.test.service.persistence.SampleSBPersistence;
 
 import java.io.Serializable;
+
+import java.lang.reflect.Field;
 
 import java.sql.Timestamp;
 
@@ -13661,6 +13664,22 @@ public class SampleSBPersistenceImpl extends BasePersistenceImpl<SampleSB>
 
 	public SampleSBPersistenceImpl() {
 		setModelClass(SampleSB.class);
+
+		try {
+			Field field = ReflectionUtil.getDeclaredField(BasePersistenceImpl.class,
+					"_dbColumnNames");
+
+			Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+			dbColumnNames.put("uuid", "uuid_");
+
+			field.set(this, dbColumnNames);
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e, e);
+			}
+		}
 	}
 
 	/**
@@ -14002,8 +14021,184 @@ public class SampleSBPersistenceImpl extends BasePersistenceImpl<SampleSB>
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 
-		if (isNew || !SampleSBModelImpl.COLUMN_BITMASK_ENABLED) {
+		if (!SampleSBModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+		}
+		else
+		 if (isNew) {
+			Object[] args = new Object[] { sampleSBModelImpl.getUuid() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getUuid(),
+					sampleSBModelImpl.getCompanyId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getCompanyId(),
+					sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_S,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getGroupId(),
+					sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_S,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getCompanyId(),
+					sampleSBModelImpl.getUserId(), sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_C_U_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_U_S,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getGroupId(),
+					sampleSBModelImpl.getUserId(), sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_U_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_U_S,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getUserId(), sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_U_S, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_U_S,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getGroupId(),
+					sampleSBModelImpl.getUrlTitle(),
+					sampleSBModelImpl.getStatus()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_G_UT_ST, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_G_UT_ST,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getGroupId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_GROUPID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_GROUPID,
+				args);
+
+			args = new Object[] {
+					sampleSBModelImpl.getUserId(),
+					sampleSBModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_USERIDGROUPID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERIDGROUPID,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getUserId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_USERID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_USERID,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getCompanyId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_COMPANYID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbId() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBID,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getTitle() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_TITLE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_TITLE,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getStartDate() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_STARTDATE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_STARTDATE,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getEndDate() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_ENDDATE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ENDDATE,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbBooleanStat() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBBOOLEANSTAT,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBBOOLEANSTAT,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbDateTime() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBDATETIME, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBDATETIME,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbDocument() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBDOCUMENT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBDOCUMENT,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbDocumentLibrary() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBDOCUMENTLIBRARY,
+				args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBDOCUMENTLIBRARY,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbDouble() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBDOUBLE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBDOUBLE,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbInteger() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBINTEGER, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBINTEGER,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbRichText() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBRICHTEXT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBRICHTEXT,
+				args);
+
+			args = new Object[] { sampleSBModelImpl.getSamplesbText() };
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_SAMPLESBTEXT, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SAMPLESBTEXT,
+				args);
+
+			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
+				FINDER_ARGS_EMPTY);
 		}
 
 		else {
@@ -14670,7 +14865,7 @@ public class SampleSBPersistenceImpl extends BasePersistenceImpl<SampleSB>
 		query.append(_SQL_SELECT_SAMPLESB_WHERE_PKS_IN);
 
 		for (Serializable primaryKey : uncachedPrimaryKeys) {
-			query.append(String.valueOf(primaryKey));
+			query.append((long)primaryKey);
 
 			query.append(StringPool.COMMA);
 		}

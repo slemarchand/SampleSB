@@ -1,1 +1,1 @@
-include "SampleSB-api", "SampleSB-service"
+include "SampleSB-api", "SampleSB-service", "SampleSB-web"

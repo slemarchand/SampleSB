@@ -14,8 +14,6 @@
 
 package com.liferay.test.service.impl;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
 
 /**
@@ -32,7 +30,6 @@ import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
  * @see SampleSBLocalServiceBaseImpl
  * @see com.liferay.test.service.SampleSBLocalServiceUtil
  */
-@ProviderType
 public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 	/*
 	 * NOTE FOR DEVELOPERS:
