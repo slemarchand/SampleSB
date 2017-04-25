@@ -12,7 +12,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
     immediate = true,
     property = {
-        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESBWEB,
+        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
         "mvc.command.name=/samplesb/crud"
     },
     service = MVCRenderCommand.class

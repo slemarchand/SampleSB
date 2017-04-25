@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Yasuyuki Takeo
  */
-@Component(immediate = true, property = { "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESBWEB,
+@Component(immediate = true, property = { "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
 		"mvc.command.name=/samplesb/crud" }, service = MVCActionCommand.class)
 public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
 

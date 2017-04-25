@@ -17,3 +17,5 @@ Bundle-ClassPath:\
 	lib/commons-validator.jar=commons-validator-[0-9]*.jar,\
 	lib/commons-io.jar=commons-io-[0-9]*.jar,\
 	lib/commons-lang3.jar=commons-lang[0-9]*.jar
+	
+-metatype: *

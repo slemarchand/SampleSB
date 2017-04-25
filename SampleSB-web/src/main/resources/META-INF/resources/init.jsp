@@ -25,6 +25,7 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.ResultRow" %>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 <%@ page import="com.liferay.portal.kernel.util.StringPool" %>
+<%@ page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
 <%@ page import="javax.portlet.PortletURL" %>
 <%@ page import="javax.portlet.WindowState" %>
@@ -33,7 +34,26 @@
 <%@ page import="com.liferay.test.service.SampleSBLocalServiceUtil"%>
 <%@ page import="com.liferay.test.web.constants.PagenationWebKeys" %>
 <%@ page import="com.liferay.test.web.util.PagenationContext" %>
+<%@ page import="com.liferay.test.web.portlet.action.SampleSBConfiguration" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>
 <portlet:defineObjects/>
+
+<liferay-theme:defineObjects />
+
+<%
+SampleSBConfiguration sampleSBConfiguration =
+        (SampleSBConfiguration)
+        renderRequest.getAttribute(SampleSBConfiguration.class.getName());
+
+    String prefsViewType = StringPool.BLANK;
+    
+    if (Validator.isNotNull(sampleSBConfiguration)) {
+        prefsViewType =
+            HtmlUtil.escape(
+            portletPreferences.getValue(
+                "prefsViewType", String.valueOf(sampleSBConfiguration.prefsViewType())));
+    }
+
+%>
