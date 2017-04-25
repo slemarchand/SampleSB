@@ -21,6 +21,7 @@ import org.osgi.service.component.annotations.Component;
 		"javax.portlet.display-name=SampleSB-web Portlet",
 		"javax.portlet.init-param.mvc-action-command-package-prefix=com.liferay.test.web.portlet.action" + SampleSBWebPortletKeys.SAMPLESBWEB,
 		"com.liferay.portlet.use-default-template=true",
+		"javax.portlet.expiration-cache=0",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESBWEB, 
 		"javax.portlet.resource-bundle=content.Language",

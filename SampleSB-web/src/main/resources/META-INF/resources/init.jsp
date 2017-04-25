@@ -22,6 +22,7 @@
 
 <%@ page import="com.liferay.test.model.SampleSB" %>
 <%@ page import="com.liferay.test.web.constants.PagenationWebKeys" %>
+<%@ page import="com.liferay.test.web.util.PagenationContext" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>

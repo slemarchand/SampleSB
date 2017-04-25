@@ -215,35 +215,35 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
     public SampleSB addSampleSB(SampleSB validSampleSB, ServiceContext serviceContext) throws PortalException, SystemException {
         SampleSB retVal = _addSampleSB(validSampleSB, serviceContext);
 
-        // Resources
-        if (serviceContext.isAddGroupPermissions() ||
-            serviceContext.isAddGuestPermissions()) {
-
-            addEntryResources(
-                retVal, serviceContext.isAddGroupPermissions(),
-                serviceContext.isAddGuestPermissions());
-        } else {
-            addEntryResources(
-                retVal, serviceContext.getGroupPermissions(),
-                serviceContext.getGuestPermissions());
-        }
-
-        // Social
-        _socialActivityLocalService.addActivity(
-            retVal.getUserId(), retVal.getGroupId(),
-            SampleSB.class.getName(), retVal.getPrimaryKey(),
-            SampleSBActivityKeys.ADD_SAMPLESB,
-            StringPool.BLANK, 0);
-
-        // Asset
-        updateAsset(
-            retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(),
-            serviceContext.getAssetTagNames(),
-            serviceContext.getAssetLinkEntryIds());
-
-        WorkflowHandlerRegistryUtil.startWorkflowInstance(
-            validSampleSB.getCompanyId(), validSampleSB.getGroupId(), validSampleSB.getUserId(),
-            SampleSB.class.getName(), retVal.getPrimaryKey(), retVal, serviceContext);
+//        // Resources
+//        if (serviceContext.isAddGroupPermissions() ||
+//            serviceContext.isAddGuestPermissions()) {
+//
+//            addEntryResources(
+//                retVal, serviceContext.isAddGroupPermissions(),
+//                serviceContext.isAddGuestPermissions());
+//        } else {
+//            addEntryResources(
+//                retVal, serviceContext.getGroupPermissions(),
+//                serviceContext.getGuestPermissions());
+//        }
+//
+//        // Social
+//        _socialActivityLocalService.addActivity(
+//            retVal.getUserId(), retVal.getGroupId(),
+//            SampleSB.class.getName(), retVal.getPrimaryKey(),
+//            SampleSBActivityKeys.ADD_SAMPLESB,
+//            StringPool.BLANK, 0);
+//
+//        // Asset
+//        updateAsset(
+//            retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(),
+//            serviceContext.getAssetTagNames(),
+//            serviceContext.getAssetLinkEntryIds());
+//
+//        WorkflowHandlerRegistryUtil.startWorkflowInstance(
+//            validSampleSB.getCompanyId(), validSampleSB.getGroupId(), validSampleSB.getUserId(),
+//            SampleSB.class.getName(), retVal.getPrimaryKey(), retVal, serviceContext);
 
         return retVal;
     }
@@ -259,33 +259,33 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
         validSampleSB.setUuid(entry.getUuid());
         validSampleSB.setUrlTitle(_getUniqueURLTitle(validSampleSB));
 
-        // Social
-        _socialActivityLocalService.addActivity(
-            validSampleSB.getUserId(), validSampleSB.getGroupId(),
-            SampleSB.class.getName(), validSampleSB.getPrimaryKey(),
-            SampleSBActivityKeys.UPDATE_SAMPLESB, StringPool.BLANK, 0);
+//        // Social
+//        _socialActivityLocalService.addActivity(
+//            validSampleSB.getUserId(), validSampleSB.getGroupId(),
+//            SampleSB.class.getName(), validSampleSB.getPrimaryKey(),
+//            SampleSBActivityKeys.UPDATE_SAMPLESB, StringPool.BLANK, 0);
 
         SampleSB retVal = sampleSBPersistence.update(validSampleSB);
 
-        // Resources
-        if ((serviceContext.getGroupPermissions() != null) ||
-            (serviceContext.getGuestPermissions() != null)) {
-
-            updateEntryResources(
-                retVal, serviceContext.getGroupPermissions(),
-                serviceContext.getGuestPermissions());
-        }
-
-
-        // Asset
-        updateAsset(
-            retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(),
-            serviceContext.getAssetTagNames(),
-            serviceContext.getAssetLinkEntryIds());
-
-        WorkflowHandlerRegistryUtil.startWorkflowInstance(
-            retVal.getCompanyId(), retVal.getGroupId(), retVal.getUserId(),
-            SampleSB.class.getName(), retVal.getPrimaryKey(), retVal, serviceContext);
+//        // Resources
+//        if ((serviceContext.getGroupPermissions() != null) ||
+//            (serviceContext.getGuestPermissions() != null)) {
+//
+//            updateEntryResources(
+//                retVal, serviceContext.getGroupPermissions(),
+//                serviceContext.getGuestPermissions());
+//        }
+//
+//
+//        // Asset
+//        updateAsset(
+//            retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(),
+//            serviceContext.getAssetTagNames(),
+//            serviceContext.getAssetLinkEntryIds());
+//
+//        WorkflowHandlerRegistryUtil.startWorkflowInstance(
+//            retVal.getCompanyId(), retVal.getGroupId(), retVal.getUserId(),
+//            SampleSB.class.getName(), retVal.getPrimaryKey(), retVal, serviceContext);
 
         return retVal;
     }

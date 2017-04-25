@@ -4,6 +4,7 @@
     PortletURL navigationPortletURL = renderResponse.createRenderURL();
     PortletURL sortURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
     
+    PagenationContext<?> pagenationContext = (PagenationContext<?>)request.getAttribute(PagenationWebKeys.PAGENATION_CONTEXT);
 %>
 <aui:nav-bar cssClass="collapse-basic-search" markupView="lexicon">
     <aui:form action="<%= portletURL.toString() %>" name="searchFm">
@@ -39,6 +40,11 @@
     id="<portlet:namespace />formContainer">
     <liferay-ui:success key="samplesb-added-successfully"
         message="samplesb-added-successfully" />
+        
+	<%
+	//Set next parameter
+	pagenationContext.setNextParams(request);
+	%>
 		
     <liferay-ui:error exception="<%= PortletException.class %>"
         message="there-was-an-unexpected-error.-please-refresh-the-current-page" />
@@ -47,5 +53,28 @@
             icon="icon-plus" value="add-samplesb" />
     </aui:button-row>
     
+    <liferay-ui:search-container deltaConfigurable="false"
+        delta='<%= pagenationContext.getRowsPerPage() %>'
+        emptyResultsMessage="samplesb-empty-results-message"
+        orderByCol="<%= pagenationContext.getOrderByCol() %>" orderByType="<%= pagenationContext.getOrderByType() %>"
+        total="<%= pagenationContext.getTotal() %>">
+        
+        <liferay-ui:search-container-results 
+            results="<%= pagenationContext.getResult() %>">
+        </liferay-ui:search-container-results>
+
+        <liferay-ui:search-container-row
+            className="com.liferay.test.model.SampleSB" keyProperty="sampleSBId"
+            modelVar="sampleSB">
+
+            <liferay-ui:search-container-column-text name="SampleSB Id"
+                property="samplesbId" align="left" />
+
+            <liferay-ui:search-container-column-text name="Title"
+                property="title" align="left" />
+
+        </liferay-ui:search-container-row>
+        <liferay-ui:search-iterator displayStyle="list" markupView="lexicon" />
+    </liferay-ui:search-container> 
 
 </div>
