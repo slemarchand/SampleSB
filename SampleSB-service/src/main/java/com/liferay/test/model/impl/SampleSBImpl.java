@@ -27,11 +27,13 @@ import aQute.bnd.annotation.ProviderType;
  */
 @ProviderType
 public class SampleSBImpl extends SampleSBBaseImpl {
-	/*
+
+	/**
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never reference this class directly. All methods that expect a sample sb model instance should use the {@link com.liferay.test.model.SampleSB} interface instead.
 	 */
 	public SampleSBImpl() {
 	}
+
 }

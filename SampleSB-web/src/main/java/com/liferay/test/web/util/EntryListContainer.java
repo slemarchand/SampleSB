@@ -7,5 +7,7 @@ import java.util.List;
  */
 public interface EntryListContainer<T> {
     public List<T> getResults();
+    public void setResults(List<T> results);
+    public void setTotal(int total);
     public int getTotal();
 }
