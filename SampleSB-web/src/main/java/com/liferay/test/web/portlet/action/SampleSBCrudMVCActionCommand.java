@@ -5,8 +5,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -18,14 +16,10 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
-import com.liferay.test.service.SampleSBLocalServiceUtil;
-import com.liferay.test.service.persistence.SampleSBUtil;
 import com.liferay.test.web.constants.SampleSBWebPortletKeys;
 import com.liferay.test.web.util.SampleSBValidator;
 
-import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -59,9 +53,9 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
 			} else if (cmd.equals(Constants.DELETE)) {
 
 				// Fetch primary key
-				long samplesbId = ParamUtil.getLong(request, "samplesbId", 0);
+				long resourcePrimKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-				_samplesblocalservice.deleteSampleSB(samplesbId);
+				_samplesblocalservice.deleteSampleSB(resourcePrimKey);
 				SessionMessages.add(request, "samplesb-deleted-successfully");
 
 				// Fetch redirect
@@ -171,6 +165,7 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
 			}
 			PortalUtil.copyRequestParameters(request, response);
 		}
+		
 	}
 
 	/**
