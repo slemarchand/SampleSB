@@ -37,8 +37,9 @@
 	</aui:form>
 </aui:nav-bar>
 
-<liferay-frontend:management-bar includeCheckBox="<%=true%>"
-	searchContainerId="samplesbRecords">
+<liferay-frontend:management-bar 
+	includeCheckBox="<%=true%>"
+	searchContainerId="sampleSBId">
 
 	<liferay-frontend:management-bar-filters>
 
