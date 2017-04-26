@@ -11,7 +11,7 @@
 <portlet:renderURL var="samplesbAddURL">
 	<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
 	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
-	<portlet:param name="redirect" value="<%= currentURL %>" />
+	<portlet:param name="redirect" value="<%= portletURL.toString() %>" />
 </portlet:renderURL>
 
 <div class="container-fluid-1280" >
