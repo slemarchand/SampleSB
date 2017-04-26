@@ -28,182 +28,165 @@ import java.util.List;
 
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Yasuyuki Takeo
  */
 public class ActionUtil {
 
-	/**
-	 * Get Record
-	 *
-	 * @param primaryKey
-	 *            Primary key
-	 * @param idReset
-	 *            true to reset primary key to 0
-	 * @return SampleSB object
-	 * @throws Exception
-	 */
-	public static SampleSB getRecord(long primaryKey, boolean idReset) throws Exception {
+    /**
+     * Get Record
+     *
+     * @param primaryKey Primary key
+     * @param idReset    true to reset primary key to 0
+     * @return SampleSB object
+     * @throws Exception
+     */
+    public static SampleSB getRecord(long primaryKey, boolean idReset) throws Exception {
 
-		SampleSB record = null;
+        SampleSB record = null;
 
-		if (primaryKey > 0) {
-			// A recode has existed
-			record = SampleSBLocalServiceUtil.getSampleSB(primaryKey);
-		} else {
-			// A recode doesn't exist
-			primaryKey = CounterLocalServiceUtil.increment();
-			record = SampleSBLocalServiceUtil.createSampleSB(primaryKey);
-			if (true == idReset) {
-				// Reset primary key
-				record.setPrimaryKey(0);
-			}
-		}
+        if (primaryKey > 0) {
+            // A recode has existed
+            record = SampleSBLocalServiceUtil.getSampleSB(primaryKey);
+        } else {
+            // A recode doesn't exist
+            primaryKey = CounterLocalServiceUtil.increment();
+            record = SampleSBLocalServiceUtil.createSampleSB(primaryKey);
+            if (true == idReset) {
+                // Reset primary key
+                record.setPrimaryKey(0);
+            }
+        }
 
-		return record;
-	}
+        return record;
+    }
 
-	/**
-	 * Get Record
-	 *
-	 * @param request
-	 *            HttpServletRequest
-	 * @param idReset
-	 *            true to reset primary key to 0
-	 * @return SampleSB object
-	 * @throws Exception
-	 */
-	public static SampleSB getRecord(HttpServletRequest request, boolean idReset) throws Exception {
+    /**
+     * Get Data list from Database
+     *
+     * @param request           PortletRequest
+     * @param pagenationContext
+     * @return EntryListContainer<SampleSB>
+     */
+    public static EntryListContainer<SampleSB> getListFromDB(
+        PortletRequest request,
+        PagenationContext<SampleSB> pagenationContext
+    ) {
 
-		long primaryKey = ParamUtil.getLong(request, "samplesbId");
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+        PortletPreferences portletPreferences = request.getPreferences();
 
-		SampleSB record = getRecord(primaryKey, idReset);
+        // Filter type
+        String prefsViewType = portletPreferences.getValue(
+            SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
+            SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT
+        );
 
-		request.setAttribute("sampleSB", record);
+        long groupId = themeDisplay.getScopeGroupId();
+        int containerStart = pagenationContext.getContainerStart();
+        int containerEnd = pagenationContext.getContainerEnd();
 
-		return record;
-	}
+        // TODO : need to impliment Comparator
 
-	/**
-	 * Get Record
-	 *
-	 * @param portletRequest
-	 *            PortletRequest
-	 * @param idReset
-	 *            true to reset primary key to 0
-	 * @return SampleSB object
-	 * @throws Exception
-	 */
-	public static SampleSB getRecord(PortletRequest portletRequest, boolean idReset) throws Exception {
+        List<SampleSB> results = null;
+        int total = 0;
 
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(portletRequest);
+        if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT)) {
+            results = SampleSBLocalServiceUtil.findAllInGroup(
+                groupId,
+                containerStart,
+                containerEnd,
+                null
+            );
+            total = SampleSBLocalServiceUtil.countAllInGroup(groupId);
 
-		return getRecord(request, idReset);
-	}
+        } else if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_USER)) {
+            results = SampleSBLocalServiceUtil.findAllInUser(
+                themeDisplay.getUserId(),
+                containerStart,
+                containerEnd,
+                null
+            );
+            total = SampleSBLocalServiceUtil.countAllInUser(themeDisplay.getUserId());
 
-	/**
-	 * Get Data list from Database
-	 * 
-	 * @param request PortletRequest
-	 * @param pagenationContext
-	 * @return EntryListContainer<SampleSB>
-	 */
-	public static EntryListContainer<SampleSB> getListFromDB(PortletRequest request,
-			PagenationContext<SampleSB> pagenationContext) {
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		PortletPreferences portletPreferences = request.getPreferences();
+        } else {
+            results = SampleSBLocalServiceUtil.findAllInUserAndGroup(
+                themeDisplay.getUserId(),
+                groupId,
+                containerStart,
+                containerEnd, null
+            );
+            total = SampleSBLocalServiceUtil.countAllInUserAndGroup(themeDisplay.getUserId(), groupId);
 
-		// Filter type
-		String prefsViewType = portletPreferences.getValue(SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
-				SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT);
+        }
 
-		long groupId = themeDisplay.getScopeGroupId();
-		int containerStart = pagenationContext.getContainerStart();
-		int containerEnd = pagenationContext.getContainerEnd();
+        EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
+        entryListContainer.setResults(results);
+        entryListContainer.setTotal(total);
+        return entryListContainer;
+    }
 
-		// TODO : need to impliment Comparator
+    /**
+     * Get Data list from Index
+     *
+     * @param request           PortletRequest
+     * @param pagenationContext
+     * @return PagenationContext<SampleSB>
+     * @throws SearchException
+     */
+    public static EntryListContainer<SampleSB> getListFromIndex(
+        PortletRequest request,
+        PagenationContext<SampleSB> pagenationContext
+    ) throws SearchException {
 
-		List<SampleSB> results = null;
-		int total = 0;
+        // Search Key
+        String searchFilter = ParamUtil.getString(request, PagenationWebKeys.SEARCH_FILTER);
 
-		if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT)) {
-			results = SampleSBLocalServiceUtil.findAllInGroup(groupId, containerStart, containerEnd, null);
-			total = SampleSBLocalServiceUtil.countAllInGroup(groupId);
-		} else if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_USER)) {
-			results = SampleSBLocalServiceUtil.findAllInUser(themeDisplay.getUserId(), containerStart, containerEnd,
-					null);
-			total = SampleSBLocalServiceUtil.countAllInUser(themeDisplay.getUserId());
-		} else {
-			results = SampleSBLocalServiceUtil.findAllInUserAndGroup(themeDisplay.getUserId(), groupId, containerStart,
-					containerEnd, null);
-			total = SampleSBLocalServiceUtil.countAllInUserAndGroup(themeDisplay.getUserId(), groupId);
-		}
+        int containerStart = pagenationContext.getContainerStart();
+        int containerEnd = pagenationContext.getContainerEnd();
+        Indexer<SampleSB> indexer = IndexerRegistryUtil.getIndexer(SampleSB.class);
+        SearchContext searchContext = SearchContextFactory.getInstance(PortalUtil.getHttpServletRequest(request));
 
-		EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
-		entryListContainer.setResults(results);
-		entryListContainer.setTotal(total);
-		return entryListContainer;
-	}
+        searchContext.setEnd(containerEnd);
+        searchContext.setKeywords(searchFilter);
+        searchContext.setStart(containerStart);
 
-	/**
-	 * Get Data list from Index
-	 *  
-	 * @param request PortletRequest
-	 * @param pagenationContext
-	 * @return PagenationContext<SampleSB>
-	 * @throws SearchException
-	 */
-	public static EntryListContainer<SampleSB> getListFromIndex(PortletRequest request,
-			PagenationContext<SampleSB> pagenationContext) throws SearchException {
+        // Search in index
+        Hits results = indexer.search(searchContext);
 
-		// Search Key
-		String searchFilter = ParamUtil.getString(request, PagenationWebKeys.SEARCH_FILTER);
+        // Initialize return values
+        int total = results.getLength();
+        List<SampleSB> tempResults = Lists.newArrayList();
 
-		int containerStart = pagenationContext.getContainerStart();
-		int containerEnd = pagenationContext.getContainerEnd();
-		Indexer<SampleSB> indexer = IndexerRegistryUtil.getIndexer(SampleSB.class);
-		SearchContext searchContext = SearchContextFactory.getInstance(PortalUtil.getHttpServletRequest(request));
+        for (int i = 0; i < results.getDocs().length; i++) {
+            Document doc = results.doc(i);
 
-		searchContext.setEnd(containerEnd);
-		searchContext.setKeywords(searchFilter);
-		searchContext.setStart(containerStart);
+            SampleSB resReg = null;
 
-		Hits results = indexer.search(searchContext);
+            // Entry
+            long entryId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
 
-		// Initialize return values
-		int total = results.getLength();
-		List<SampleSB> tempResults = Lists.newArrayList();
+            try {
+                resReg = SampleSBLocalServiceUtil.getSampleSB(entryId);
 
-		for (int i = 0; i < results.getDocs().length; i++) {
-			Document doc = results.doc(i);
+                resReg = resReg.toEscapedModel();
 
-			SampleSB resReg = null;
+                tempResults.add(resReg);
+            } catch (Exception e) {
+                if (_log.isWarnEnabled()) {
+                    _log.warn("SampleSB search index is stale and contains entry " + entryId);
+                }
 
-			// Entry
-			long entryId = GetterUtil.getLong(doc.get(Field.ENTRY_CLASS_PK));
+                continue;
+            }
+        }
 
-			try {
-				resReg = SampleSBLocalServiceUtil.getSampleSB(entryId);
+        EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
+        entryListContainer.setResults(tempResults);
+        entryListContainer.setTotal(total);
+        return entryListContainer;
+    }
 
-				resReg = resReg.toEscapedModel();
-
-				tempResults.add(resReg);
-			} catch (Exception e) {
-				if (_log.isWarnEnabled()) {
-					_log.warn("SampleSB search index is stale and contains entry " + entryId);
-				}
-
-				continue;
-			}
-		}
-		
-		EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
-		entryListContainer.setResults(tempResults);
-		entryListContainer.setTotal(total);
-		return entryListContainer;
-	}
-	
-	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
+    private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 }

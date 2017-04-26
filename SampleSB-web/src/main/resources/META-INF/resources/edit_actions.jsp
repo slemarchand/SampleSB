@@ -14,15 +14,12 @@
 	markupView="lexicon" message="<%=StringPool.BLANK%>"
 	showWhenSingleIcon="<%=true%>">
 
-	<portlet:actionURL name="editSampleSB" var="editSampleSBURL">
-		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
-	</portlet:actionURL>
-
-	<portlet:actionURL name="/samplesb/crud" var="editSampleSBURL">
+	<portlet:renderURL var="editSampleSBURL">
+		<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
 		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.EDIT %>" />
 		<portlet:param name="redirect" value="<%=currentURL%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
-	</portlet:actionURL>	
+	</portlet:renderURL>
 	<liferay-ui:icon image="edit" url="<%=editSampleSBURL.toString()%>" />
 
 	<portlet:actionURL name="/samplesb/crud" var="deleteSampleSBURL">

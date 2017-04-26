@@ -33,197 +33,205 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Yasuyuki Takeo
  */
-@Component(immediate = true, property = { "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
-		"mvc.command.name=/samplesb/crud" }, service = MVCActionCommand.class)
+@Component(
+    immediate = true,
+    property = {
+        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
+        "mvc.command.name=/samplesb/crud"
+    },
+    service = MVCActionCommand.class
+)
 public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
 
-	@Override
-	protected void doProcessAction(ActionRequest request, ActionResponse response) {
+    @Override
+    protected void doProcessAction(ActionRequest request, ActionResponse response) {
 
-		try {
-			// Fetch command
-			String cmd = ParamUtil.getString(request, Constants.CMD);
+        try {
+            // Fetch command
+            String cmd = ParamUtil.getString(request, Constants.CMD);
 
-			if (cmd.equals(Constants.ADD)) {
-				addSampleSB(request, response);
-				
-			} else if (cmd.equals(Constants.UPDATE)) {
-				updateSampleSB(request, response);
+            if (cmd.equals(Constants.ADD)) {
+                addSampleSB(request, response);
 
-			} else if (cmd.equals(Constants.DELETE)) {
+            } else if (cmd.equals(Constants.UPDATE)) {
+                updateSampleSB(request, response);
 
-				// Fetch primary key
-				long resourcePrimKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
+            } else if (cmd.equals(Constants.DELETE)) {
 
-				_samplesblocalservice.deleteSampleSB(resourcePrimKey);
-				SessionMessages.add(request, "samplesb-deleted-successfully");
+                // Fetch primary key
+                long resourcePrimKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-				// Fetch redirect
-				String redirect = ParamUtil.getString(request, "redirect");
-				redirect = PortalUtil.escapeRedirect(redirect);
+                _samplesblocalservice.deleteSampleSB(resourcePrimKey);
+                SessionMessages.add(request, "samplesb-deleted-successfully");
 
-				sendRedirect(request, response, redirect);
-			}
-		} catch (InvalidParameterException e) {
-			response.setRenderParameter("mvcRenderCommandName", "/samplesb/crud");
-			hideDefaultSuccessMessage(request);
-		} catch (Throwable t) {
+                // Fetch redirect
+                String redirect = ParamUtil.getString(request, "redirect");
+                redirect = PortalUtil.escapeRedirect(redirect);
 
-			_log.error(t, t);
-			SessionErrors.add(request, PortalException.class);
-			hideDefaultSuccessMessage(request);
-		}
+                sendRedirect(request, response, redirect);
+            }
+        } catch (InvalidParameterException e) {
+            response.setRenderParameter("mvcRenderCommandName", "/samplesb/crud");
+            hideDefaultSuccessMessage(request);
+        } catch (Throwable t) {
 
-	}
+            _log.error(t, t);
+            SessionErrors.add(request, PortalException.class);
+            hideDefaultSuccessMessage(request);
+        }
 
-	/**
-	 * Populate Model with values from a form
-	 *
-	 * @param request
-	 * @return SampleSB Object
-	 */
-	private SampleSB SampleSBFromRequest(ActionRequest request) throws Exception {
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		
-		// Create or fetch Primary key
-		SampleSB sampleSB = ActionUtil.getRecord(request, false);
+    }
 
-		sampleSB.setTitle(ParamUtil.getString(request, "title"));
+    /**
+     * Populate Model with values from a form
+     *
+     * @param request
+     * @return SampleSB Object
+     */
+    private SampleSB SampleSBFromRequest(ActionRequest request) throws Exception {
+        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 
-		// TODO : this need to refer SampleSBFromRequest of original in the
-		// template.
-		// int SampleSBdateAmPm = ParamUtil.getInteger(request,
-		// "SampleSBdateAmPm");
-		// int SampleSBdateHour = ParamUtil.getInteger(request,
-		// "SampleSBdateHour");
-		// DateTimeFormatter fSampleSBdate =
-		// DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		// LocalDateTime SampleSBdate = LocalDateTime.of(
-		// ParamUtil.getInteger(request, "SampleSBdateYear"),
-		// ParamUtil.getInteger(request, "SampleSBdateMonth") + 1,
-		// ParamUtil.getInteger(request, "SampleSBdateDay"),
-		// (SampleSBdateAmPm == Calendar.PM) ? SampleSBdateHour + 12 :
-		// SampleSBdateHour,
-		// ParamUtil.getInteger(request, "SampleSBdateMinute"),
-		// 0);
-		//
-		// sampleSB.setSamplesbDateTime(Date.from(SampleSBdate.atZone(ZoneId.systemDefault()).toInstant()));
-		//
-		// sampleSB.setSamplesbInteger(ParamUtil.getInteger(request,
-		// "SamplesbInteger"));
-		// sampleSB.setSamplesbDouble(ParamUtil.getDouble(request,
-		// "SamplesbDouble"));
+        long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
+        
+        // Create or fetch existing data
+        SampleSB sampleSB = ActionUtil.getRecord(primaryKey, false);
 
-		sampleSB.setCompanyId(themeDisplay.getCompanyId());
-		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
-		sampleSB.setUserId(themeDisplay.getUserId());
-		
-		return sampleSB;
-	}
+        sampleSB.setTitle(ParamUtil.getString(request, "title"));
 
-	/**
-	 * Add SampleSB
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	public void addSampleSB(ActionRequest request, ActionResponse response) throws Exception {
-		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
-		// if (isMultipart) {
-		// uploadManager = new SampleSBUpload();
-		// request = extractFields(request, false);
-		// }
-		SampleSB sampleSB = SampleSBFromRequest(request);
-		// ThemeDisplay themeDisplay = (ThemeDisplay)
-		// request.getAttribute(WebKeys.THEME_DISPLAY);
-		// PermissionChecker permissionChecker =
-		// themeDisplay.getPermissionChecker();
-		//
-		// if (!SampleSBPermission.contains(permissionChecker,
-		// themeDisplay.getScopeGroupId(), "ADD_SAMPLESB")) {
-		// SampleSBUtil.addParametersForDefaultView(response);
-		// SessionErrors.add(request, "permission-error");
-		// return;
-		// }
-		List<String> errors = SampleSBValidator.validateSampleSB(request);
+        // TODO : this need to refer SampleSBFromRequest of original in the
+        // template.
+        // int SampleSBdateAmPm = ParamUtil.getInteger(request,
+        // "SampleSBdateAmPm");
+        // int SampleSBdateHour = ParamUtil.getInteger(request,
+        // "SampleSBdateHour");
+        // DateTimeFormatter fSampleSBdate =
+        // DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        // LocalDateTime SampleSBdate = LocalDateTime.of(
+        // ParamUtil.getInteger(request, "SampleSBdateYear"),
+        // ParamUtil.getInteger(request, "SampleSBdateMonth") + 1,
+        // ParamUtil.getInteger(request, "SampleSBdateDay"),
+        // (SampleSBdateAmPm == Calendar.PM) ? SampleSBdateHour + 12 :
+        // SampleSBdateHour,
+        // ParamUtil.getInteger(request, "SampleSBdateMinute"),
+        // 0);
+        //
+        // sampleSB.setSamplesbDateTime(Date.from(SampleSBdate.atZone(ZoneId.systemDefault()).toInstant()));
+        //
+        // sampleSB.setSamplesbInteger(ParamUtil.getInteger(request,
+        // "SamplesbInteger"));
+        // sampleSB.setSamplesbDouble(ParamUtil.getDouble(request,
+        // "SamplesbDouble"));
 
-		if (errors.isEmpty()) {
-			// sampleSB = uploadManager.uploadFiles(request, sampleSB);
-			try {
-				ServiceContext serviceContext = ServiceContextFactory.getInstance(SampleSB.class.getName(), request);
-				_samplesblocalservice.addSampleSB(sampleSB, serviceContext);
-				SessionMessages.add(request, "samplesb-added-successfully");
+        sampleSB.setCompanyId(themeDisplay.getCompanyId());
+        sampleSB.setGroupId(themeDisplay.getScopeGroupId());
+        sampleSB.setUserId(themeDisplay.getUserId());
 
-			} catch (Exception cvex) {
-				SessionErrors.add(request, "please-enter-a-unique-code");
-				PortalUtil.copyRequestParameters(request, response);
-			}
-		} else {
-			for (String error : errors) {
-				SessionErrors.add(request, error);
-			}
-			PortalUtil.copyRequestParameters(request, response);
-		}
-		
-	}
+        return sampleSB;
+    }
 
-	/**
-	 * Update SampleSB
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws Exception
-	 */
-	public void updateSampleSB(ActionRequest request, ActionResponse response) throws Exception {
-		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
-		// if (isMultipart) {
-		// uploadManager = new SampleSBUpload();
-		// request = extractFields(request, true);
-		// }
-		SampleSB sampleSB = SampleSBFromRequest(request);
-		// ThemeDisplay themeDisplay = (ThemeDisplay)
-		// request.getAttribute(WebKeys.THEME_DISPLAY);
-		// PermissionChecker permissionChecker =
-		// themeDisplay.getPermissionChecker();
-		//
-		// if (!SampleSBEntryPermission.contains(permissionChecker, sampleSB,
-		// ActionKeys.UPDATE)) {
-		// SampleSBUtil.addParametersForDefaultView(response);
-		// SessionErrors.add(request, "permission-error");
-		// return;
-		// }
+    /**
+     * Add SampleSB
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void addSampleSB(ActionRequest request, ActionResponse response) throws Exception {
+        // boolean isMultipart = PortletFileUpload.isMultipartContent(request);
+        // if (isMultipart) {
+        // uploadManager = new SampleSBUpload();
+        // request = extractFields(request, false);
+        // }
+        SampleSB sampleSB = SampleSBFromRequest(request);
+        // ThemeDisplay themeDisplay = (ThemeDisplay)
+        // request.getAttribute(WebKeys.THEME_DISPLAY);
+        // PermissionChecker permissionChecker =
+        // themeDisplay.getPermissionChecker();
+        //
+        // if (!SampleSBPermission.contains(permissionChecker,
+        // themeDisplay.getScopeGroupId(), "ADD_SAMPLESB")) {
+        // SampleSBUtil.addParametersForDefaultView(response);
+        // SessionErrors.add(request, "permission-error");
+        // return;
+        // }
+        List<String> errors = SampleSBValidator.validateSampleSB(request);
 
-		List<String> errors = SampleSBValidator.validateSampleSB(request);
+        if (errors.isEmpty()) {
+            // sampleSB = uploadManager.uploadFiles(request, sampleSB);
+            try {
+                ServiceContext serviceContext = ServiceContextFactory.getInstance(SampleSB.class.getName(), request);
+                _samplesblocalservice.addSampleSB(sampleSB, serviceContext);
+                SessionMessages.add(request, "samplesb-added-successfully");
 
-		// boolean fromAsset = SampleSBUtil.isFromAsset(request);
-		//
-		// sampleSB = uploadManager.uploadFiles(request, sampleSB);
-		if (errors.isEmpty()) {
-			try {
-				ServiceContext serviceContext = ServiceContextFactory.getInstance(SampleSB.class.getName(), request);
-				_samplesblocalservice.updateSampleSB(sampleSB, serviceContext);
+            } catch (Exception cvex) {
+                SessionErrors.add(request, "please-enter-a-unique-code");
+                PortalUtil.copyRequestParameters(request, response);
+            }
+        } else {
+            for (String error : errors) {
+                SessionErrors.add(request, error);
+            }
+            PortalUtil.copyRequestParameters(request, response);
+        }
 
-				SessionMessages.add(request, "samplesb-updated-successfully");
+    }
 
-			} catch (Exception cvex) {
-				SessionErrors.add(request, "please-enter-a-unique-code");
-				request.setAttribute("sampleSB", sampleSB);
-			}
-		} else {
-			for (String error : errors) {
-				SessionErrors.add(request, error);
-			}
-			PortalUtil.copyRequestParameters(request, response);
-		}
-	}
+    /**
+     * Update SampleSB
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void updateSampleSB(ActionRequest request, ActionResponse response) throws Exception {
+        // boolean isMultipart = PortletFileUpload.isMultipartContent(request);
+        // if (isMultipart) {
+        // uploadManager = new SampleSBUpload();
+        // request = extractFields(request, true);
+        // }
+        SampleSB sampleSB = SampleSBFromRequest(request);
+        // ThemeDisplay themeDisplay = (ThemeDisplay)
+        // request.getAttribute(WebKeys.THEME_DISPLAY);
+        // PermissionChecker permissionChecker =
+        // themeDisplay.getPermissionChecker();
+        //
+        // if (!SampleSBEntryPermission.contains(permissionChecker, sampleSB,
+        // ActionKeys.UPDATE)) {
+        // SampleSBUtil.addParametersForDefaultView(response);
+        // SessionErrors.add(request, "permission-error");
+        // return;
+        // }
 
-	@Reference(unbind = "-")
-	protected void setSampleSBLocalService(SampleSBLocalService samplesblocalservice) {
-		_samplesblocalservice = samplesblocalservice;
-	}
+        List<String> errors = SampleSBValidator.validateSampleSB(request);
 
-	private SampleSBLocalService _samplesblocalservice;
+        // boolean fromAsset = SampleSBUtil.isFromAsset(request);
+        //
+        // sampleSB = uploadManager.uploadFiles(request, sampleSB);
+        if (errors.isEmpty()) {
+            try {
+                ServiceContext serviceContext = ServiceContextFactory.getInstance(SampleSB.class.getName(), request);
+                _samplesblocalservice.updateSampleSB(sampleSB, serviceContext);
 
-	private static Log _log = LogFactoryUtil.getLog(SampleSBCrudMVCActionCommand.class);
+                SessionMessages.add(request, "samplesb-updated-successfully");
+
+            } catch (Exception cvex) {
+                SessionErrors.add(request, "please-enter-a-unique-code");
+                request.setAttribute("sampleSB", sampleSB);
+            }
+        } else {
+            for (String error : errors) {
+                SessionErrors.add(request, error);
+            }
+            PortalUtil.copyRequestParameters(request, response);
+        }
+    }
+
+    @Reference(unbind = "-")
+    protected void setSampleSBLocalService(SampleSBLocalService samplesblocalservice) {
+        _samplesblocalservice = samplesblocalservice;
+    }
+
+    private SampleSBLocalService _samplesblocalservice;
+
+    private static Log _log = LogFactoryUtil.getLog(SampleSBCrudMVCActionCommand.class);
 }

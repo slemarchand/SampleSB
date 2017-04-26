@@ -19,7 +19,7 @@
     <aui:fieldset>
 
         <liferay-ui:error key="samplesb-title-required" message="samplesb-title-required"/>
-        <aui:input name="title" disabled="false" label='<%= LanguageUtil.get(request, "samplesb-title")%>'/>
+        <aui:input name="title" label='<%= LanguageUtil.get(request, "samplesb-title")%>' />
 
         <aui:button-row>
             <aui:button cssClass="btn-lg" type="submit" value="add"/>
@@ -28,9 +28,3 @@
         </aui:button-row>
     </aui:fieldset>
 </aui:form>
-
-<aui:script>
-    function <portlet:namespace/>initSampleSBSampleSBrichtextEditor() {
-        return '<%=UnicodeFormatter.toString(sampleSB.getSamplesbRichText()) %>';
-    }
-</aui:script>
