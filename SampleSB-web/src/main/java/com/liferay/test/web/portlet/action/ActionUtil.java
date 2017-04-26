@@ -2,6 +2,7 @@ package com.liferay.test.web.portlet.action;
 
 import com.google.common.collect.Lists;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.dao.search.SearchContainerResults;
 import com.liferay.portal.kernel.log.Log;
@@ -21,7 +22,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalServiceUtil;
-import com.liferay.test.web.constants.PagenationWebKeys;
 
 import java.util.List;
 
@@ -57,7 +57,6 @@ public class ActionUtil {
                 record.setPrimaryKey(0);
             }
         }
-
         return record;
     }
 
@@ -134,7 +133,7 @@ public class ActionUtil {
         SearchContainer<?> searchContainer ) throws SearchException {
 
         // Search Key
-        String searchFilter = ParamUtil.getString(request, PagenationWebKeys.SEARCH_FILTER);
+        String searchFilter = ParamUtil.getString(request, DisplayTerms.KEYWORDS);
 
         Indexer<SampleSB> indexer = IndexerRegistryUtil.getIndexer(SampleSB.class);
         SearchContext searchContext = SearchContextFactory.getInstance(PortalUtil.getHttpServletRequest(request));

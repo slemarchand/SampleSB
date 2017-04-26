@@ -29,6 +29,7 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainerResults" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker" %>
+<%@ page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
 
 <%@ page import="javax.portlet.PortletURL" %>
 <%@ page import="javax.portlet.WindowState" %>
@@ -44,8 +45,6 @@
 <%@ page import="com.liferay.test.web.portlet.action.ActionUtil" %>
 <%@ page import="com.liferay.test.model.SampleSB" %>
 <%@ page import="com.liferay.test.service.SampleSBLocalServiceUtil"%>
-<%@ page import="com.liferay.test.web.constants.PagenationWebKeys" %>
-<%@ page import="com.liferay.test.web.util.PagenationContext" %>
 <%@ page import="com.liferay.test.web.portlet.action.SampleSBConfiguration" %>
 
 <liferay-frontend:defineObjects/>
