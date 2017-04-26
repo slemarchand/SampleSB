@@ -2,6 +2,8 @@ package com.liferay.test.web.portlet.action;
 
 import com.google.common.collect.Lists;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.dao.search.SearchContainerResults;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -20,9 +22,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalServiceUtil;
 import com.liferay.test.web.constants.PagenationWebKeys;
-import com.liferay.test.web.util.EntryListContainer;
-import com.liferay.test.web.util.EntryListContainerImpl;
-import com.liferay.test.web.util.PagenationContext;
 
 import java.util.List;
 
@@ -67,12 +66,10 @@ public class ActionUtil {
      *
      * @param request           PortletRequest
      * @param pagenationContext
-     * @return EntryListContainer<SampleSB>
+     * @return SearchContainerResults<SampleSB>
      */
-    public static EntryListContainer<SampleSB> getListFromDB(
-        PortletRequest request,
-        PagenationContext<SampleSB> pagenationContext
-    ) {
+    public static SearchContainerResults<SampleSB> getListFromDB(
+        PortletRequest request, SearchContainer<?> searchContainer ) {
 
         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
         PortletPreferences portletPreferences = request.getPreferences();
@@ -84,8 +81,8 @@ public class ActionUtil {
         );
 
         long groupId = themeDisplay.getScopeGroupId();
-        int containerStart = pagenationContext.getContainerStart();
-        int containerEnd = pagenationContext.getContainerEnd();
+        int containerStart = searchContainer.getStart();
+        int containerEnd = searchContainer.getEnd();
 
         // TODO : need to impliment Comparator
 
@@ -121,10 +118,7 @@ public class ActionUtil {
 
         }
 
-        EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
-        entryListContainer.setResults(results);
-        entryListContainer.setTotal(total);
-        return entryListContainer;
+        return new SearchContainerResults<>(results, total);
     }
 
     /**
@@ -135,22 +129,19 @@ public class ActionUtil {
      * @return PagenationContext<SampleSB>
      * @throws SearchException
      */
-    public static EntryListContainer<SampleSB> getListFromIndex(
+    public static SearchContainerResults<SampleSB> getListFromIndex(
         PortletRequest request,
-        PagenationContext<SampleSB> pagenationContext
-    ) throws SearchException {
+        SearchContainer<?> searchContainer ) throws SearchException {
 
         // Search Key
         String searchFilter = ParamUtil.getString(request, PagenationWebKeys.SEARCH_FILTER);
 
-        int containerStart = pagenationContext.getContainerStart();
-        int containerEnd = pagenationContext.getContainerEnd();
         Indexer<SampleSB> indexer = IndexerRegistryUtil.getIndexer(SampleSB.class);
         SearchContext searchContext = SearchContextFactory.getInstance(PortalUtil.getHttpServletRequest(request));
 
-        searchContext.setEnd(containerEnd);
         searchContext.setKeywords(searchFilter);
-        searchContext.setStart(containerStart);
+        searchContext.setStart(searchContainer.getStart());
+        searchContext.setEnd(searchContainer.getEnd());
 
         // Search in index
         Hits results = indexer.search(searchContext);
@@ -182,10 +173,7 @@ public class ActionUtil {
             }
         }
 
-        EntryListContainer<SampleSB> entryListContainer = new EntryListContainerImpl<SampleSB>();
-        entryListContainer.setResults(tempResults);
-        entryListContainer.setTotal(total);
-        return entryListContainer;
+        return new SearchContainerResults<>(tempResults, total);
     }
 
     private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);

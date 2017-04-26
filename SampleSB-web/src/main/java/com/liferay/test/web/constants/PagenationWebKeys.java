@@ -13,4 +13,5 @@ public class PagenationWebKeys {
     static final public String ORDER_BY_COL = "orderByCol";
     
     static final public String PAGENATION_CONTEXT = "pagenationContext";
+    static final public String RESULT_CONTEXT = "resultContext";
 }

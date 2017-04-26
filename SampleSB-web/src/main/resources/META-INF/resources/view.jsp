@@ -1,12 +1,20 @@
 <%@ include file="/init.jsp"%>
 <%
-    PortletURL portletURL = renderResponse.createRenderURL();
-    PortletURL navigationPortletURL = renderResponse.createRenderURL();
-    PortletURL sortURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
-    
-    PagenationContext<?> pagenationContext = (PagenationContext<?>)request.getAttribute(PagenationWebKeys.PAGENATION_CONTEXT);
+	PortletURL navigationPortletURL = renderResponse.createRenderURL();
+	PortletURL portletURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
+	
+	String keywords = ParamUtil.getString(request, "keywords");
+	int cur = ParamUtil.getInteger(request, SearchContainer.DEFAULT_CUR_PARAM);
+	int delta = ParamUtil.getInteger(request, SearchContainer.DEFAULT_DELTA_PARAM);
+	String orderByCol = ParamUtil.getString(request, "orderByCol", "title");
+	String orderByType = ParamUtil.getString(request, "orderByType", "asc");
+	
+	navigationPortletURL.setParameter("keywords", keywords);
+	navigationPortletURL.setParameter("cur", String.valueOf(cur));  
+	navigationPortletURL.setParameter("mvcRenderCommandName", "/samplesb/view");
+	navigationPortletURL.setParameter("orderByCol", orderByCol);
+	navigationPortletURL.setParameter("orderByType", orderByType);
 %>
-
 
 <portlet:renderURL var="samplesbAddURL">
 	<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
@@ -34,9 +42,11 @@
 
 	<liferay-frontend:management-bar-filters>
 
-		<liferay-frontend:management-bar-sort orderByCol="" orderByType=""
+		<liferay-frontend:management-bar-sort 
+			orderByCol="<%= orderByCol %>"
+			orderByType="<%= orderByType %>"
 			orderColumns='<%= new String[] {"title", "display-date"} %>'
-			portletURL="<%= sortURL %>" />
+			portletURL="<%= navigationPortletURL %>" />
 	</liferay-frontend:management-bar-filters>
 	<liferay-frontend:management-bar-action-buttons>
 		<liferay-frontend:management-bar-button href='#' icon='times'
@@ -44,30 +54,21 @@
 	</liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
 
-
 <div class="container-fluid-1280"
 	id="<portlet:namespace />formContainer">
 	<liferay-ui:success key="samplesb-added-successfully"
 		message="samplesb-added-successfully" />
 
-	<%
-	//Set next parameter
-	pagenationContext.setNextParams(request);
-	%>
-
 	<liferay-ui:error exception="<%= PortletException.class %>"
 		message="there-was-an-unexpected-error.-please-refresh-the-current-page" />
 
+	<liferay-ui:search-container 
+		deltaConfigurable="true"
+		rowChecker="<%= new EmptyOnClickRowChecker(renderResponse) %>"
+		searchContainer='<%= new SearchContainer(renderRequest, PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse), null, "no-recodes-were-found") %>'>
 
-	<liferay-ui:search-container deltaConfigurable="false"
-		delta='<%= pagenationContext.getRowsPerPage() %>'
-		emptyResultsMessage="samplesb-empty-results-message"
-		orderByCol="<%= pagenationContext.getOrderByCol() %>"
-		orderByType="<%= pagenationContext.getOrderByType() %>"
-		total="<%= pagenationContext.getTotal() %>">
-
-		<liferay-ui:search-container-results
-			results="<%= pagenationContext.getResult() %>">
+		<liferay-ui:search-container-results>
+			<%@ include file="/search_results.jspf" %>
 		</liferay-ui:search-container-results>
 
 		<liferay-ui:search-container-row

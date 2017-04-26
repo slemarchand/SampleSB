@@ -1,0 +1,12 @@
+<%@page import="javax.portlet.RenderRequest"%>
+<%
+SearchContainerResults<SampleSB> searchContainerResults = null;
+if (Validator.isNull(keywords)) {
+	searchContainerResults = ActionUtil.getListFromDB(renderRequest, searchContainer);
+} else {
+	searchContainerResults = ActionUtil.getListFromIndex(renderRequest, searchContainer);
+}
+
+searchContainer.setTotal(searchContainerResults.getTotal());
+searchContainer.setResults(searchContainerResults.getResults());
+%>
