@@ -10,23 +10,41 @@
 %>
 <liferay-ui:icon-menu
 	cssClass="<%=row == null ? "entry-options inline" : StringPool.BLANK%>"
-	direction="left-side" icon="<%=StringPool.BLANK%>"
-	markupView="lexicon" message="<%=StringPool.BLANK%>"
-	showWhenSingleIcon="<%=true%>">
+	direction="left-side" icon="<%=StringPool.BLANK%>" markupView="lexicon"
+	message="<%=StringPool.BLANK%>" showWhenSingleIcon="<%=true%>">
+
+	<liferay-security:permissionsURL
+		modelResource="com.liferay.test.model.SampleSB"
+		modelResourceDescription="SampleSB"
+		resourcePrimKey="<%=String.valueOf(primKey)%>"
+		var="permissionsEntryURL" />
+
+	<liferay-ui:icon image="permissions" url="<%=permissionsEntryURL%>" />
+
+	<portlet:renderURL var="viewSampleSBURL">
+		<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
+		<portlet:param name="<%=Constants.CMD%>"
+			value="<%=Constants.VIEW%>" />
+		<portlet:param name="redirect" value="<%=currentURL%>" />
+		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
+	</portlet:renderURL>
+	<liferay-ui:icon image="view" url="<%=viewSampleSBURL.toString()%>" />
 
 	<portlet:renderURL var="editSampleSBURL">
 		<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
-		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.EDIT %>" />
+		<portlet:param name="<%=Constants.CMD%>"
+			value="<%=Constants.EDIT%>" />
 		<portlet:param name="redirect" value="<%=currentURL%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:renderURL>
 	<liferay-ui:icon image="edit" url="<%=editSampleSBURL.toString()%>" />
 
 	<portlet:actionURL name="/samplesb/crud" var="deleteSampleSBURL">
-		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.DELETE %>" />
-		<portlet:param name="redirect" value="<%= currentURL %>" />
+		<portlet:param name="<%=Constants.CMD%>"
+			value="<%=Constants.DELETE%>" />
+		<portlet:param name="redirect" value="<%=currentURL%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
-	</portlet:actionURL>	
-    <liferay-ui:icon image="delete" url="<%=deleteSampleSBURL.toString()%>" />
-    
+	</portlet:actionURL>
+	<liferay-ui:icon image="delete" url="<%=deleteSampleSBURL.toString()%>" />
+
 </liferay-ui:icon-menu>
