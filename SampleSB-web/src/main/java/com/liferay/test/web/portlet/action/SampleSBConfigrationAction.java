@@ -56,10 +56,9 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 
 		int prefsViewType = ParamUtil.getInteger(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE);
 
-//		if (_log.isDebugEnabled()) {
-//			_log.debug("Prefs View Type:" + prefsViewType);
-//		}
-		_log.error("Prefs View Type:" + prefsViewType);
+		if (_log.isDebugEnabled()) {
+			_log.debug("Prefs View Type:" + prefsViewType);
+		}
 
 		setPreference(actionRequest, "prefsViewType", String.valueOf(prefsViewType));
 
@@ -70,10 +69,9 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 	public void include(PortletConfig portletConfig, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) throws Exception {
 
-//		if (_log.isDebugEnabled()) {
-//			_log.debug("SampleSB Portlet configuration include");
-//		}
-		_log.error("SampleSB Portlet configuration include");
+		if (_log.isDebugEnabled()) {
+			_log.debug("SampleSB Portlet configuration include");
+		}
 		
 		httpServletRequest.setAttribute(SampleSBConfiguration.class.getName(), _sampleSBConfiguration);
 
