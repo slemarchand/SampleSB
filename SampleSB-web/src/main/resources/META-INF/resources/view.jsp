@@ -6,6 +6,21 @@
     
     PagenationContext<?> pagenationContext = (PagenationContext<?>)request.getAttribute(PagenationWebKeys.PAGENATION_CONTEXT);
 %>
+
+
+<portlet:renderURL var="samplesbAddURL">
+	<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
+	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
+	<portlet:param name="redirect" value="<%= currentURL %>" />
+</portlet:renderURL>
+
+<div class="container-fluid-1280" >
+	<aui:button-row>
+		<aui:button href="<%= samplesbAddURL %>" cssClass="btn btn-default"
+			icon="icon-plus" value="add-samplesb" />
+	</aui:button-row>
+</div>
+	
 <aui:nav-bar cssClass="collapse-basic-search" markupView="lexicon">
 	<aui:form action="<%= portletURL.toString() %>" name="searchFm">
 		<aui:nav-bar-search>
@@ -29,11 +44,6 @@
 	</liferay-frontend:management-bar-action-buttons>
 </liferay-frontend:management-bar>
 
-<portlet:renderURL var="samplesbAddURL">
-	<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
-	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
-	<portlet:param name="redirect" value="<%= currentURL %>" />
-</portlet:renderURL>
 
 <div class="container-fluid-1280"
 	id="<portlet:namespace />formContainer">
@@ -47,10 +57,7 @@
 
 	<liferay-ui:error exception="<%= PortletException.class %>"
 		message="there-was-an-unexpected-error.-please-refresh-the-current-page" />
-	<aui:button-row>
-		<aui:button href="<%= samplesbAddURL %>" cssClass="btn btn-default"
-			icon="icon-plus" value="add-samplesb" />
-	</aui:button-row>
+
 
 	<liferay-ui:search-container deltaConfigurable="false"
 		delta='<%= pagenationContext.getRowsPerPage() %>'
