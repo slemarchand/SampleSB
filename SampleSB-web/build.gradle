@@ -19,7 +19,7 @@ repositories {
 		url "http://repository.codehaus.org"                                // Codehaus
 		url "http://download.java.net/maven/2"                              // Java.NET
 		url "http://download.java.net/maven/glassfish"                     // Glassfish
-		url "http://m2repo.spockframework.org/snapshots"                    // Spock スナップショット
+		url "http://m2repo.spockframework.org/snapshots"                    // Spock Snapshot
 		url "http://repository.sonatype.org/content/groups/public"
 		url "https://mvnrepository.com/artifact/com.sun/tools"
 	}
