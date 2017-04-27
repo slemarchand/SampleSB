@@ -6,12 +6,10 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
-import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -20,11 +18,9 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.social.kernel.service.SocialActivityLocalService;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
-import com.liferay.test.social.SampleSBActivityKeys;
 import com.liferay.trash.kernel.model.TrashEntry;
 import com.liferay.trash.kernel.service.TrashEntryLocalService;
 
@@ -76,26 +72,30 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 	public SampleSB addSampleSB(SampleSB validSampleSB, ServiceContext serviceContext) throws PortalException {
 
 		SampleSB retVal = _addSampleSB(validSampleSB, serviceContext);
-/*
-		// Resources
-		if (serviceContext.isAddGroupPermissions() || serviceContext.isAddGuestPermissions()) {
-
-			addEntryResources(retVal, serviceContext.isAddGroupPermissions(), serviceContext.isAddGuestPermissions());
-		} else {
-			addEntryResources(retVal, serviceContext.getGroupPermissions(), serviceContext.getGuestPermissions());
-		}
-
-		// Social
-		_socialActivityLocalService.addActivity(retVal.getUserId(), retVal.getGroupId(), SampleSB.class.getName(),
-				retVal.getPrimaryKey(), SampleSBActivityKeys.ADD_SAMPLESB, StringPool.BLANK, 0);
-
-		// Asset
-		updateAsset(retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(), serviceContext.getAssetTagNames(),
-				serviceContext.getAssetLinkEntryIds());
-
-		WorkflowHandlerRegistryUtil.startWorkflowInstance(validSampleSB.getCompanyId(), validSampleSB.getGroupId(),
-				validSampleSB.getUserId(), SampleSB.class.getName(), retVal.getPrimaryKey(), retVal, serviceContext);
-*/
+		/*
+		 * // Resources if (serviceContext.isAddGroupPermissions() ||
+		 * serviceContext.isAddGuestPermissions()) {
+		 * 
+		 * addEntryResources(retVal, serviceContext.isAddGroupPermissions(),
+		 * serviceContext.isAddGuestPermissions()); } else {
+		 * addEntryResources(retVal, serviceContext.getGroupPermissions(),
+		 * serviceContext.getGuestPermissions()); }
+		 * 
+		 * // Social _socialActivityLocalService.addActivity(retVal.getUserId(),
+		 * retVal.getGroupId(), SampleSB.class.getName(),
+		 * retVal.getPrimaryKey(), SampleSBActivityKeys.ADD_SAMPLESB,
+		 * StringPool.BLANK, 0);
+		 * 
+		 * // Asset updateAsset(retVal.getUserId(), retVal,
+		 * serviceContext.getAssetCategoryIds(),
+		 * serviceContext.getAssetTagNames(),
+		 * serviceContext.getAssetLinkEntryIds());
+		 * 
+		 * WorkflowHandlerRegistryUtil.startWorkflowInstance(validSampleSB.
+		 * getCompanyId(), validSampleSB.getGroupId(),
+		 * validSampleSB.getUserId(), SampleSB.class.getName(),
+		 * retVal.getPrimaryKey(), retVal, serviceContext);
+		 */
 		return retVal;
 	}
 
@@ -116,42 +116,46 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 
 	public void deleteSampleSBEntry(SampleSB fileobj) throws PortalException {
 		sampleSBPersistence.remove(fileobj.getPrimaryKey());
-/*
-		// Resources
-
-		resourceLocalService.deleteResource(fileobj.getCompanyId(), SampleSB.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL, fileobj.getPrimaryKey());
-
-		// Asset
-
-		assetEntryLocalService.deleteEntry(SampleSB.class.getName(), fileobj.getPrimaryKey());
-
-		// Remove DocumentFile dir
-		Long dlFolder = fileobj.getFolderDLId();
-
-		if (dlFolder != null && dlFolder != 0L) {
-			dlFolderPersistence.remove(dlFolder);
-		}
-
-		// Social
-
-		_socialActivityLocalService.deleteActivities(SampleSB.class.getName(), fileobj.getPrimaryKey());
-
-		// Trash
-
-		_trashEntryLocalService.deleteEntry(SampleSB.class.getName(), fileobj.getPrimaryKey());
-
-		// Indexer
-
-		Indexer<SampleSB> indexer = _indexerRegistry.nullSafeGetIndexer(SampleSB.class);
-
-		indexer.delete(fileobj);
-
-		// Workflow
-
-		workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(fileobj.getCompanyId(), fileobj.getGroupId(),
-				SampleSB.class.getName(), fileobj.getPrimaryKey());
-*/
+		/*
+		 * // Resources
+		 * 
+		 * resourceLocalService.deleteResource(fileobj.getCompanyId(),
+		 * SampleSB.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+		 * fileobj.getPrimaryKey());
+		 * 
+		 * // Asset
+		 * 
+		 * assetEntryLocalService.deleteEntry(SampleSB.class.getName(),
+		 * fileobj.getPrimaryKey());
+		 * 
+		 * // Remove DocumentFile dir Long dlFolder = fileobj.getFolderDLId();
+		 * 
+		 * if (dlFolder != null && dlFolder != 0L) {
+		 * dlFolderPersistence.remove(dlFolder); }
+		 * 
+		 * // Social
+		 * 
+		 * _socialActivityLocalService.deleteActivities(SampleSB.class.getName()
+		 * , fileobj.getPrimaryKey());
+		 * 
+		 * // Trash
+		 * 
+		 * _trashEntryLocalService.deleteEntry(SampleSB.class.getName(),
+		 * fileobj.getPrimaryKey());
+		 * 
+		 * // Indexer
+		 * 
+		 * Indexer<SampleSB> indexer =
+		 * _indexerRegistry.nullSafeGetIndexer(SampleSB.class);
+		 * 
+		 * indexer.delete(fileobj);
+		 * 
+		 * // Workflow
+		 * 
+		 * workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(fileobj.
+		 * getCompanyId(), fileobj.getGroupId(), SampleSB.class.getName(),
+		 * fileobj.getPrimaryKey());
+		 */
 	}
 
 	public List<SampleSB> findAllInGroup(long groupId) {
@@ -514,7 +518,21 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 
 		fileobj.setUuid(serviceContext.getUuid());
 		fileobj.setUrlTitle(_getUniqueURLTitle(fileobj));
+//    	fileobj.setSampleSBassetTitleFieldName(validSampleSB.getSampleSBassetTitleFieldName());
+//    	fileobj.setSampleSBassetSummaryFieldName(validSampleSB.getSampleSBassetSummaryFieldName());
+    	
 		fileobj.setTitle(validSampleSB.getTitle());
+		fileobj.setStartDate(validSampleSB.getStartDate());
+		fileobj.setEndDate(validSampleSB.getEndDate());
+		fileobj.setSamplesbBooleanStat(validSampleSB.getSamplesbBooleanStat());
+		fileobj.setSamplesbDateTime(validSampleSB.getSamplesbDateTime());
+		fileobj.setSamplesbDocument(validSampleSB.getSamplesbDocument());
+		fileobj.setFolderDLId(validSampleSB.getFolderDLId());
+		fileobj.setSamplesbDocumentLibrary(validSampleSB.getSamplesbDocumentLibrary());
+		fileobj.setSamplesbDouble(validSampleSB.getSamplesbDouble());
+		fileobj.setSamplesbInteger(validSampleSB.getSamplesbInteger());
+		fileobj.setSamplesbRichText(validSampleSB.getSamplesbRichText());
+		fileobj.setSamplesbText(validSampleSB.getSamplesbText());	
 		fileobj.setFolderDLId(validSampleSB.getFolderDLId());
 
 		return sampleSBPersistence.update(fileobj);

@@ -1,5 +1,10 @@
 <%@ include file="/init.jsp"%>
 <%
+	String iconChecked = "checked";
+	String iconUnchecked = "unchecked";
+ 	SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatVal);
+	SimpleDateFormat dateTimeFormat = new SimpleDateFormat(datetimeFormatVal);
+
 	PortletURL navigationPortletURL = renderResponse.createRenderURL();
 	PortletURL portletURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
 
@@ -94,8 +99,74 @@
 				<liferay-ui:search-container-column-text name="SampleSB Id"
 					property="samplesbId" align="left" />
 
-				<liferay-ui:search-container-column-text name="Title"
-					property="title" align="left" />
+				<liferay-ui:search-container-column-text
+					name="Title"
+				    property="title"
+					orderable="true"
+					orderableProperty="title"
+					align="left"
+				/>
+					
+ 				<liferay-ui:search-container-column-text
+					name="Start Date"
+					value="<%= dateFormat.format(sampleSB.getStartDate()) %>"
+					orderable="true"
+					orderableProperty="startDate"
+					align="left"
+				/> 
+				
+<%-- 				<liferay-ui:search-container-column-text
+					name="End Date"
+					value="<%= dateFormat.format(sampleSB.getEndDate()) %>"
+					orderable="true"
+					orderableProperty="endDate"
+					align="left"
+				/>	 --%>
+				
+				<liferay-ui:search-container-column-text name="SamplesbBoolean Stat"
+					property="samplesbBooleanStat" align="left" />		
+		
+<%-- 				<liferay-ui:search-container-column-text
+					name="Samplesb DateTime"
+					value="<%= dateTimeFormat.format(sampleSB.getSamplesbDateTime()) %>"
+					orderable="true"
+					orderableProperty="samplesbDateTime"
+					align="left"
+				/> --%>
+									
+				<liferay-ui:search-container-column-text
+					name="SampleSB Double"
+				    property="samplesbDouble"
+					align="left"
+				/>		
+				
+				<liferay-ui:search-container-column-text
+					name="SampleSB Ingeger"
+				    property="samplesbInteger"
+					align="left"
+				/>		
+				
+				<liferay-ui:search-container-column-text name="SampleSB richtext" align="center">
+					<%
+		 				String samplesbRichTextIcon = iconUnchecked;
+						String samplesbRichText = sampleSB.getSamplesbRichText();
+						if (!samplesbRichText.equals("")) {
+							samplesbRichTextIcon= iconChecked;
+		 				}
+		 			  %>
+		 			  <liferay-ui:icon image="<%= samplesbRichTextIcon %>"/>
+				</liferay-ui:search-container-column-text>	
+				
+				<liferay-ui:search-container-column-text name="SampleSB richtext" align="center">
+					<%
+		 				String samplesbTextIcon = iconUnchecked;
+						String samplesbText = sampleSB.getSamplesbText();
+						if (!samplesbText.equals("")) {
+							samplesbTextIcon= iconChecked;
+		 				}
+		 			  %>
+		 			  <liferay-ui:icon image="<%= samplesbTextIcon %>"/>
+				</liferay-ui:search-container-column-text>																	
 
 				<liferay-ui:search-container-column-jsp align="right"
 					path="/edit_actions.jsp" />

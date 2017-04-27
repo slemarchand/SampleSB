@@ -15,7 +15,7 @@
 	method="post">
 	<aui:model-context bean="<%= sampleSB %>" model="<%= SampleSB.class %>" />
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= CMD %>" />
-	<aui:input type="hidden" name="samplesbId"
+	<aui:input type="hidden" name="resourcePrimKey"
 		value="<%=sampleSB.getPrimaryKey() %>" />
 
 	<aui:fieldset>

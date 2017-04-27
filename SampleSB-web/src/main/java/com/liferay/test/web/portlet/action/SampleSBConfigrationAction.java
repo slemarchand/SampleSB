@@ -1,12 +1,16 @@
 package com.liferay.test.web.portlet.action;
 
+import com.google.common.collect.Lists;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.test.web.constants.SampleSBWebPortletKeys;
+import com.liferay.test.web.util.SampleSBValidator;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -54,17 +58,29 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 	public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
 			throws Exception {
 
-		int prefsViewType = ParamUtil.getInteger(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE);
+		int prefsViewType = ParamUtil.getInteger(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
+				Integer.valueOf(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT));
+		String dateFormat = ParamUtil.getString(actionRequest, SampleSBConfiguration.CONF_DATE_FORMAT);
+		String datetimeFormat = ParamUtil.getString(actionRequest, SampleSBConfiguration.CONF_DATETIME_FORMAT);
 
 		if (_log.isDebugEnabled()) {
-			_log.debug("Prefs View Type:" + prefsViewType);
+			_log.debug("Prefs View Type :" + prefsViewType);
+			_log.debug("Date Format     :" + dateFormat);
+			_log.debug("Date Time Format:" + datetimeFormat);
 		}
 
-		setPreference(actionRequest, "prefsViewType", String.valueOf(prefsViewType));
+		List<String> errors = Lists.newArrayList();
+		if (SampleSBValidator.validateEditSampleSB(dateFormat, datetimeFormat, errors)) {
+			setPreference(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE, String.valueOf(prefsViewType));
+			setPreference(actionRequest, SampleSBConfiguration.CONF_DATE_FORMAT, dateFormat);
+			setPreference(actionRequest, SampleSBConfiguration.CONF_DATETIME_FORMAT, datetimeFormat);
+
+			SessionMessages.add(actionRequest, "prefs-success");
+		}
 
 		super.processAction(portletConfig, actionRequest, actionResponse);
 	}
-	
+
 	@Override
 	public void include(PortletConfig portletConfig, HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse) throws Exception {
@@ -72,7 +88,7 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 		if (_log.isDebugEnabled()) {
 			_log.debug("SampleSB Portlet configuration include");
 		}
-		
+
 		httpServletRequest.setAttribute(SampleSBConfiguration.class.getName(), _sampleSBConfiguration);
 
 		super.include(portletConfig, httpServletRequest, httpServletResponse);

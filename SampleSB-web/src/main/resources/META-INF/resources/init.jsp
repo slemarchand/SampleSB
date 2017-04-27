@@ -30,6 +30,11 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainerResults" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@ page import="javax.portlet.PortletPreferences" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
 
 <%@ page import="javax.portlet.PortletURL" %>
 <%@ page import="javax.portlet.WindowState" %>
@@ -59,12 +64,24 @@ SampleSBConfiguration sampleSBConfiguration =
         renderRequest.getAttribute(SampleSBConfiguration.class.getName());
 
     String prefsViewType = StringPool.BLANK;
+    String dateFormatVal = StringPool.BLANK;
+    String datetimeFormatVal = StringPool.BLANK;
     
     if (Validator.isNotNull(sampleSBConfiguration)) {
         prefsViewType =
             HtmlUtil.escape(
             portletPreferences.getValue(
                 "prefsViewType", String.valueOf(sampleSBConfiguration.prefsViewType())));
+
+        dateFormatVal =
+                HtmlUtil.escape(
+                portletPreferences.getValue(
+                    "dateFormat", sampleSBConfiguration.dateFormat()));
+        
+        datetimeFormatVal =
+                HtmlUtil.escape(
+                portletPreferences.getValue(
+                    "datetimeFormat", sampleSBConfiguration.datetimeFormat()));        
     }
 
 %>

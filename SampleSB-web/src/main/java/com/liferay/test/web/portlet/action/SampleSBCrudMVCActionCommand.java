@@ -1,5 +1,6 @@
 package com.liferay.test.web.portlet.action;
 
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -9,11 +10,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
 import com.liferay.test.web.constants.SampleSBWebPortletKeys;
@@ -83,53 +82,6 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
     }
 
     /**
-     * Populate Model with values from a form
-     *
-     * @param request
-     * @return SampleSB Object
-     */
-    private SampleSB SampleSBFromRequest(ActionRequest request) throws Exception {
-        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-
-        long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
-        
-        // Create or fetch existing data
-        SampleSB sampleSB = ActionUtil.getRecord(primaryKey, false);
-
-        sampleSB.setTitle(ParamUtil.getString(request, "title"));
-
-        // TODO : this need to refer SampleSBFromRequest of original in the
-        // template.
-        // int SampleSBdateAmPm = ParamUtil.getInteger(request,
-        // "SampleSBdateAmPm");
-        // int SampleSBdateHour = ParamUtil.getInteger(request,
-        // "SampleSBdateHour");
-        // DateTimeFormatter fSampleSBdate =
-        // DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        // LocalDateTime SampleSBdate = LocalDateTime.of(
-        // ParamUtil.getInteger(request, "SampleSBdateYear"),
-        // ParamUtil.getInteger(request, "SampleSBdateMonth") + 1,
-        // ParamUtil.getInteger(request, "SampleSBdateDay"),
-        // (SampleSBdateAmPm == Calendar.PM) ? SampleSBdateHour + 12 :
-        // SampleSBdateHour,
-        // ParamUtil.getInteger(request, "SampleSBdateMinute"),
-        // 0);
-        //
-        // sampleSB.setSamplesbDateTime(Date.from(SampleSBdate.atZone(ZoneId.systemDefault()).toInstant()));
-        //
-        // sampleSB.setSamplesbInteger(ParamUtil.getInteger(request,
-        // "SamplesbInteger"));
-        // sampleSB.setSamplesbDouble(ParamUtil.getDouble(request,
-        // "SamplesbDouble"));
-
-        sampleSB.setCompanyId(themeDisplay.getCompanyId());
-        sampleSB.setGroupId(themeDisplay.getScopeGroupId());
-        sampleSB.setUserId(themeDisplay.getUserId());
-
-        return sampleSB;
-    }
-
-    /**
      * Add SampleSB
      *
      * @param request
@@ -142,7 +94,13 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
         // uploadManager = new SampleSBUpload();
         // request = extractFields(request, false);
         // }
-        SampleSB sampleSB = SampleSBFromRequest(request);
+    	long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
+    	
+    	if( primaryKey <= 0 ) {
+    		primaryKey = _counterLocalService.increment();
+    	}
+    	
+        SampleSB sampleSB = ActionUtil.SampleSBFromRequest(primaryKey, request);
         // ThemeDisplay themeDisplay = (ThemeDisplay)
         // request.getAttribute(WebKeys.THEME_DISPLAY);
         // PermissionChecker permissionChecker =
@@ -189,7 +147,9 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
         // uploadManager = new SampleSBUpload();
         // request = extractFields(request, true);
         // }
-        SampleSB sampleSB = SampleSBFromRequest(request);
+    	long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
+    	
+        SampleSB sampleSB = ActionUtil.SampleSBFromRequest(primaryKey,request);
         // ThemeDisplay themeDisplay = (ThemeDisplay)
         // request.getAttribute(WebKeys.THEME_DISPLAY);
         // PermissionChecker permissionChecker =
@@ -230,8 +190,14 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
     protected void setSampleSBLocalService(SampleSBLocalService samplesblocalservice) {
         _samplesblocalservice = samplesblocalservice;
     }
+    
+    @Reference(unbind = "-")
+    protected void setCounterLocalService(CounterLocalService counterLocalService) {
+    	_counterLocalService = counterLocalService;
+    }
 
     private SampleSBLocalService _samplesblocalservice;
+    private CounterLocalService _counterLocalService;
 
     private static Log _log = LogFactoryUtil.getLog(SampleSBCrudMVCActionCommand.class);
 }

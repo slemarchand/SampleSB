@@ -15,6 +15,8 @@ var="configurationRenderURL" />
 				<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
 				<aui:fieldset>
+					<aui:input type="text" name="dateFormat" value="<%= dateFormatVal %>" size="45" required="<%= true %>" />
+					<aui:input type="text" name="datetimeFormat" value="<%= datetimeFormatVal %>" size="45" required="<%= true %>" />
 					<aui:select name="prefsViewType"> 
 						<aui:option value="0" selected="<%= (prefsViewType.equals("0")) %>" label="<%= LanguageUtil.get(resourceBundle, "prefs-view-type-default") %>" />
 						<aui:option value="1" selected="<%= (prefsViewType.equals("1")) %>" label="<%= LanguageUtil.get(resourceBundle, "prefs-view-type-user") %>" />
