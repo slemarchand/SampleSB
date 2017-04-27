@@ -37,7 +37,7 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
 		try {
-			if (cmd.equalsIgnoreCase(Constants.EDIT)) {
+			if (cmd.equalsIgnoreCase(Constants.UPDATE)) {
 				// if (!SampleSBEntryPermission.contains(
 				// permissionChecker, sampleSB, ActionKeys.UPDATE)) {
 				// SessionErrors.add(renderRequest, "permission-error");

@@ -176,13 +176,12 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
 
             } catch (Exception cvex) {
                 SessionErrors.add(request, "please-enter-a-unique-code");
-                request.setAttribute("sampleSB", sampleSB);
             }
         } else {
             for (String error : errors) {
                 SessionErrors.add(request, error);
             }
-            PortalUtil.copyRequestParameters(request, response);
+            request.setAttribute("sampleSB", sampleSB);
         }
     }
 

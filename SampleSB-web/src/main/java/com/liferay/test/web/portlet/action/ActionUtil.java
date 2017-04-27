@@ -5,7 +5,6 @@ import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.dao.search.SearchContainerResults;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -30,7 +29,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
@@ -212,7 +210,7 @@ public class ActionUtil {
 	/**
 	 * Populate Model with values from a form
 	 *
-	 * @param request
+	 * @param request PortletRequest
 	 * @return SampleSB Object
 	 * @throws PortletException 
 	 */
@@ -220,8 +218,14 @@ public class ActionUtil {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
 		
 		// Create or fetch existing data
-		SampleSB sampleSB = ActionUtil.getNewObject(primaryKey);
+		SampleSB sampleSB;
+		if (primaryKey <= 0) {
+			sampleSB = ActionUtil.getNewObject(primaryKey);
+		} else {
+			sampleSB = SampleSBLocalServiceUtil.fetchSampleSB(primaryKey);
+		}
 
+		sampleSB.setSamplesbId(primaryKey);
 		sampleSB.setTitle(ParamUtil.getString(request, "title"));
 		sampleSB.setStartDate(ActionUtil.getDateTimeFromRequest(request, "startDate"));
 		sampleSB.setEndDate(ActionUtil.getDateTimeFromRequest(request, "endDate"));
@@ -256,6 +260,7 @@ public class ActionUtil {
 		// Create or fetch existing data
 		SampleSB sampleSB = ActionUtil.getNewObject(primaryKey);
 
+		sampleSB.setSamplesbId(primaryKey);
 		sampleSB.setTitle("");
 		sampleSB.setStartDate(new Date());
 		sampleSB.setEndDate(new Date());

@@ -64,7 +64,7 @@
 			label='<%= LanguageUtil.get(request, "samplesb-samplesbtext") + requiredLabel %>' />
 
 		<aui:button-row>
-			<aui:button cssClass="btn-lg" type="submit" value="add" />
+			<aui:button cssClass="btn-lg" type="submit" value="<%= (CMD.equalsIgnoreCase(Constants.UPDATE) ? "Update" : "Add") %>" />
             &nbsp;&nbsp;&minus; or &minus;&nbsp;&nbsp;
             <aui:a href="<%= redirect %>">
 				<liferay-ui:message key="cancel" />

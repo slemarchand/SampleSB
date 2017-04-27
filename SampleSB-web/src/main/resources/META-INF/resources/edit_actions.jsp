@@ -1,6 +1,9 @@
 <%@include file="/init.jsp"%>
 
 <%
+	PortletURL navigationPortletURL = renderResponse.createRenderURL();
+	PortletURL portletURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
+	
 	ResultRow row = (ResultRow) request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 	SampleSB sampleSB = (SampleSB) row.getObject();
 
@@ -25,7 +28,7 @@
 		<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
 		<portlet:param name="<%=Constants.CMD%>"
 			value="<%=Constants.VIEW%>" />
-		<portlet:param name="redirect" value="<%=currentURL%>" />
+		<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:renderURL>
 	<liferay-ui:icon image="view" url="<%=viewSampleSBURL.toString()%>" />
@@ -33,8 +36,8 @@
 	<portlet:renderURL var="editSampleSBURL">
 		<portlet:param name="mvcRenderCommandName" value="/samplesb/crud" />
 		<portlet:param name="<%=Constants.CMD%>"
-			value="<%=Constants.EDIT%>" />
-		<portlet:param name="redirect" value="<%=currentURL%>" />
+			value="<%=Constants.UPDATE%>" />
+		<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:renderURL>
 	<liferay-ui:icon image="edit" url="<%=editSampleSBURL.toString()%>" />
@@ -42,7 +45,7 @@
 	<portlet:actionURL name="/samplesb/crud" var="deleteSampleSBURL">
 		<portlet:param name="<%=Constants.CMD%>"
 			value="<%=Constants.DELETE%>" />
-		<portlet:param name="redirect" value="<%=currentURL%>" />
+		<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:actionURL>
 	<liferay-ui:icon image="delete" url="<%=deleteSampleSBURL.toString()%>" />

@@ -115,24 +115,24 @@
 					align="left"
 				/> 
 				
-<%-- 				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-text
 					name="End Date"
 					value="<%= dateFormat.format(sampleSB.getEndDate()) %>"
 					orderable="true"
 					orderableProperty="endDate"
 					align="left"
-				/>	 --%>
+				/>
 				
 				<liferay-ui:search-container-column-text name="SamplesbBoolean Stat"
 					property="samplesbBooleanStat" align="left" />		
 		
-<%-- 				<liferay-ui:search-container-column-text
+				<liferay-ui:search-container-column-text
 					name="Samplesb DateTime"
 					value="<%= dateTimeFormat.format(sampleSB.getSamplesbDateTime()) %>"
 					orderable="true"
 					orderableProperty="samplesbDateTime"
 					align="left"
-				/> --%>
+				/>
 									
 				<liferay-ui:search-container-column-text
 					name="SampleSB Double"
