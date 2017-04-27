@@ -1,4 +1,5 @@
 <%@ include file="/init.jsp"%>
+<% boolean fromAsset = (request.getAttribute("fromAsset") !=null ? (Boolean) request.getAttribute("fromAsset"): false); %>
 
 <%
     String CMD = ParamUtil.getString(request, Constants.CMD, Constants.UPDATE);
@@ -64,12 +65,22 @@
 			label='<%= LanguageUtil.get(request, "samplesb-samplesbtext") + requiredLabel %>' />
 
 		<aui:button-row>
-			<aui:button cssClass="btn-lg" type="submit" value="<%= (CMD.equalsIgnoreCase(Constants.UPDATE) ? "Update" : "Add") %>" />
-            &nbsp;&nbsp;&minus; or &minus;&nbsp;&nbsp;
-            <aui:a href="<%= redirect %>">
-				<liferay-ui:message key="cancel" />
-			</aui:a>
+			<% String publishButtonLabel = "submit"; %>
+
+
+			<%  if (WorkflowDefinitionLinkLocalServiceUtil.hasWorkflowDefinitionLink(themeDisplay.getCompanyId(), scopeGroupId, SampleSB.class.getName())) {
+        publishButtonLabel = "submit-for-publication";
+    }%>
+			<aui:button
+				cssClass="btn-lg"
+				onClick="<%=renderResponse.getNamespace()+\"saveEditors()\"%>"
+				value="<%=publishButtonLabel %>" />
+				&nbsp;&nbsp;&minus; or &minus;&nbsp;&nbsp;
+			<% if (!fromAsset) { %>
+			<aui:button onClick="<%= redirect %>" type="cancel" />
+			<% } %>
 		</aui:button-row>
+
 	</aui:fieldset>
 </aui:form>
 

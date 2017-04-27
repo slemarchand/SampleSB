@@ -30,6 +30,7 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainerResults" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
+<%@ page import="com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil"%>
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.ArrayList" %>

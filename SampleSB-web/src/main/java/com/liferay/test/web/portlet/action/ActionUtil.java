@@ -43,35 +43,6 @@ public class ActionUtil {
 	 *
 	 * @param primaryKey
 	 *            Primary key
-	 * @param idReset
-	 *            true to reset primary key to 0
-	 * @return SampleSB object
-	 * @throws Exception
-	 */
-//	public static SampleSB getRecord(long primaryKey, boolean idReset) throws PortletException {
-//
-//		SampleSB record = null;
-//
-//		if (primaryKey > 0) {
-//			// A recode has existed
-//			try {
-//				record = SampleSBLocalServiceUtil.getSampleSB(primaryKey);
-//			} catch (PortalException e) {
-//				throw new PortletException(e.getMessage());
-//			}
-//		} else {
-//			// A recode doesn't exist
-//			primaryKey = (true == idReset) ? 0 : CounterLocalServiceUtil.increment();
-//			record = SampleSBLocalServiceUtil.createSampleSB(primaryKey);
-//		}
-//		return record;
-//	}
-
-	/**
-	 * Get Record
-	 *
-	 * @param primaryKey
-	 *            Primary key
 	 * @return SampleSB object
 	 * @throws PortletException 
 	 */
