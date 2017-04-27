@@ -96,10 +96,6 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
         // }
     	long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
     	
-    	if( primaryKey <= 0 ) {
-    		primaryKey = _counterLocalService.increment();
-    	}
-    	
         SampleSB sampleSB = ActionUtil.SampleSBFromRequest(primaryKey, request);
         // ThemeDisplay themeDisplay = (ThemeDisplay)
         // request.getAttribute(WebKeys.THEME_DISPLAY);

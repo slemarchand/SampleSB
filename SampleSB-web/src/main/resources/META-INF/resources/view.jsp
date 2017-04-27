@@ -2,8 +2,9 @@
 <%
 	String iconChecked = "checked";
 	String iconUnchecked = "unchecked";
- 	SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatVal);
-	SimpleDateFormat dateTimeFormat = new SimpleDateFormat(datetimeFormatVal);
+	PortletPreferences prefs = renderRequest.getPreferences();
+ 	SimpleDateFormat dateFormat = new SimpleDateFormat(prefs.getValue("dateFormat", "yyyy/MM/dd"));
+	SimpleDateFormat dateTimeFormat = new SimpleDateFormat(prefs.getValue("datetimeFormat","yyyy/MM/dd HH:mm"));
 
 	PortletURL navigationPortletURL = renderResponse.createRenderURL();
 	PortletURL portletURL = PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse);
