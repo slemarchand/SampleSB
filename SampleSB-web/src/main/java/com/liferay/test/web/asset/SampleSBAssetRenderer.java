@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.trash.TrashRenderer;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.test.model.SampleSB;
+import com.liferay.test.service.permission.SampleSBEntryPermission;
 
 import java.util.Locale;
 
@@ -109,6 +110,23 @@ public class SampleSBAssetRenderer extends BaseJSPAssetRenderer<SampleSB> implem
 		return _entry.getUuid();
 	}
 
+	public boolean hasDeletePermission(PermissionChecker permissionChecker) {
+		return SampleSBEntryPermission.contains(
+			permissionChecker, _entry, ActionKeys.DELETE);
+	}
+
+	@Override
+	public boolean hasEditPermission(PermissionChecker permissionChecker) {
+		return SampleSBEntryPermission.contains(
+			permissionChecker, _entry, ActionKeys.UPDATE);
+	}
+
+	@Override
+	public boolean hasViewPermission(PermissionChecker permissionChecker) {
+		return SampleSBEntryPermission.contains(
+			permissionChecker, _entry, ActionKeys.VIEW);
+	}
+	
 	private SampleSB _entry;
 
 }

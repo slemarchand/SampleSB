@@ -7,5 +7,3 @@ Export-Package:\
 	com.liferay.test.service,\
 	com.liferay.test.service.persistence
 -includeresource: META-INF/service.xml=../SampleSB-service/service.xml
-Liferay-Releng-Module-Group-Description:
-Liferay-Releng-Module-Group-Title: SampleSB

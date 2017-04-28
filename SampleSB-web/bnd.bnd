@@ -23,5 +23,3 @@ Bundle-ClassPath:\
 	lib/commons-lang3.jar=commons-lang[0-9]*.jar
 	
 -metatype: *
-Liferay-Releng-Module-Group-Description:
-Liferay-Releng-Module-Group-Title: SampleSB

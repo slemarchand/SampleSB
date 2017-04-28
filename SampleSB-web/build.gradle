@@ -43,4 +43,5 @@ dependencies {
 	compile group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
 
 	compileOnly project(":SampleSB-api")
+	compileOnly project(":SampleSB-service")
 }

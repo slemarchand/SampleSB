@@ -1,6 +1,5 @@
 package com.liferay.test.web.portlet.action;
 
-import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -186,13 +185,7 @@ public class SampleSBCrudMVCActionCommand extends BaseMVCActionCommand {
         _samplesblocalservice = samplesblocalservice;
     }
     
-    @Reference(unbind = "-")
-    protected void setCounterLocalService(CounterLocalService counterLocalService) {
-    	_counterLocalService = counterLocalService;
-    }
-
     private SampleSBLocalService _samplesblocalservice;
-    private CounterLocalService _counterLocalService;
 
     private static Log _log = LogFactoryUtil.getLog(SampleSBCrudMVCActionCommand.class);
 }
