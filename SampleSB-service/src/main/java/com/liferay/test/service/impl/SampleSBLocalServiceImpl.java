@@ -2,16 +2,24 @@ package com.liferay.test.service.impl;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetLinkConstants;
+import com.liferay.portal.kernel.comment.CommentManagerUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -20,164 +28,232 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
+import com.liferay.social.kernel.model.SocialActivityConstants;
 import com.liferay.social.kernel.service.SocialActivityLocalService;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
+import com.liferay.test.social.SampleSBActivityKeys;
+import com.liferay.trash.kernel.exception.RestoreEntryException;
+import com.liferay.trash.kernel.exception.TrashEntryException;
 import com.liferay.trash.kernel.model.TrashEntry;
-import com.liferay.trash.kernel.service.TrashEntryLocalService;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import aQute.bnd.annotation.ProviderType;
 import aQute.bnd.annotation.component.Reference;
 
 /**
- * @author Jack A. Rider
- * @author Juan Gonzalez P.
  * @author Yasuyuki Takeo
  */
 @ProviderType
-public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
+public class SampleSBLocalServiceImpl
+	extends SampleSBLocalServiceBaseImpl {
 
-	public void addEntryResources(long entryId, boolean addGroupPermissions, boolean addGuestPermissions)
-			throws PortalException {
+	@Override
+	public void addEntryResources(
+		long entryId, boolean addGroupPermissions, boolean addGuestPermissions)
+		throws PortalException {
 
 		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
 
 		addEntryResources(entry, addGroupPermissions, addGuestPermissions);
 	}
 
-	public void addEntryResources(long entryId, String[] groupPermissions, String[] guestPermissions)
-			throws PortalException {
+	@Override
+	public void addEntryResources(
+		long entryId, String[] groupPermissions, String[] guestPermissions)
+		throws PortalException {
 
 		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
 
 		addEntryResources(entry, groupPermissions, guestPermissions);
 	}
 
-	public void addEntryResources(SampleSB entry, boolean addGroupPermissions, boolean addGuestPermissions)
-			throws PortalException {
+	@Override
+	public void addEntryResources(
+		SampleSB entry, boolean addGroupPermissions,
+		boolean addGuestPermissions) throws PortalException {
 
-		resourceLocalService.addResources(entry.getCompanyId(), entry.getGroupId(), entry.getUserId(),
-				SampleSB.class.getName(), entry.getPrimaryKey(), false, addGroupPermissions, addGuestPermissions);
+		resourceLocalService.addResources(entry.getCompanyId(),
+			entry.getGroupId(), entry.getUserId(), SampleSB.class.getName(),
+			entry.getPrimaryKey(), false, addGroupPermissions,
+			addGuestPermissions);
 	}
 
-	public void addEntryResources(SampleSB entry, String[] groupPermissions, String[] guestPermissions)
-			throws PortalException {
+	@Override
+	public void addEntryResources(
+		SampleSB entry, ModelPermissions modelPermissions)
+		throws PortalException {
 
-		resourceLocalService.addModelResources(entry.getCompanyId(), entry.getGroupId(), entry.getUserId(),
-				SampleSB.class.getName(), entry.getPrimaryKey(), groupPermissions, guestPermissions);
+		resourceLocalService.addModelResources(entry.getCompanyId(),
+			entry.getGroupId(), entry.getUserId(), SampleSB.class.getName(),
+			entry.getPrimaryKey(), modelPermissions);
 	}
 
-	public SampleSB addSampleSB(SampleSB validSampleSB, ServiceContext serviceContext) throws PortalException {
+	@Override
+	public void addEntryResources(
+		SampleSB entry, String[] groupPermissions, String[] guestPermissions)
+		throws PortalException {
 
-		SampleSB retVal = _addSampleSB(validSampleSB, serviceContext);
-		/*
-		 * // Resources if (serviceContext.isAddGroupPermissions() ||
-		 * serviceContext.isAddGuestPermissions()) {
-		 * 
-		 * addEntryResources(retVal, serviceContext.isAddGroupPermissions(),
-		 * serviceContext.isAddGuestPermissions()); } else {
-		 * addEntryResources(retVal, serviceContext.getGroupPermissions(),
-		 * serviceContext.getGuestPermissions()); }
-		 * 
-		 * // Social _socialActivityLocalService.addActivity(retVal.getUserId(),
-		 * retVal.getGroupId(), SampleSB.class.getName(),
-		 * retVal.getPrimaryKey(), SampleSBActivityKeys.ADD_SAMPLESB,
-		 * StringPool.BLANK, 0);
-		 * 
-		 * // Asset updateAsset(retVal.getUserId(), retVal,
-		 * serviceContext.getAssetCategoryIds(),
-		 * serviceContext.getAssetTagNames(),
-		 * serviceContext.getAssetLinkEntryIds());
-		 * 
-		 * WorkflowHandlerRegistryUtil.startWorkflowInstance(validSampleSB.
-		 * getCompanyId(), validSampleSB.getGroupId(),
-		 * validSampleSB.getUserId(), SampleSB.class.getName(),
-		 * retVal.getPrimaryKey(), retVal, serviceContext);
-		 */
-		return retVal;
+		resourceLocalService.addModelResources(entry.getCompanyId(),
+			entry.getGroupId(), entry.getUserId(), SampleSB.class.getName(),
+			entry.getPrimaryKey(), groupPermissions, guestPermissions);
+	}
+
+	@Indexable(
+		type = IndexableType.REINDEX)
+	@Override
+	public
+		SampleSB addSampleSB(SampleSB orgEntry, ServiceContext serviceContext)
+			throws PortalException {
+
+		long userId = serviceContext.getUserId();
+
+		SampleSB entry = _addSampleSB(orgEntry, serviceContext);
+
+		// Resources
+
+		if (serviceContext.isAddGroupPermissions()
+				|| serviceContext.isAddGuestPermissions()) {
+
+			addEntryResources(entry, serviceContext.isAddGroupPermissions(),
+				serviceContext.isAddGuestPermissions());
+		} else {
+			addEntryResources(entry, serviceContext.getModelPermissions());
+		}
+
+		// Asset
+
+		updateAsset(userId, entry, serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority());
+
+		// Workflow
+
+		return startWorkflowInstance(userId, entry, serviceContext);
+	}
+
+	protected SampleSB startWorkflowInstance(
+		long userId, SampleSB entry, ServiceContext serviceContext)
+		throws PortalException {
+
+		Map<String, Serializable> workflowContext = new HashMap<>();
+
+		String userPortraitURL = StringPool.BLANK;
+		String userURL = StringPool.BLANK;
+
+		if (serviceContext.getThemeDisplay() != null) {
+			User user = userPersistence.findByPrimaryKey(userId);
+
+			userPortraitURL = user
+				.getPortraitURL(serviceContext.getThemeDisplay());
+			userURL = user.getDisplayURL(serviceContext.getThemeDisplay());
+		}
+
+		workflowContext.put(WorkflowConstants.CONTEXT_USER_PORTRAIT_URL,
+			userPortraitURL);
+		workflowContext.put(WorkflowConstants.CONTEXT_USER_URL, userURL);
+
+		return WorkflowHandlerRegistryUtil.startWorkflowInstance(
+			entry.getCompanyId(), entry.getGroupId(), userId,
+			SampleSB.class.getName(), entry.getPrimaryKey(), entry,
+			serviceContext, workflowContext);
 	}
 
 	public int countAllInGroup(long groupId) {
-		int count = sampleSBPersistence.countByG_S(groupId, WorkflowConstants.STATUS_APPROVED);
+		int count = sampleSBPersistence.countByG_S(groupId,
+			WorkflowConstants.STATUS_APPROVED);
 		return count;
 	}
 
 	public int countAllInUser(long userId) {
-		int count = sampleSBPersistence.countByU_S(userId, WorkflowConstants.STATUS_APPROVED);
+		int count = sampleSBPersistence.countByU_S(userId,
+			WorkflowConstants.STATUS_APPROVED);
 		return count;
 	}
 
 	public int countAllInUserAndGroup(long userId, long groupId) {
-		int count = sampleSBPersistence.countByG_U_S(groupId, userId, WorkflowConstants.STATUS_APPROVED);
+		int count = sampleSBPersistence.countByG_U_S(groupId, userId,
+			WorkflowConstants.STATUS_APPROVED);
 		return count;
 	}
 
-	public void deleteSampleSBEntry(SampleSB fileobj) throws PortalException {
-		sampleSBPersistence.remove(fileobj.getPrimaryKey());
-		/*
-		 * // Resources
-		 * 
-		 * resourceLocalService.deleteResource(fileobj.getCompanyId(),
-		 * SampleSB.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-		 * fileobj.getPrimaryKey());
-		 * 
-		 * // Asset
-		 * 
-		 * assetEntryLocalService.deleteEntry(SampleSB.class.getName(),
-		 * fileobj.getPrimaryKey());
-		 * 
-		 * // Remove DocumentFile dir Long dlFolder = fileobj.getFolderDLId();
-		 * 
-		 * if (dlFolder != null && dlFolder != 0L) {
-		 * dlFolderPersistence.remove(dlFolder); }
-		 * 
-		 * // Social
-		 * 
-		 * _socialActivityLocalService.deleteActivities(SampleSB.class.getName()
-		 * , fileobj.getPrimaryKey());
-		 * 
-		 * // Trash
-		 * 
-		 * _trashEntryLocalService.deleteEntry(SampleSB.class.getName(),
-		 * fileobj.getPrimaryKey());
-		 * 
-		 * // Indexer
-		 * 
-		 * Indexer<SampleSB> indexer =
-		 * _indexerRegistry.nullSafeGetIndexer(SampleSB.class);
-		 * 
-		 * indexer.delete(fileobj);
-		 * 
-		 * // Workflow
-		 * 
-		 * workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(fileobj.
-		 * getCompanyId(), fileobj.getGroupId(), SampleSB.class.getName(),
-		 * fileobj.getPrimaryKey());
-		 */
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)	
+	public SampleSB deleteEntry(SampleSB entry) throws PortalException {
+
+		// Entry
+		
+		sampleSBPersistence.remove(entry);
+
+		// Resources
+
+		resourceLocalService.deleteResource(
+			entry.getCompanyId(), SampleSB.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL, entry.getPrimaryKey());	
+		
+		// Asset
+
+		assetEntryLocalService.deleteEntry(
+			SampleSB.class.getName(), entry.getPrimaryKey());	
+		
+		// Comment
+
+		deleteDiscussion(entry);	
+		
+		// Ratings
+
+		ratingsStatsLocalService.deleteStats(
+			SampleSB.class.getName(), entry.getPrimaryKey());	
+
+		// Trash
+
+		trashEntryLocalService.deleteEntry(
+			SampleSB.class.getName(), entry.getPrimaryKey());	
+
+		// Workflow
+
+		workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+			entry.getCompanyId(), entry.getGroupId(),
+			SampleSB.class.getName(), entry.getPrimaryKey());	
+
+		return entry;		
 	}
 
+    protected void deleteDiscussion(SampleSB entry) throws PortalException {
+        CommentManagerUtil.deleteDiscussion(
+        	SampleSB.class.getName(), entry.getPrimaryKey());
+    }
+    
 	public List<SampleSB> findAllInGroup(long groupId) {
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_S(groupId,
-				WorkflowConstants.STATUS_APPROVED);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence
+			.findByG_S(groupId, WorkflowConstants.STATUS_APPROVED);
 		return list;
 	}
 
-	public List<SampleSB> findAllInGroup(long groupId, int start, int end,
-			OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInGroup(
+		long groupId, int start, int end,
+		OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_S(groupId, WorkflowConstants.STATUS_APPROVED,
-				start, end, orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_S(
+			groupId, WorkflowConstants.STATUS_APPROVED, start, end,
+			orderByComparator);
 		return list;
 	}
 
-	public List<SampleSB> findAllInGroup(long groupId, OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInGroup(
+		long groupId, OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) findAllInGroup(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) findAllInGroup(groupId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator);
 		return list;
 	}
 
@@ -189,62 +265,66 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 	 * @throws SystemException
 	 */
 	public List<SampleSB> findAllInUser(long userId) {
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByU_S(userId, WorkflowConstants.STATUS_APPROVED);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence
+			.findByU_S(userId, WorkflowConstants.STATUS_APPROVED);
 		return list;
 	}
 
-	public List<SampleSB> findAllInUser(long userId, int start, int end,
-			OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInUser(
+		long userId, int start, int end,
+		OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByU_S(userId, WorkflowConstants.STATUS_APPROVED,
-				start, end, orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByU_S(
+			userId, WorkflowConstants.STATUS_APPROVED, start, end,
+			orderByComparator);
 		return list;
 	}
 
-	public List<SampleSB> findAllInUser(long userId, OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInUser(
+		long userId, OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) findAllInUser(userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) findAllInUser(userId,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator);
 		return list;
 	}
 
 	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId) {
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_U_S(groupId, userId,
-				WorkflowConstants.STATUS_APPROVED);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence
+			.findByG_U_S(groupId, userId, WorkflowConstants.STATUS_APPROVED);
 		return list;
 	}
 
-	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId, int start, int end,
-			OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInUserAndGroup(
+		long userId, long groupId, int start, int end,
+		OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_U_S(groupId, userId,
-				WorkflowConstants.STATUS_APPROVED, start, end, orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence.findByG_U_S(
+			groupId, userId, WorkflowConstants.STATUS_APPROVED, start, end,
+			orderByComparator);
 		return list;
 	}
 
-	public List<SampleSB> findAllInUserAndGroup(long userId, long groupId,
-			OrderByComparator<SampleSB> orderByComparator) {
+	public List<SampleSB> findAllInUserAndGroup(
+		long userId, long groupId,
+		OrderByComparator<SampleSB> orderByComparator) {
 
-		List<SampleSB> list = (List<SampleSB>) findAllInUserAndGroup(groupId, userId, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, orderByComparator);
+		List<SampleSB> list = (List<SampleSB>) findAllInUserAndGroup(groupId,
+			userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator);
 		return list;
 	}
 
 	/**
 	 * Get Company entries
 	 *
-	 * @param companyId
-	 *            Company Id
-	 * @param status
-	 *            Workflow status
-	 * @param start
-	 *            start index of entries
-	 * @param end
-	 *            end index of entries
+	 * @param companyId Company Id
+	 * @param status Workflow status
+	 * @param start start index of entries
+	 * @param end end index of entries
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<SampleSB> getCompanyEntries(long companyId, int status, int start, int end) {
+	public List<SampleSB> getCompanyEntries(
+		long companyId, int status, int start, int end) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return sampleSBPersistence.findByCompanyId(companyId, start, end);
@@ -256,26 +336,24 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 	/**
 	 * Get Company entries
 	 *
-	 * @param companyId
-	 *            Company Id
-	 * @param status
-	 *            Workflow status
-	 * @param start
-	 *            start index of entries
-	 * @param end
-	 *            end index of entries
-	 * @param obc
-	 *            Comparator for the order
+	 * @param companyId Company Id
+	 * @param status Workflow status
+	 * @param start start index of entries
+	 * @param end end index of entries
+	 * @param obc Comparator for the order
 	 * @return List of entries
 	 * @throws SystemException
 	 */
-	public List<SampleSB> getCompanyEntries(long companyId, int status, int start, int end,
-			OrderByComparator<SampleSB> obc) {
+	public List<SampleSB> getCompanyEntries(
+		long companyId, int status, int start, int end,
+		OrderByComparator<SampleSB> obc) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return sampleSBPersistence.findByCompanyId(companyId, start, end, obc);
+			return sampleSBPersistence.findByCompanyId(companyId, start, end,
+				obc);
 		} else {
-			return sampleSBPersistence.findByC_S(companyId, status, start, end, obc);
+			return sampleSBPersistence.findByC_S(companyId, status, start, end,
+				obc);
 		}
 	}
 
@@ -295,14 +373,16 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 		}
 	}
 
-	public SampleSB getSampleSBByUrlTitle(long groupId, String urlTitle, int status) throws PortalException {
+	public SampleSB getSampleSBByUrlTitle(
+		long groupId, String urlTitle, int status) throws PortalException {
 
 		SampleSB entry = null;
 
 		if (status == WorkflowConstants.STATUS_ANY) {
 			entry = sampleSBPersistence.fetchByG_UT(groupId, urlTitle);
 		} else {
-			List<SampleSB> results = sampleSBPersistence.findByG_UT_ST(groupId, urlTitle, status);
+			List<SampleSB> results = sampleSBPersistence.findByG_UT_ST(groupId,
+				urlTitle, status);
 
 			if (results != null && results.size() > 0) {
 				entry = results.get(0);
@@ -312,16 +392,32 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 		return entry;
 	}
 
-	public SampleSB moveEntryToTrash(long userId, long entryId) throws PortalException {
+	public SampleSB moveEntryToTrash(long userId, long entryId)
+		throws PortalException {
 
 		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
 
 		return moveEntryToTrash(userId, entry);
 	}
 
-	public SampleSB moveEntryToTrash(long userId, SampleSB entry) throws PortalException {
+	/**
+	 * Moves the entry to the recycle bin. Social activity counters for this
+	 * entry get disabled.
+	 *
+	 * @param userId the primary key of the user moving the entry
+	 * @param entry the entry to be moved
+	 * @return the moved entry
+	 */
+	@Indexable(
+		type = IndexableType.REINDEX)
+	@Override
+	public SampleSB moveEntryToTrash(long userId, SampleSB entry)
+		throws PortalException {
 
 		// Entry
+		if (entry.isInTrash()) {
+			throw new TrashEntryException();
+		}
 
 		int oldStatus = entry.getStatus();
 
@@ -331,29 +427,80 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 			sampleSBPersistence.update(entry);
 		}
 
-		updateStatus(userId, entry.getPrimaryKey(), WorkflowConstants.STATUS_IN_TRASH, new ServiceContext());
+		updateStatus(userId, entry.getPrimaryKey(),
+			WorkflowConstants.STATUS_IN_TRASH, new ServiceContext(),
+			new HashMap<String, Serializable>());
+
+		// Social
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		// TODO: This field should be assetTitleFieldName
+		extraDataJSONObject.put("title", entry.getTitle());
+
+		SocialActivityManagerUtil.addActivity(userId, entry,
+			SocialActivityConstants.TYPE_MOVE_TO_TRASH,
+			extraDataJSONObject.toString(), 0);
 
 		// Workflow
 
 		if (oldStatus == WorkflowConstants.STATUS_PENDING) {
-			workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(entry.getCompanyId(), entry.getGroupId(),
-					SampleSB.class.getName(), entry.getPrimaryKey());
+			workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
+				entry.getCompanyId(), entry.getGroupId(),
+				SampleSB.class.getName(), entry.getPrimaryKey());
 		}
 
 		return entry;
 	}
 
-	public void restoreEntryFromTrash(long userId, long entryId) throws PortalException {
+	/**
+	 * Restores the entry with the ID from the recycle bin. Social activity
+	 * counters for this entry get activated.
+	 *
+	 * @param userId the primary key of the user restoring the entry
+	 * @param entryId the primary key of the entry to be restored
+	 * @return the restored entry from the recycle bin
+	 */
+	@Indexable(
+		type = IndexableType.REINDEX)
+	@Override
+	public SampleSB restoreEntryFromTrash(long userId, long entryId)
+		throws PortalException {
 
 		// Entry
 
-		TrashEntry trashEntry = _trashEntryLocalService.getEntry(SampleSB.class.getName(), entryId);
+		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
 
-		updateStatus(userId, entryId, trashEntry.getStatus(), new ServiceContext());
+		if (!entry.isInTrash()) {
+			throw new RestoreEntryException(
+				RestoreEntryException.INVALID_STATUS);
+		}
+
+		TrashEntry trashEntry = trashEntryLocalService
+			.getEntry(SampleSB.class.getName(), entryId);
+
+		updateStatus(userId, entryId, trashEntry.getStatus(),
+			new ServiceContext(), new HashMap<String, Serializable>());
+
+		// Social
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		// TODO: This field should be assetTitleFieldName
+		extraDataJSONObject.put("title", entry.getTitle());
+
+		SocialActivityManagerUtil.addActivity(userId, entry,
+			SocialActivityConstants.TYPE_RESTORE_FROM_TRASH,
+			extraDataJSONObject.toString(), 0);
+
+		return entry;
 	}
 
-	public void updateAsset(long userId, SampleSB entry, long[] assetCategoryIds, String[] assetTagNames,
-			long[] assetLinkEntryIds) throws PortalException {
+	@Override
+	public void updateAsset(
+		long userId, SampleSB entry, long[] assetCategoryIds,
+		String[] assetTagNames, long[] assetLinkEntryIds, Double priority)
+		throws PortalException {
 
 		boolean visible = false;
 
@@ -361,77 +508,83 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 			visible = true;
 		}
 
-		String summary = HtmlUtil.extractText(StringUtil.shorten(entry.getSamplesbSummaryName(), 500));
+		String summary = HtmlUtil.extractText(
+			StringUtil.shorten(entry.getSamplesbSummaryName(), 500));
 
-		AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId, entry.getGroupId(), entry.getCreateDate(),
-				entry.getModifiedDate(), SampleSB.class.getName(), entry.getPrimaryKey(), entry.getUuid(), 0,
-				assetCategoryIds, assetTagNames, true, visible, null, null, null, null, ContentTypes.TEXT_HTML,
-				entry.getSamplesbTitleName(), null, summary, null, null, 0, 0, 0.0);
+		AssetEntry assetEntry = assetEntryLocalService.updateEntry(userId,
+			entry.getGroupId(), entry.getCreateDate(), entry.getModifiedDate(),
+			SampleSB.class.getName(), entry.getPrimaryKey(), entry.getUuid(), 0,
+			assetCategoryIds, assetTagNames, true, visible, null, null, null,
+			null, ContentTypes.TEXT_HTML, entry.getSamplesbTitleName(), null,
+			summary, null, null, 0, 0, priority);
 
-		assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(), assetLinkEntryIds,
-				AssetLinkConstants.TYPE_RELATED);
+		assetLinkLocalService.updateLinks(userId, assetEntry.getEntryId(),
+			assetLinkEntryIds, AssetLinkConstants.TYPE_RELATED);
 	}
 
-	public void updateEntryResources(SampleSB entry, String[] groupPermissions, String[] guestPermissions)
-			throws PortalException {
+	@Override
+	public void updateEntryResources(
+		SampleSB entry, String[] groupPermissions, String[] guestPermissions)
+		throws PortalException {
 
-		resourceLocalService.updateResources(entry.getCompanyId(), entry.getGroupId(), SampleSB.class.getName(),
-				entry.getPrimaryKey(), groupPermissions, guestPermissions);
+		resourceLocalService.updateResources(entry.getCompanyId(),
+			entry.getGroupId(), SampleSB.class.getName(), entry.getPrimaryKey(),
+			groupPermissions, guestPermissions);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB updateSampleSB(SampleSB validSampleSB, ServiceContext serviceContext) throws PortalException {
+	@Indexable(
+		type = IndexableType.REINDEX)
+	public SampleSB updateSampleSB(
+		SampleSB orgEntry, ServiceContext serviceContext)
+		throws PortalException {
 
-		SampleSB entry = sampleSBPersistence.findByPrimaryKey(validSampleSB.getPrimaryKey());
+		SampleSB entry = sampleSBPersistence
+			.findByPrimaryKey(orgEntry.getPrimaryKey());
 
-		validSampleSB.setCreateDate(entry.getCreateDate());
-		User user = userPersistence.findByPrimaryKey(validSampleSB.getUserId());
+		entry.setCreateDate(orgEntry.getCreateDate());
+		User user = userPersistence.findByPrimaryKey(entry.getUserId());
 
-		validSampleSB.setUserName(user.getFullName());
+		entry.setUserName(user.getFullName());
 
-		validSampleSB.setModifiedDate(serviceContext.getModifiedDate(null));
-		validSampleSB.setUuid(entry.getUuid());
-		validSampleSB.setUrlTitle(_getUniqueURLTitle(validSampleSB));
+		entry.setModifiedDate(serviceContext.getModifiedDate(null));
+		entry.setUuid(orgEntry.getUuid());
+		entry.setUrlTitle(_getUniqueURLTitle(entry));
 
-		// // Social
-		// _socialActivityLocalService.addActivity(
-		// validSampleSB.getUserId(), validSampleSB.getGroupId(),
-		// SampleSB.class.getName(), validSampleSB.getPrimaryKey(),
-		// SampleSBActivityKeys.UPDATE_SAMPLESB, StringPool.BLANK, 0);
+		// Social
+		_socialActivityLocalService.addActivity(entry.getUserId(),
+			entry.getGroupId(), SampleSB.class.getName(),
+			entry.getPrimaryKey(), SampleSBActivityKeys.UPDATE_SAMPLESB,
+			StringPool.BLANK, 0);
 
-		SampleSB retVal = sampleSBPersistence.update(validSampleSB);
-		// // Resources
-		// if ((serviceContext.getGroupPermissions() != null) ||
-		// (serviceContext.getGuestPermissions() != null)) {
+		SampleSB updatedEntry = sampleSBPersistence.update(entry);
+		
+		// Resources
+		if ((serviceContext.getGroupPermissions() != null)
+				|| (serviceContext.getGuestPermissions() != null)) {
 
-		//
+			updateEntryResources(updatedEntry, serviceContext.getGroupPermissions(),
+				serviceContext.getGuestPermissions());
+		}
 
-		// updateEntryResources(
-		// retVal, serviceContext.getGroupPermissions(),
-		// serviceContext.getGuestPermissions());
-		// }
+		// Asset
+		updateAsset(updatedEntry.getUserId(), updatedEntry,
+			serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames(),
+			serviceContext.getAssetLinkEntryIds(),
+			serviceContext.getAssetPriority());
 
-		//
-		//
+		WorkflowHandlerRegistryUtil.startWorkflowInstance(updatedEntry.getCompanyId(),
+			updatedEntry.getGroupId(), updatedEntry.getUserId(), SampleSB.class.getName(),
+			updatedEntry.getPrimaryKey(), updatedEntry, serviceContext);
 
-		// // Asset
-		// updateAsset(
-		// retVal.getUserId(), retVal, serviceContext.getAssetCategoryIds(),
-		// serviceContext.getAssetTagNames(),
-		// serviceContext.getAssetLinkEntryIds());
-
-		//
-
-		// WorkflowHandlerRegistryUtil.startWorkflowInstance(retVal.getCompanyId(),
-		// retVal.getGroupId(),
-		// retVal.getUserId(), SampleSB.class.getName(), retVal.getPrimaryKey(),
-		// retVal, serviceContext);
-
-		return retVal;
+		return updatedEntry;
 	}
 
-	public SampleSB updateStatus(long userId, long entryId, int status, ServiceContext serviceContext)
-			throws PortalException {
+	@Indexable(
+		type = IndexableType.REINDEX)
+	public SampleSB updateStatus(
+		long userId, long entryId, int status, ServiceContext serviceContext,
+		Map<String, Serializable> workflowContext) throws PortalException {
 
 		// Entry
 
@@ -441,6 +594,7 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
 
 		int oldStatus = entry.getStatus();
+
 		entry.setModifiedDate(serviceContext.getModifiedDate(now));
 		entry.setStatus(status);
 		entry.setStatusByUserId(user.getUserId());
@@ -449,98 +603,143 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 
 		sampleSBPersistence.update(entry);
 
-		// Indexer
+		AssetEntry assetEntry = assetEntryLocalService
+			.fetchEntry(SampleSB.class.getName(), entryId);
 
-		Indexer<SampleSB> indexer = _indexerRegistry.nullSafeGetIndexer(SampleSB.class);
+		if ((assetEntry == null) || (assetEntry.getPublishDate() == null)) {
+			serviceContext.setCommand(Constants.ADD);
+		}
+
+		JSONObject extraDataJSONObject = JSONFactoryUtil.createJSONObject();
+
+		// TODO: this field should be assetTitleFieldName
+		extraDataJSONObject.put("title", entry.getTitle());
 
 		if (status == WorkflowConstants.STATUS_APPROVED) {
-			assetEntryLocalService.updateEntry(SampleSB.class.getName(), entryId, entry.getModifiedDate(), null, true,
-					true);
+
+			// Asset
+
+			assetEntryLocalService.updateEntry(SampleSB.class.getName(),
+				entryId, entry.getModifiedDate(), null, true, true);
+
+			// Social
+
+			if ((oldStatus != WorkflowConstants.STATUS_IN_TRASH)
+					&& (oldStatus != WorkflowConstants.STATUS_SCHEDULED)) {
+
+				if (serviceContext.isCommandUpdate()) {
+
+					SocialActivityManagerUtil.addActivity(user.getUserId(),
+						entry, SampleSBActivityKeys.UPDATE_SAMPLESB,
+						extraDataJSONObject.toString(), 0);
+				} else {
+					SocialActivityManagerUtil.addUniqueActivity(
+						user.getUserId(), entry,
+						SampleSBActivityKeys.ADD_SAMPLESB,
+						extraDataJSONObject.toString(), 0);
+				}
+			}
 
 			// Trash
 
 			if (oldStatus == WorkflowConstants.STATUS_IN_TRASH) {
-				_trashEntryLocalService.deleteEntry(SampleSB.class.getName(), entryId);
+				CommentManagerUtil.restoreDiscussionFromTrash(
+					SampleSB.class.getName(), entryId);
+
+				trashEntryLocalService.deleteEntry(SampleSB.class.getName(),
+					entryId);
 			}
 
-			indexer.reindex(entry);
 		} else {
-			assetEntryLocalService.updateVisible(SampleSB.class.getName(), entryId, false);
+
+			// Asset
+
+			assetEntryLocalService.updateVisible(SampleSB.class.getName(),
+				entryId, false);
+
+			// Social
+
+			if ((oldStatus != WorkflowConstants.STATUS_IN_TRASH)
+					&& (oldStatus != WorkflowConstants.STATUS_SCHEDULED)) {
+
+				if (serviceContext.isCommandUpdate()) {
+
+					SocialActivityManagerUtil.addActivity(user.getUserId(),
+						entry, SampleSBActivityKeys.UPDATE_SAMPLESB,
+						extraDataJSONObject.toString(), 0);
+				} else {
+					SocialActivityManagerUtil.addUniqueActivity(
+						user.getUserId(), entry,
+						SampleSBActivityKeys.ADD_SAMPLESB,
+						extraDataJSONObject.toString(), 0);
+				}
+			}
 
 			// Trash
 
 			if (status == WorkflowConstants.STATUS_IN_TRASH) {
-				_trashEntryLocalService.addTrashEntry(userId, entry.getGroupId(), SampleSB.class.getName(), entryId,
-						entry.getUuid(), null, oldStatus, null, null);
+				CommentManagerUtil
+					.moveDiscussionToTrash(SampleSB.class.getName(), entryId);
+
+				trashEntryLocalService.addTrashEntry(userId, entry.getGroupId(),
+					SampleSB.class.getName(), entryId, entry.getUuid(), null,
+					oldStatus, null, null);
+
 			} else if (oldStatus == WorkflowConstants.STATUS_IN_TRASH) {
-				_trashEntryLocalService.deleteEntry(SampleSB.class.getName(), entryId);
+				CommentManagerUtil.restoreDiscussionFromTrash(
+					SampleSB.class.getName(), entryId);
+
+				trashEntryLocalService.deleteEntry(SampleSB.class.getName(),
+					entryId);
 			}
 
-			// Indexer
-
-			if (status == WorkflowConstants.STATUS_IN_TRASH) {
-				indexer.reindex(entry);
-			} else {
-				indexer.delete(entry);
-			}
 		}
 
 		return entry;
 	}
 
-	@Reference(unbind = "-")
-	protected void setIndexerRegistry(IndexerRegistry indexerRegistry) {
-		_indexerRegistry = indexerRegistry;
-	}
+	@Indexable(
+		type = IndexableType.REINDEX)
+	private SampleSB _addSampleSB(
+		SampleSB entry, ServiceContext serviceContext)
+		throws PortalException {
 
-	@Reference(unbind = "-")
-	protected void setSocialActivityLocalService(SocialActivityLocalService socialActivityLocalService) {
+		SampleSB newEntry = sampleSBPersistence
+			.create(counterLocalService.increment(SampleSB.class.getName()));
 
-		_socialActivityLocalService = socialActivityLocalService;
-	}
-
-	@Reference(unbind = "-")
-	protected void setTrashEntryLocalService(TrashEntryLocalService trashEntryLocalService) {
-
-		_trashEntryLocalService = trashEntryLocalService;
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	private SampleSB _addSampleSB(SampleSB validSampleSB, ServiceContext serviceContext) throws PortalException {
-
-		SampleSB fileobj = sampleSBPersistence.create(counterLocalService.increment(SampleSB.class.getName()));
-		fileobj.setNew(true);
-		
-		User user = userPersistence.findByPrimaryKey(validSampleSB.getUserId());
+		User user = userPersistence.findByPrimaryKey(entry.getUserId());
 
 		Date now = new Date();
-		fileobj.setCompanyId(validSampleSB.getCompanyId());
-		fileobj.setGroupId(validSampleSB.getGroupId());
-		fileobj.setUserId(user.getUserId());
-		fileobj.setUserName(user.getFullName());
-		fileobj.setCreateDate(now);
-		fileobj.setModifiedDate(now);
+		newEntry.setCompanyId(entry.getCompanyId());
+		newEntry.setGroupId(entry.getGroupId());
+		newEntry.setUserId(user.getUserId());
+		newEntry.setUserName(user.getFullName());
+		newEntry.setCreateDate(now);
+		newEntry.setModifiedDate(now);
 
-		fileobj.setUuid(serviceContext.getUuid());
-		fileobj.setUrlTitle(_getUniqueURLTitle(fileobj));
-//    	fileobj.setSampleSBassetTitleFieldName(validSampleSB.getSampleSBassetTitleFieldName());
-//    	fileobj.setSampleSBassetSummaryFieldName(validSampleSB.getSampleSBassetSummaryFieldName());
-    	
-		fileobj.setTitle(validSampleSB.getTitle());
-		fileobj.setStartDate(validSampleSB.getStartDate());
-		fileobj.setEndDate(validSampleSB.getEndDate());
-		fileobj.setSamplesbBooleanStat(validSampleSB.getSamplesbBooleanStat());
-		fileobj.setSamplesbDateTime(validSampleSB.getSamplesbDateTime());
-		fileobj.setSamplesbDocument(validSampleSB.getSamplesbDocument());
-		fileobj.setFolderDLId(validSampleSB.getFolderDLId());
-		fileobj.setSamplesbDocumentLibrary(validSampleSB.getSamplesbDocumentLibrary());
-		fileobj.setSamplesbDouble(validSampleSB.getSamplesbDouble());
-		fileobj.setSamplesbInteger(validSampleSB.getSamplesbInteger());
-		fileobj.setSamplesbRichText(validSampleSB.getSamplesbRichText());
-		fileobj.setSamplesbText(validSampleSB.getSamplesbText());	
-		fileobj.setFolderDLId(validSampleSB.getFolderDLId());
+		newEntry.setUuid(serviceContext.getUuid());
+		newEntry.setUrlTitle(_getUniqueURLTitle(newEntry));
+		// fileobj.setSampleSBassetTitleFieldName(validSampleSB
+		// .getSampleSBassetTitleFieldName());
+		// fileobj.setSampleSBassetSummaryFieldName(validSampleSB
+		// .getSampleSBassetSummaryFieldName());
 
-		return sampleSBPersistence.update(fileobj);
+		newEntry.setTitle(entry.getTitle());
+		newEntry.setStartDate(entry.getStartDate());
+		newEntry.setEndDate(entry.getEndDate());
+		newEntry.setSamplesbBooleanStat(entry.getSamplesbBooleanStat());
+		newEntry.setSamplesbDateTime(entry.getSamplesbDateTime());
+		newEntry.setSamplesbDocument(entry.getSamplesbDocument());
+		newEntry.setFolderDLId(entry.getFolderDLId());
+		newEntry.setSamplesbDocumentLibrary(
+			entry.getSamplesbDocumentLibrary());
+		newEntry.setSamplesbDouble(entry.getSamplesbDouble());
+		newEntry.setSamplesbInteger(entry.getSamplesbInteger());
+		newEntry.setSamplesbRichText(entry.getSamplesbRichText());
+		newEntry.setSamplesbText(entry.getSamplesbText());
+		newEntry.setFolderDLId(entry.getFolderDLId());
+
+		return sampleSBPersistence.update(newEntry);
 	}
 
 	private String _createUrlTitle(long entryId, String title) {
@@ -553,19 +752,23 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 		if (Validator.isNull(title) || Validator.isNumber(title)) {
 			title = String.valueOf(entryId);
 		} else {
-			title = FriendlyURLNormalizerUtil.normalize(title, _friendlyURLPattern);
+			title = FriendlyURLNormalizerUtil.normalize(title,
+				_friendlyURLPattern);
 		}
 
-		return ModelHintsUtil.trimString(SampleSB.class.getName(), "urlTitle", title);
+		return ModelHintsUtil.trimString(SampleSB.class.getName(), "urlTitle",
+			title);
 	}
 
 	private String _getUniqueURLTitle(SampleSB entry) {
-		String urlTitle = _createUrlTitle(entry.getPrimaryKey(), entry.getSamplesbTitleName());
+		String urlTitle = _createUrlTitle(entry.getPrimaryKey(),
+			entry.getSamplesbTitleName());
 
 		long entryId = entry.getPrimaryKey();
 
 		for (int i = 1;; i++) {
-			SampleSB tmpEntry = sampleSBPersistence.fetchByG_UT(entry.getGroupId(), urlTitle);
+			SampleSB tmpEntry = sampleSBPersistence
+				.fetchByG_UT(entry.getGroupId(), urlTitle);
 
 			if ((tmpEntry == null) || (entryId == tmpEntry.getPrimaryKey())) {
 				break;
@@ -575,7 +778,8 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 				String prefix = urlTitle;
 
 				if (urlTitle.length() > suffix.length()) {
-					prefix = urlTitle.substring(0, urlTitle.length() - suffix.length());
+					prefix = urlTitle.substring(0,
+						urlTitle.length() - suffix.length());
 				}
 
 				urlTitle = prefix + suffix;
@@ -585,10 +789,23 @@ public class SampleSBLocalServiceImpl extends SampleSBLocalServiceBaseImpl {
 		return urlTitle;
 	}
 
+	@Reference(
+		unbind = "-")
+	protected void setIndexerRegistry(IndexerRegistry indexerRegistry) {
+		_indexerRegistry = indexerRegistry;
+	}
+
+	@Reference(
+		unbind = "-")
+	protected void setSocialActivityLocalService(
+		SocialActivityLocalService socialActivityLocalService) {
+
+		_socialActivityLocalService = socialActivityLocalService;
+	}
+
 	private static Pattern _friendlyURLPattern = Pattern.compile("[^a-z0-9_-]");
 
 	private IndexerRegistry _indexerRegistry;
 	private SocialActivityLocalService _socialActivityLocalService;
-	private TrashEntryLocalService _trashEntryLocalService;
 
 }

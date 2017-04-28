@@ -329,6 +329,36 @@ public class SampleSBWrapper implements SampleSB, ModelWrapper<SampleSB> {
 	}
 
 	/**
+	* Returns <code>true</code> if this sample sb is in the Recycle Bin.
+	*
+	* @return <code>true</code> if this sample sb is in the Recycle Bin; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isInTrash() {
+		return _sampleSB.isInTrash();
+	}
+
+	/**
+	* Returns <code>true</code> if the parent of this sample sb is in the Recycle Bin.
+	*
+	* @return <code>true</code> if the parent of this sample sb is in the Recycle Bin; <code>false</code> otherwise
+	*/
+	@Override
+	public boolean isInTrashContainer() {
+		return _sampleSB.isInTrashContainer();
+	}
+
+	@Override
+	public boolean isInTrashExplicitly() {
+		return _sampleSB.isInTrashExplicitly();
+	}
+
+	@Override
+	public boolean isInTrashImplicitly() {
+		return _sampleSB.isInTrashImplicitly();
+	}
+
+	/**
 	* Returns <code>true</code> if this sample sb is inactive.
 	*
 	* @return <code>true</code> if this sample sb is inactive; <code>false</code> otherwise
@@ -391,6 +421,29 @@ public class SampleSBWrapper implements SampleSB, ModelWrapper<SampleSB> {
 	@Override
 	public com.liferay.portal.kernel.model.CacheModel<SampleSB> toCacheModel() {
 		return _sampleSB.toCacheModel();
+	}
+
+	/**
+	* Returns the trash handler for this sample sb.
+	*
+	* @return the trash handler for this sample sb
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@Deprecated
+	@Override
+	public com.liferay.portal.kernel.trash.TrashHandler getTrashHandler() {
+		return _sampleSB.getTrashHandler();
+	}
+
+	/**
+	* Returns the trash entry created when this sample sb was moved to the Recycle Bin. The trash entry may belong to one of the ancestors of this sample sb.
+	*
+	* @return the trash entry created when this sample sb was moved to the Recycle Bin
+	*/
+	@Override
+	public com.liferay.trash.kernel.model.TrashEntry getTrashEntry()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSB.getTrashEntry();
 	}
 
 	/**
@@ -701,6 +754,16 @@ public class SampleSBWrapper implements SampleSB, ModelWrapper<SampleSB> {
 	@Override
 	public long getStatusByUserId() {
 		return _sampleSB.getStatusByUserId();
+	}
+
+	/**
+	* Returns the class primary key of the trash entry for this sample sb.
+	*
+	* @return the class primary key of the trash entry for this sample sb
+	*/
+	@Override
+	public long getTrashEntryClassPK() {
+		return _sampleSB.getTrashEntryClassPK();
 	}
 
 	/**

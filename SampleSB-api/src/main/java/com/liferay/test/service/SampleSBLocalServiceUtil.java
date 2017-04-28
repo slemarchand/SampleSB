@@ -73,6 +73,13 @@ public class SampleSBLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	public static com.liferay.test.model.SampleSB addSampleSB(
+		com.liferay.test.model.SampleSB orgEntry,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().addSampleSB(orgEntry, serviceContext);
+	}
+
 	/**
 	* Adds the sample sb to the database. Also notifies the appropriate model listeners.
 	*
@@ -84,13 +91,6 @@ public class SampleSBLocalServiceUtil {
 		return getService().addSampleSB(sampleSB);
 	}
 
-	public static com.liferay.test.model.SampleSB addSampleSB(
-		com.liferay.test.model.SampleSB validSampleSB,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().addSampleSB(validSampleSB, serviceContext);
-	}
-
 	/**
 	* Creates a new sample sb with the primary key. Does not add the sample sb to the database.
 	*
@@ -100,6 +100,12 @@ public class SampleSBLocalServiceUtil {
 	public static com.liferay.test.model.SampleSB createSampleSB(
 		long samplesbId) {
 		return getService().createSampleSB(samplesbId);
+	}
+
+	public static com.liferay.test.model.SampleSB deleteEntry(
+		com.liferay.test.model.SampleSB entry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteEntry(entry);
 	}
 
 	/**
@@ -174,6 +180,14 @@ public class SampleSBLocalServiceUtil {
 		return getService().getSampleSBByUuidAndGroupId(uuid, groupId);
 	}
 
+	/**
+	* Moves the entry to the recycle bin. Social activity counters for this
+	* entry get disabled.
+	*
+	* @param userId the primary key of the user moving the entry
+	* @param entry the entry to be moved
+	* @return the moved entry
+	*/
 	public static com.liferay.test.model.SampleSB moveEntryToTrash(
 		long userId, com.liferay.test.model.SampleSB entry)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -187,6 +201,27 @@ public class SampleSBLocalServiceUtil {
 	}
 
 	/**
+	* Restores the entry with the ID from the recycle bin. Social activity
+	* counters for this entry get activated.
+	*
+	* @param userId the primary key of the user restoring the entry
+	* @param entryId the primary key of the entry to be restored
+	* @return the restored entry from the recycle bin
+	*/
+	public static com.liferay.test.model.SampleSB restoreEntryFromTrash(
+		long userId, long entryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().restoreEntryFromTrash(userId, entryId);
+	}
+
+	public static com.liferay.test.model.SampleSB updateSampleSB(
+		com.liferay.test.model.SampleSB orgEntry,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().updateSampleSB(orgEntry, serviceContext);
+	}
+
+	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param sampleSB the sample sb
@@ -197,18 +232,14 @@ public class SampleSBLocalServiceUtil {
 		return getService().updateSampleSB(sampleSB);
 	}
 
-	public static com.liferay.test.model.SampleSB updateSampleSB(
-		com.liferay.test.model.SampleSB validSampleSB,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().updateSampleSB(validSampleSB, serviceContext);
-	}
-
 	public static com.liferay.test.model.SampleSB updateStatus(long userId,
 		long entryId, int status,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		java.util.Map<java.lang.String, java.io.Serializable> workflowContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().updateStatus(userId, entryId, status, serviceContext);
+		return getService()
+				   .updateStatus(userId, entryId, status, serviceContext,
+			workflowContext);
 	}
 
 	public static int countAllInGroup(long groupId) {
@@ -368,14 +399,10 @@ public class SampleSBLocalServiceUtil {
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
 	* @return
 	* @throws SystemException
 	*/
@@ -387,16 +414,11 @@ public class SampleSBLocalServiceUtil {
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
-	* @param obc
-	Comparator for the order
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
+	* @param obc Comparator for the order
 	* @return List of entries
 	* @throws SystemException
 	*/
@@ -486,6 +508,13 @@ public class SampleSBLocalServiceUtil {
 
 	public static void addEntryResources(
 		com.liferay.test.model.SampleSB entry,
+		com.liferay.portal.kernel.service.permission.ModelPermissions modelPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().addEntryResources(entry, modelPermissions);
+	}
+
+	public static void addEntryResources(
+		com.liferay.test.model.SampleSB entry,
 		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService().addEntryResources(entry, groupPermissions, guestPermissions);
@@ -505,24 +534,14 @@ public class SampleSBLocalServiceUtil {
 			.addEntryResources(entryId, groupPermissions, guestPermissions);
 	}
 
-	public static void deleteSampleSBEntry(
-		com.liferay.test.model.SampleSB fileobj)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().deleteSampleSBEntry(fileobj);
-	}
-
-	public static void restoreEntryFromTrash(long userId, long entryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().restoreEntryFromTrash(userId, entryId);
-	}
-
 	public static void updateAsset(long userId,
 		com.liferay.test.model.SampleSB entry, long[] assetCategoryIds,
-		java.lang.String[] assetTagNames, long[] assetLinkEntryIds)
+		java.lang.String[] assetTagNames, long[] assetLinkEntryIds,
+		java.lang.Double priority)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
 			.updateAsset(userId, entry, assetCategoryIds, assetTagNames,
-			assetLinkEntryIds);
+			assetLinkEntryIds, priority);
 	}
 
 	public static void updateEntryResources(

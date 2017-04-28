@@ -639,6 +639,64 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 		throws NoSuchSampleSBException;
 
 	/**
+	* Returns all the sample sbs that the user has permission to view where groupId = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param status the status
+	* @return the matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_S(long groupId, int status);
+
+	/**
+	* Returns a range of all the sample sbs that the user has permission to view where groupId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @return the range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_S(long groupId, int status,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the sample sbs that the user has permissions to view where groupId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_S(long groupId, int status,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator);
+
+	/**
+	* Returns the sample sbs before and after the current sample sb in the ordered set of sample sbs that the user has permission to view where groupId = &#63; and status = &#63;.
+	*
+	* @param samplesbId the primary key of the current sample sb
+	* @param groupId the group ID
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sample sb
+	* @throws NoSuchSampleSBException if a sample sb with the primary key could not be found
+	*/
+	public SampleSB[] filterFindByG_S_PrevAndNext(long samplesbId,
+		long groupId, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator)
+		throws NoSuchSampleSBException;
+
+	/**
 	* Removes all the sample sbs where groupId = &#63; and status = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -654,6 +712,15 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 	* @return the number of matching sample sbs
 	*/
 	public int countByG_S(long groupId, int status);
+
+	/**
+	* Returns the number of sample sbs that the user has permission to view where groupId = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param status the status
+	* @return the number of matching sample sbs that the user has permission to view
+	*/
+	public int filterCountByG_S(long groupId, int status);
 
 	/**
 	* Returns all the sample sbs where companyId = &#63; and userId = &#63; and status = &#63;.
@@ -947,6 +1014,69 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 		throws NoSuchSampleSBException;
 
 	/**
+	* Returns all the sample sbs that the user has permission to view where groupId = &#63; and userId = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param status the status
+	* @return the matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_U_S(long groupId,
+		long userId, int status);
+
+	/**
+	* Returns a range of all the sample sbs that the user has permission to view where groupId = &#63; and userId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @return the range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_U_S(long groupId,
+		long userId, int status, int start, int end);
+
+	/**
+	* Returns an ordered range of all the sample sbs that the user has permissions to view where groupId = &#63; and userId = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_U_S(long groupId,
+		long userId, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator);
+
+	/**
+	* Returns the sample sbs before and after the current sample sb in the ordered set of sample sbs that the user has permission to view where groupId = &#63; and userId = &#63; and status = &#63;.
+	*
+	* @param samplesbId the primary key of the current sample sb
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sample sb
+	* @throws NoSuchSampleSBException if a sample sb with the primary key could not be found
+	*/
+	public SampleSB[] filterFindByG_U_S_PrevAndNext(long samplesbId,
+		long groupId, long userId, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator)
+		throws NoSuchSampleSBException;
+
+	/**
 	* Removes all the sample sbs where groupId = &#63; and userId = &#63; and status = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -964,6 +1094,16 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 	* @return the number of matching sample sbs
 	*/
 	public int countByG_U_S(long groupId, long userId, int status);
+
+	/**
+	* Returns the number of sample sbs that the user has permission to view where groupId = &#63; and userId = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param userId the user ID
+	* @param status the status
+	* @return the number of matching sample sbs that the user has permission to view
+	*/
+	public int filterCountByG_U_S(long groupId, long userId, int status);
 
 	/**
 	* Returns all the sample sbs where userId = &#63; and status = &#63;.
@@ -1249,6 +1389,69 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 		throws NoSuchSampleSBException;
 
 	/**
+	* Returns all the sample sbs that the user has permission to view where groupId = &#63; and urlTitle = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param urlTitle the url title
+	* @param status the status
+	* @return the matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_UT_ST(long groupId,
+		java.lang.String urlTitle, int status);
+
+	/**
+	* Returns a range of all the sample sbs that the user has permission to view where groupId = &#63; and urlTitle = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param urlTitle the url title
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @return the range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_UT_ST(long groupId,
+		java.lang.String urlTitle, int status, int start, int end);
+
+	/**
+	* Returns an ordered range of all the sample sbs that the user has permissions to view where groupId = &#63; and urlTitle = &#63; and status = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param urlTitle the url title
+	* @param status the status
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByG_UT_ST(long groupId,
+		java.lang.String urlTitle, int status, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator);
+
+	/**
+	* Returns the sample sbs before and after the current sample sb in the ordered set of sample sbs that the user has permission to view where groupId = &#63; and urlTitle = &#63; and status = &#63;.
+	*
+	* @param samplesbId the primary key of the current sample sb
+	* @param groupId the group ID
+	* @param urlTitle the url title
+	* @param status the status
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sample sb
+	* @throws NoSuchSampleSBException if a sample sb with the primary key could not be found
+	*/
+	public SampleSB[] filterFindByG_UT_ST_PrevAndNext(long samplesbId,
+		long groupId, java.lang.String urlTitle, int status,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator)
+		throws NoSuchSampleSBException;
+
+	/**
 	* Removes all the sample sbs where groupId = &#63; and urlTitle = &#63; and status = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -1267,6 +1470,17 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 	* @return the number of matching sample sbs
 	*/
 	public int countByG_UT_ST(long groupId, java.lang.String urlTitle,
+		int status);
+
+	/**
+	* Returns the number of sample sbs that the user has permission to view where groupId = &#63; and urlTitle = &#63; and status = &#63;.
+	*
+	* @param groupId the group ID
+	* @param urlTitle the url title
+	* @param status the status
+	* @return the number of matching sample sbs that the user has permission to view
+	*/
+	public int filterCountByG_UT_ST(long groupId, java.lang.String urlTitle,
 		int status);
 
 	/**
@@ -1481,6 +1695,60 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 		throws NoSuchSampleSBException;
 
 	/**
+	* Returns all the sample sbs that the user has permission to view where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByGroupId(long groupId);
+
+	/**
+	* Returns a range of all the sample sbs that the user has permission to view where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @return the range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByGroupId(long groupId,
+		int start, int end);
+
+	/**
+	* Returns an ordered range of all the sample sbs that the user has permissions to view where groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param groupId the group ID
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByGroupId(long groupId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator);
+
+	/**
+	* Returns the sample sbs before and after the current sample sb in the ordered set of sample sbs that the user has permission to view where groupId = &#63;.
+	*
+	* @param samplesbId the primary key of the current sample sb
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sample sb
+	* @throws NoSuchSampleSBException if a sample sb with the primary key could not be found
+	*/
+	public SampleSB[] filterFindByGroupId_PrevAndNext(long samplesbId,
+		long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator)
+		throws NoSuchSampleSBException;
+
+	/**
 	* Removes all the sample sbs where groupId = &#63; from the database.
 	*
 	* @param groupId the group ID
@@ -1494,6 +1762,14 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 	* @return the number of matching sample sbs
 	*/
 	public int countByGroupId(long groupId);
+
+	/**
+	* Returns the number of sample sbs that the user has permission to view where groupId = &#63;.
+	*
+	* @param groupId the group ID
+	* @return the number of matching sample sbs that the user has permission to view
+	*/
+	public int filterCountByGroupId(long groupId);
 
 	/**
 	* Returns all the sample sbs where userId = &#63; and groupId = &#63;.
@@ -1623,6 +1899,65 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 		throws NoSuchSampleSBException;
 
 	/**
+	* Returns all the sample sbs that the user has permission to view where userId = &#63; and groupId = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @return the matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByUserIdGroupId(long userId,
+		long groupId);
+
+	/**
+	* Returns a range of all the sample sbs that the user has permission to view where userId = &#63; and groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @return the range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByUserIdGroupId(long userId,
+		long groupId, int start, int end);
+
+	/**
+	* Returns an ordered range of all the sample sbs that the user has permissions to view where userId = &#63; and groupId = &#63;.
+	*
+	* <p>
+	* Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link SampleSBModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	* </p>
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param start the lower bound of the range of sample sbs
+	* @param end the upper bound of the range of sample sbs (not inclusive)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @return the ordered range of matching sample sbs that the user has permission to view
+	*/
+	public java.util.List<SampleSB> filterFindByUserIdGroupId(long userId,
+		long groupId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator);
+
+	/**
+	* Returns the sample sbs before and after the current sample sb in the ordered set of sample sbs that the user has permission to view where userId = &#63; and groupId = &#63;.
+	*
+	* @param samplesbId the primary key of the current sample sb
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	* @return the previous, current, and next sample sb
+	* @throws NoSuchSampleSBException if a sample sb with the primary key could not be found
+	*/
+	public SampleSB[] filterFindByUserIdGroupId_PrevAndNext(long samplesbId,
+		long userId, long groupId,
+		com.liferay.portal.kernel.util.OrderByComparator<SampleSB> orderByComparator)
+		throws NoSuchSampleSBException;
+
+	/**
 	* Removes all the sample sbs where userId = &#63; and groupId = &#63; from the database.
 	*
 	* @param userId the user ID
@@ -1638,6 +1973,15 @@ public interface SampleSBPersistence extends BasePersistence<SampleSB> {
 	* @return the number of matching sample sbs
 	*/
 	public int countByUserIdGroupId(long userId, long groupId);
+
+	/**
+	* Returns the number of sample sbs that the user has permission to view where userId = &#63; and groupId = &#63;.
+	*
+	* @param userId the user ID
+	* @param groupId the group ID
+	* @return the number of matching sample sbs that the user has permission to view
+	*/
+	public int filterCountByUserIdGroupId(long userId, long groupId);
 
 	/**
 	* Returns all the sample sbs where userId = &#63;.

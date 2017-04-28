@@ -71,6 +71,14 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	@Override
+	public com.liferay.test.model.SampleSB addSampleSB(
+		com.liferay.test.model.SampleSB orgEntry,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSBLocalService.addSampleSB(orgEntry, serviceContext);
+	}
+
 	/**
 	* Adds the sample sb to the database. Also notifies the appropriate model listeners.
 	*
@@ -83,14 +91,6 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.addSampleSB(sampleSB);
 	}
 
-	@Override
-	public com.liferay.test.model.SampleSB addSampleSB(
-		com.liferay.test.model.SampleSB validSampleSB,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.addSampleSB(validSampleSB, serviceContext);
-	}
-
 	/**
 	* Creates a new sample sb with the primary key. Does not add the sample sb to the database.
 	*
@@ -100,6 +100,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	@Override
 	public com.liferay.test.model.SampleSB createSampleSB(long samplesbId) {
 		return _sampleSBLocalService.createSampleSB(samplesbId);
+	}
+
+	@Override
+	public com.liferay.test.model.SampleSB deleteEntry(
+		com.liferay.test.model.SampleSB entry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSBLocalService.deleteEntry(entry);
 	}
 
 	/**
@@ -181,6 +188,14 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.getSampleSBByUuidAndGroupId(uuid, groupId);
 	}
 
+	/**
+	* Moves the entry to the recycle bin. Social activity counters for this
+	* entry get disabled.
+	*
+	* @param userId the primary key of the user moving the entry
+	* @param entry the entry to be moved
+	* @return the moved entry
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB moveEntryToTrash(long userId,
 		com.liferay.test.model.SampleSB entry)
@@ -196,6 +211,29 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
+	* Restores the entry with the ID from the recycle bin. Social activity
+	* counters for this entry get activated.
+	*
+	* @param userId the primary key of the user restoring the entry
+	* @param entryId the primary key of the entry to be restored
+	* @return the restored entry from the recycle bin
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB restoreEntryFromTrash(long userId,
+		long entryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSBLocalService.restoreEntryFromTrash(userId, entryId);
+	}
+
+	@Override
+	public com.liferay.test.model.SampleSB updateSampleSB(
+		com.liferay.test.model.SampleSB orgEntry,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSBLocalService.updateSampleSB(orgEntry, serviceContext);
+	}
+
+	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*
 	* @param sampleSB the sample sb
@@ -208,21 +246,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	@Override
-	public com.liferay.test.model.SampleSB updateSampleSB(
-		com.liferay.test.model.SampleSB validSampleSB,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.updateSampleSB(validSampleSB,
-			serviceContext);
-	}
-
-	@Override
 	public com.liferay.test.model.SampleSB updateStatus(long userId,
 		long entryId, int status,
-		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		com.liferay.portal.kernel.service.ServiceContext serviceContext,
+		java.util.Map<java.lang.String, java.io.Serializable> workflowContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _sampleSBLocalService.updateStatus(userId, entryId, status,
-			serviceContext);
+			serviceContext, workflowContext);
 	}
 
 	@Override
@@ -400,14 +430,10 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
 	* @return
 	* @throws SystemException
 	*/
@@ -421,16 +447,11 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
-	* @param obc
-	Comparator for the order
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
+	* @param obc Comparator for the order
 	* @return List of entries
 	* @throws SystemException
 	*/
@@ -527,6 +548,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 
 	@Override
 	public void addEntryResources(com.liferay.test.model.SampleSB entry,
+		com.liferay.portal.kernel.service.permission.ModelPermissions modelPermissions)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_sampleSBLocalService.addEntryResources(entry, modelPermissions);
+	}
+
+	@Override
+	public void addEntryResources(com.liferay.test.model.SampleSB entry,
 		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		_sampleSBLocalService.addEntryResources(entry, groupPermissions,
@@ -550,24 +578,12 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	@Override
-	public void deleteSampleSBEntry(com.liferay.test.model.SampleSB fileobj)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		_sampleSBLocalService.deleteSampleSBEntry(fileobj);
-	}
-
-	@Override
-	public void restoreEntryFromTrash(long userId, long entryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		_sampleSBLocalService.restoreEntryFromTrash(userId, entryId);
-	}
-
-	@Override
 	public void updateAsset(long userId, com.liferay.test.model.SampleSB entry,
 		long[] assetCategoryIds, java.lang.String[] assetTagNames,
-		long[] assetLinkEntryIds)
+		long[] assetLinkEntryIds, java.lang.Double priority)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		_sampleSBLocalService.updateAsset(userId, entry, assetCategoryIds,
-			assetTagNames, assetLinkEntryIds);
+			assetTagNames, assetLinkEntryIds, priority);
 	}
 
 	@Override

@@ -26,11 +26,14 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -41,6 +44,7 @@ import com.liferay.test.model.SampleSB;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for SampleSB. Methods of this
@@ -88,6 +92,10 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public SampleSB addSampleSB(SampleSB orgEntry, ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	* Adds the sample sb to the database. Also notifies the appropriate model listeners.
 	*
@@ -97,9 +105,6 @@ public interface SampleSBLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB addSampleSB(SampleSB sampleSB);
 
-	public SampleSB addSampleSB(SampleSB validSampleSB,
-		ServiceContext serviceContext) throws PortalException;
-
 	/**
 	* Creates a new sample sb with the primary key. Does not add the sample sb to the database.
 	*
@@ -107,6 +112,10 @@ public interface SampleSBLocalService extends BaseLocalService,
 	* @return the new sample sb
 	*/
 	public SampleSB createSampleSB(long samplesbId);
+
+	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public SampleSB deleteEntry(SampleSB entry) throws PortalException;
 
 	/**
 	* Deletes the sample sb from the database. Also notifies the appropriate model listeners.
@@ -167,11 +176,36 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public SampleSB getSampleSBByUuidAndGroupId(java.lang.String uuid,
 		long groupId) throws PortalException;
 
+	/**
+	* Moves the entry to the recycle bin. Social activity counters for this
+	* entry get disabled.
+	*
+	* @param userId the primary key of the user moving the entry
+	* @param entry the entry to be moved
+	* @return the moved entry
+	*/
+	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB moveEntryToTrash(long userId, SampleSB entry)
 		throws PortalException;
 
 	public SampleSB moveEntryToTrash(long userId, long entryId)
 		throws PortalException;
+
+	/**
+	* Restores the entry with the ID from the recycle bin. Social activity
+	* counters for this entry get activated.
+	*
+	* @param userId the primary key of the user restoring the entry
+	* @param entryId the primary key of the entry to be restored
+	* @return the restored entry from the recycle bin
+	*/
+	@Indexable(type = IndexableType.REINDEX)
+	public SampleSB restoreEntryFromTrash(long userId, long entryId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public SampleSB updateSampleSB(SampleSB orgEntry,
+		ServiceContext serviceContext) throws PortalException;
 
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -183,11 +217,10 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public SampleSB updateSampleSB(SampleSB sampleSB);
 
 	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB updateSampleSB(SampleSB validSampleSB,
-		ServiceContext serviceContext) throws PortalException;
-
 	public SampleSB updateStatus(long userId, long entryId, int status,
-		ServiceContext serviceContext) throws PortalException;
+		ServiceContext serviceContext,
+		Map<java.lang.String, Serializable> workflowContext)
+		throws PortalException;
 
 	public int countAllInGroup(long groupId);
 
@@ -294,14 +327,10 @@ public interface SampleSBLocalService extends BaseLocalService,
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
 	* @return
 	* @throws SystemException
 	*/
@@ -312,16 +341,11 @@ public interface SampleSBLocalService extends BaseLocalService,
 	/**
 	* Get Company entries
 	*
-	* @param companyId
-	Company Id
-	* @param status
-	Workflow status
-	* @param start
-	start index of entries
-	* @param end
-	end index of entries
-	* @param obc
-	Comparator for the order
+	* @param companyId Company Id
+	* @param status Workflow status
+	* @param start start index of entries
+	* @param end end index of entries
+	* @param obc Comparator for the order
 	* @return List of entries
 	* @throws SystemException
 	*/
@@ -391,6 +415,9 @@ public interface SampleSBLocalService extends BaseLocalService,
 		boolean addGuestPermissions) throws PortalException;
 
 	public void addEntryResources(SampleSB entry,
+		ModelPermissions modelPermissions) throws PortalException;
+
+	public void addEntryResources(SampleSB entry,
 		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
 		throws PortalException;
 
@@ -401,14 +428,10 @@ public interface SampleSBLocalService extends BaseLocalService,
 		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)
 		throws PortalException;
 
-	public void deleteSampleSBEntry(SampleSB fileobj) throws PortalException;
-
-	public void restoreEntryFromTrash(long userId, long entryId)
-		throws PortalException;
-
 	public void updateAsset(long userId, SampleSB entry,
 		long[] assetCategoryIds, java.lang.String[] assetTagNames,
-		long[] assetLinkEntryIds) throws PortalException;
+		long[] assetLinkEntryIds, java.lang.Double priority)
+		throws PortalException;
 
 	public void updateEntryResources(SampleSB entry,
 		java.lang.String[] groupPermissions, java.lang.String[] guestPermissions)

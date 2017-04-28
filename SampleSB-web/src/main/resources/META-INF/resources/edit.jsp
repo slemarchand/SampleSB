@@ -12,14 +12,22 @@
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 </portlet:actionURL>
 
-<aui:form name="samplesbEdit" action="<%= samplesbEditURL %>"
-	method="post">
-	<aui:model-context bean="<%= sampleSB %>" model="<%= SampleSB.class %>" />
-	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= CMD %>" />
-	<aui:input type="hidden" name="resourcePrimKey"
-		value="<%=sampleSB.getPrimaryKey() %>" />
 
-	<aui:fieldset>
+<aui:fieldset>
+	<aui:form name="samplesbEdit" action="<%= samplesbEditURL %>"
+		method="post">
+		<aui:model-context bean="<%= sampleSB %>" model="<%= SampleSB.class %>" />
+		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= CMD %>" />
+		<aui:input type="hidden" name="resourcePrimKey"
+			value="<%=sampleSB.getPrimaryKey() %>" />
+	    <c:if test='<%= Constants.ADD.equals(CMD) %>'>
+	        <aui:input type="hidden" name="addGuestPermissions" value="true" />
+	        <aui:input type="hidden" name="addGroupPermissions" value="true" />
+	    </c:if>	
+        <aui:input name="samplesbTitleName" label="title" />
+
+        <aui:input name="samplesbSummaryName" label="summary" />
+        	
 		<% String requiredLabel=""; %>
 
 		<% requiredLabel ="*"; %>
@@ -64,9 +72,25 @@
 		<aui:input name="samplesbText" disabled="false"
 			label='<%= LanguageUtil.get(request, "samplesb-samplesbtext") + requiredLabel %>' />
 
+        <% if (sampleSB.getPrimaryKey() != 0) { %>
+        <liferay-ui:ratings className="<%= SampleSB.class.getName() %>"
+            classPK="<%= sampleSB.getPrimaryKey() %>" type="stars" />
+        <% }%>
+        <aui:input name="categories" type="assetCategories" />
+        <aui:input name="tags" type="assetTags" />
+        
+         <liferay-ui:panel defaultState="closed" extended="<%= false %>"
+            id="sampleSBEntryAssetLinksPanel" persistState="<%= true %>"
+            title="related-assets">
+            <aui:fieldset>
+                <liferay-ui:input-asset-links
+                    className="<%= SampleSB.class.getName() %>"
+                    classPK="<%= sampleSB.getPrimaryKey() %>" />
+            </aui:fieldset>
+        </liferay-ui:panel>     
+          
 		<aui:button-row>
 			<% String publishButtonLabel = "submit"; %>
-
 
 			<%  if (WorkflowDefinitionLinkLocalServiceUtil.hasWorkflowDefinitionLink(themeDisplay.getCompanyId(), scopeGroupId, SampleSB.class.getName())) {
         publishButtonLabel = "submit-for-publication";
@@ -80,9 +104,31 @@
 			<aui:button onClick="<%= redirect %>" type="cancel" />
 			<% } %>
 		</aui:button-row>
+	</aui:form>
+        <% if (sampleSB.getPrimaryKey() != 0) { %>
+        <liferay-ui:panel-container extended="<%= false %>"
+            id="sampleSBCommentsPanelContainer" persistState="<%= true %>">
 
-	</aui:fieldset>
-</aui:form>
+            <liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>"
+                id="sampleSBCommentsPanel" persistState="<%= true %>"
+                title='<%= LanguageUtil.get(request, "comments") %>'>
+
+                <portlet:actionURL name="invokeTaglibDiscussion" var="discussionURL" />
+
+				<liferay-ui:discussion
+					className="<%= SampleSB.class.getName() %>"
+					classPK="<%= sampleSB.getPrimaryKey() %>"
+					formName="fm2"
+					ratingsEnabled="<%= true %>"
+					redirect="<%= currentURL %>"
+					userId="<%= sampleSB.getUserId() %>"
+					/>
+            </liferay-ui:panel>
+
+        </liferay-ui:panel-container>
+        <% } %>	
+</aui:fieldset>
+
 
 <aui:script>
      function <portlet:namespace />initsamplesbRichTextEditor() {
