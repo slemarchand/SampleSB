@@ -534,39 +534,26 @@ public class SampleSBLocalServiceImpl
 			groupPermissions, guestPermissions);
 	}
 
-	@Indexable(
-		type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public SampleSB updateSampleSB(
-		SampleSB orgEntry, ServiceContext serviceContext)
+		SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
-		SampleSB entry = sampleSBPersistence
-			.findByPrimaryKey(orgEntry.getPrimaryKey());
-
-		entry.setCreateDate(orgEntry.getCreateDate());
 		User user = userPersistence.findByPrimaryKey(entry.getUserId());
 
 		entry.setUserName(user.getFullName());
 
 		entry.setModifiedDate(serviceContext.getModifiedDate(null));
-		entry.setUuid(orgEntry.getUuid());
 		entry.setUrlTitle(_getUniqueURLTitle(entry));
 
-		// Social
-		_socialActivityLocalService.addActivity(entry.getUserId(),
-			entry.getGroupId(), SampleSB.class.getName(), entry.getPrimaryKey(),
-			SampleSBActivityKeys.UPDATE_SAMPLESB, StringPool.BLANK, 0);
-
-		SampleSB updatedEntry = sampleSBPersistence.update(entry);
-
-		// Resources
-		if ((serviceContext.getGroupPermissions() != null)
-				|| (serviceContext.getGuestPermissions() != null)) {
-
-			updateEntryResources(updatedEntry,
-				serviceContext.getGroupPermissions(),
-				serviceContext.getGuestPermissions());
+		if (entry.isPending() || entry.isDraft()) {
 		}
+		else {
+			entry.setStatus(WorkflowConstants.STATUS_DRAFT);
+		}
+		
+		SampleSB updatedEntry = sampleSBPersistence.update(entry);
 
 		// Asset
 		updateAsset(updatedEntry.getUserId(), updatedEntry,
@@ -575,12 +562,9 @@ public class SampleSBLocalServiceImpl
 			serviceContext.getAssetLinkEntryIds(),
 			serviceContext.getAssetPriority());
 
-		WorkflowHandlerRegistryUtil.startWorkflowInstance(
-			updatedEntry.getCompanyId(), updatedEntry.getGroupId(),
-			updatedEntry.getUserId(), SampleSB.class.getName(),
-			updatedEntry.getPrimaryKey(), updatedEntry, serviceContext);
+		entry = startWorkflowInstance(user.getUserId(), entry, serviceContext);
 
-		return updatedEntry;
+		return entry;
 	}
 
 	@Indexable(
