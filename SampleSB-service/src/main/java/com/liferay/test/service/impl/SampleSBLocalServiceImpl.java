@@ -562,9 +562,9 @@ public class SampleSBLocalServiceImpl
 			serviceContext.getAssetLinkEntryIds(),
 			serviceContext.getAssetPriority());
 
-		entry = startWorkflowInstance(user.getUserId(), entry, serviceContext);
+		updatedEntry = startWorkflowInstance(user.getUserId(), updatedEntry, serviceContext);
 
-		return entry;
+		return updatedEntry;
 	}
 
 	@Indexable(
