@@ -1,6 +1,5 @@
 package com.liferay.test.service.permission;
 
-import com.liferay.blogs.kernel.model.BlogsEntry;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -48,7 +47,7 @@ public class SampleSBEntryPermission
 		PermissionChecker permissionChecker, SampleSB entry, String actionId) {
 
 		String portletId = PortletProviderUtil.getPortletId(
-			BlogsEntry.class.getName(), PortletProvider.Action.EDIT);
+			SampleSB.class.getName(), PortletProvider.Action.EDIT);
 
 		Boolean hasPermission = StagingPermissionUtil.hasPermission(
 			permissionChecker, entry.getGroupId(), SampleSB.class.getName(),
