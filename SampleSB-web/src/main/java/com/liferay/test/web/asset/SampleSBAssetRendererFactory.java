@@ -67,7 +67,7 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 	}
 	
 	@Reference(unbind = "-")
-	protected void setBlogsEntryService(SampleSBLocalService sampleSBLocalService) {
+	protected void setSampleSBLocalService(SampleSBLocalService sampleSBLocalService) {
 		_sampleSBLocalService = sampleSBLocalService;
 	}
 
