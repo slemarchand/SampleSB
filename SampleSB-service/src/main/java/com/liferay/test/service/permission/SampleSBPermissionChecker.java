@@ -9,18 +9,20 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.BaseModelPermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.workflow.permission.WorkflowPermissionUtil;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalServiceUtil;
 
+import org.osgi.service.component.annotations.Component;
+
 /**
  * @author Yasuyuki Takeo
  */
-@OSGiBeanProperties(
+@Component(
+	immediate = true,
 	property = {"model.class.name=com.liferay.test.model.SampleSB" }
 )
-public class SampleSBEntryPermission
+public class SampleSBPermissionChecker
 	implements BaseModelPermissionChecker {
 
 	public static void check(

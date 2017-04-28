@@ -3,6 +3,7 @@ Bundle-SymbolicName: com.liferay.test.api
 Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.test.exception,\
+	com.liferay.test.constants,\
 	com.liferay.test.model,\
 	com.liferay.test.service,\
 	com.liferay.test.service.persistence

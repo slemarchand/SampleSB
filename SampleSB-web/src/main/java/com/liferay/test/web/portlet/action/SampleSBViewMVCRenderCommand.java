@@ -1,7 +1,7 @@
 package com.liferay.test.web.portlet.action;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
+import com.liferay.test.constants.SampleSBPortletKeys;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
     immediate = true,
     property = {
-        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
+        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
         "mvc.command.name=/",
         "mvc.command.name=/samplesb/view"
     },

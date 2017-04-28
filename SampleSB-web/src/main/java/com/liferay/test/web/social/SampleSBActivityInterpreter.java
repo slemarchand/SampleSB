@@ -5,8 +5,8 @@ import com.liferay.portal.kernel.util.ResourceBundleLoader;
 import com.liferay.portal.kernel.util.ResourceBundleLoaderUtil;
 import com.liferay.social.kernel.model.BaseSocialActivityInterpreter;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
+import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -15,7 +15,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Yasuyuki Takeo
  */
 @Component(
-	property = {"javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB},
+	property = {"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB},
 	service = SocialActivityInterpreter.class
 )
 public class SampleSBActivityInterpreter extends BaseSocialActivityInterpreter {

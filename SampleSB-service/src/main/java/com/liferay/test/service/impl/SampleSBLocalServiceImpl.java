@@ -185,54 +185,56 @@ public class SampleSBLocalServiceImpl
 		return count;
 	}
 
-	@Indexable(type = IndexableType.DELETE)
+	@Indexable(
+		type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)	
+	@SystemEvent(
+		type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException {
 
 		// Entry
-		
+
 		sampleSBPersistence.remove(entry);
 
 		// Resources
 
-		resourceLocalService.deleteResource(
-			entry.getCompanyId(), SampleSB.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL, entry.getPrimaryKey());	
-		
+		resourceLocalService.deleteResource(entry.getCompanyId(),
+			SampleSB.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+			entry.getPrimaryKey());
+
 		// Asset
 
-		assetEntryLocalService.deleteEntry(
-			SampleSB.class.getName(), entry.getPrimaryKey());	
-		
+		assetEntryLocalService.deleteEntry(SampleSB.class.getName(),
+			entry.getPrimaryKey());
+
 		// Comment
 
-		deleteDiscussion(entry);	
-		
+		deleteDiscussion(entry);
+
 		// Ratings
 
-		ratingsStatsLocalService.deleteStats(
-			SampleSB.class.getName(), entry.getPrimaryKey());	
+		ratingsStatsLocalService.deleteStats(SampleSB.class.getName(),
+			entry.getPrimaryKey());
 
 		// Trash
 
-		trashEntryLocalService.deleteEntry(
-			SampleSB.class.getName(), entry.getPrimaryKey());	
+		trashEntryLocalService.deleteEntry(SampleSB.class.getName(),
+			entry.getPrimaryKey());
 
 		// Workflow
 
 		workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
-			entry.getCompanyId(), entry.getGroupId(),
-			SampleSB.class.getName(), entry.getPrimaryKey());	
+			entry.getCompanyId(), entry.getGroupId(), SampleSB.class.getName(),
+			entry.getPrimaryKey());
 
-		return entry;		
+		return entry;
 	}
 
-    protected void deleteDiscussion(SampleSB entry) throws PortalException {
-        CommentManagerUtil.deleteDiscussion(
-        	SampleSB.class.getName(), entry.getPrimaryKey());
-    }
-    
+	protected void deleteDiscussion(SampleSB entry) throws PortalException {
+		CommentManagerUtil.deleteDiscussion(SampleSB.class.getName(),
+			entry.getPrimaryKey());
+	}
+
 	public List<SampleSB> findAllInGroup(long groupId) {
 		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence
 			.findByG_S(groupId, WorkflowConstants.STATUS_APPROVED);
@@ -552,17 +554,17 @@ public class SampleSBLocalServiceImpl
 
 		// Social
 		_socialActivityLocalService.addActivity(entry.getUserId(),
-			entry.getGroupId(), SampleSB.class.getName(),
-			entry.getPrimaryKey(), SampleSBActivityKeys.UPDATE_SAMPLESB,
-			StringPool.BLANK, 0);
+			entry.getGroupId(), SampleSB.class.getName(), entry.getPrimaryKey(),
+			SampleSBActivityKeys.UPDATE_SAMPLESB, StringPool.BLANK, 0);
 
 		SampleSB updatedEntry = sampleSBPersistence.update(entry);
-		
+
 		// Resources
 		if ((serviceContext.getGroupPermissions() != null)
 				|| (serviceContext.getGuestPermissions() != null)) {
 
-			updateEntryResources(updatedEntry, serviceContext.getGroupPermissions(),
+			updateEntryResources(updatedEntry,
+				serviceContext.getGroupPermissions(),
 				serviceContext.getGuestPermissions());
 		}
 
@@ -573,8 +575,9 @@ public class SampleSBLocalServiceImpl
 			serviceContext.getAssetLinkEntryIds(),
 			serviceContext.getAssetPriority());
 
-		WorkflowHandlerRegistryUtil.startWorkflowInstance(updatedEntry.getCompanyId(),
-			updatedEntry.getGroupId(), updatedEntry.getUserId(), SampleSB.class.getName(),
+		WorkflowHandlerRegistryUtil.startWorkflowInstance(
+			updatedEntry.getCompanyId(), updatedEntry.getGroupId(),
+			updatedEntry.getUserId(), SampleSB.class.getName(),
 			updatedEntry.getPrimaryKey(), updatedEntry, serviceContext);
 
 		return updatedEntry;
@@ -700,8 +703,7 @@ public class SampleSBLocalServiceImpl
 
 	@Indexable(
 		type = IndexableType.REINDEX)
-	private SampleSB _addSampleSB(
-		SampleSB entry, ServiceContext serviceContext)
+	private SampleSB _addSampleSB(SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
 		SampleSB newEntry = sampleSBPersistence
@@ -731,8 +733,7 @@ public class SampleSBLocalServiceImpl
 		newEntry.setSamplesbDateTime(entry.getSamplesbDateTime());
 		newEntry.setSamplesbDocument(entry.getSamplesbDocument());
 		newEntry.setFolderDLId(entry.getFolderDLId());
-		newEntry.setSamplesbDocumentLibrary(
-			entry.getSamplesbDocumentLibrary());
+		newEntry.setSamplesbDocumentLibrary(entry.getSamplesbDocumentLibrary());
 		newEntry.setSamplesbDouble(entry.getSamplesbDouble());
 		newEntry.setSamplesbInteger(entry.getSamplesbInteger());
 		newEntry.setSamplesbRichText(entry.getSamplesbRichText());

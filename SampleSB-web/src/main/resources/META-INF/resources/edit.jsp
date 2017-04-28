@@ -25,7 +25,6 @@
 	        <aui:input type="hidden" name="addGroupPermissions" value="true" />
 	    </c:if>	
         <aui:input name="samplesbTitleName" label="title" />
-
         <aui:input name="samplesbSummaryName" label="summary" />
         	
 		<% String requiredLabel=""; %>
@@ -93,8 +92,8 @@
 			<% String publishButtonLabel = "submit"; %>
 
 			<%  if (WorkflowDefinitionLinkLocalServiceUtil.hasWorkflowDefinitionLink(themeDisplay.getCompanyId(), scopeGroupId, SampleSB.class.getName())) {
-        publishButtonLabel = "submit-for-publication";
-    }%>
+		        publishButtonLabel = "submit-for-publication";
+		    }%>
 			<aui:button
 				cssClass="btn-lg"
 				onClick="<%=renderResponse.getNamespace()+\"saveEditors()\"%>"

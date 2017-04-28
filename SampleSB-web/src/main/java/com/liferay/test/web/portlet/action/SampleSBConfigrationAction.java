@@ -7,7 +7,7 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
+import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.web.util.SampleSBValidator;
 
 import java.util.List;
@@ -46,10 +46,10 @@ import aQute.bnd.annotation.metatype.Configurable;
  */
 @Component(
     immediate = true,
-    configurationPid = SampleSBWebPortletKeys.SAMPLESB_CONFIG,
+    configurationPid = SampleSBPortletKeys.SAMPLESB_CONFIG,
     configurationPolicy = ConfigurationPolicy.OPTIONAL,
     property = {
-        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
+        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
     }, service = ConfigurationAction.class
 )
 public class SampleSBConfigrationAction extends DefaultConfigurationAction {

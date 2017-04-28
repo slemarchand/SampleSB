@@ -4,9 +4,9 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
 
 import javax.servlet.ServletContext;
 
@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB
+		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB
 	},
 	service = AssetRendererFactory.class
 )
@@ -27,7 +27,7 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 	public SampleSBAssetRendererFactory() {
 		setClassName(SampleSB.class.getName());
 		setLinkable(true);
-		setPortletId(SampleSBWebPortletKeys.SAMPLESB_WEB);
+		setPortletId(SampleSBPortletKeys.SAMPLESB);
 		setSearchable(true);
 	}
 	

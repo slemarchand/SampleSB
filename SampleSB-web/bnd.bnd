@@ -3,7 +3,6 @@ Bundle-SymbolicName: com.liferay.test.web
 Bundle-Version: 1.0.0
 Export-Package:\
 	com.liferay.test.web.asset,\
-	com.liferay.test.web.constants,\
 	com.liferay.test.web.social
 Bundle-ClassPath:\
 	.,\

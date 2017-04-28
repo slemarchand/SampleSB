@@ -12,9 +12,9 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
 import com.liferay.test.web.util.SampleSBValidator;
 
 import java.security.InvalidParameterException;
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
     immediate = true,
     property = {
-        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB,
+        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
         "mvc.command.name=/samplesb/crud"
     },
     service = MVCActionCommand.class

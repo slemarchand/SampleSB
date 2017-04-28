@@ -1,13 +1,13 @@
 package com.liferay.test.web.portlet.action;
 
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
+import com.liferay.test.constants.SampleSBPortletKeys;
 
 import aQute.bnd.annotation.metatype.Meta;
 
 /**
  * @author Yasuyuki Takeo
  */
-@Meta.OCD(id = SampleSBWebPortletKeys.SAMPLESB_CONFIG)
+@Meta.OCD(id = SampleSBPortletKeys.SAMPLESB_CONFIG)
 public interface SampleSBConfiguration {
 
 	public static final String CONF_PREFS_VIEW_TYPE = "prefsViewType";

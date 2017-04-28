@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
-import com.liferay.test.service.permission.SampleSBPermission;
+import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -51,7 +51,7 @@ public class SampleSBIndexer
 		PermissionChecker permissionChecker, String entryClassName,
 		long entryClassPK, String actionId) throws Exception {
 
-		return SampleSBPermission.contains(permissionChecker, entryClassPK,
+		return SampleSBResourcePermissionChecker.contains(permissionChecker, entryClassPK,
 			ActionKeys.VIEW);
 	}
 

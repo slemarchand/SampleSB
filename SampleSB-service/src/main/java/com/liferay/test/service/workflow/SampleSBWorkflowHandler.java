@@ -1,6 +1,5 @@
 package com.liferay.test.service.workflow;
 
-import com.liferay.blogs.kernel.service.BlogsEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -51,21 +50,9 @@ public class SampleSBWorkflowHandler extends BaseWorkflowHandler<SampleSB> {
 		ServiceContext serviceContext = (ServiceContext)workflowContext.get(
 			"serviceContext");
 
-		_blogsEntryLocalService.updateStatus(
-			userId, classPK, status, serviceContext, workflowContext);
-
 		return _sampleSBLocalService.updateStatus(
 			userId, classPK, status, serviceContext, workflowContext);
 	}
-
-	@Reference(unbind = "-")
-	protected void setBlogsEntryLocalService(
-		BlogsEntryLocalService blogsEntryLocalService) {
-
-		_blogsEntryLocalService = blogsEntryLocalService;
-	}
-
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Reference(unbind = "-")
 	protected void setSampleSBLocalService(

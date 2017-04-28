@@ -1,7 +1,7 @@
 package com.liferay.test.web.portlet;
 
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.test.web.constants.SampleSBWebPortletKeys;
+import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.web.portlet.action.SampleSBConfiguration;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import aQute.bnd.annotation.metatype.Configurable;
  * @author yasuflatland
  */
 @Component(
-    configurationPid =SampleSBWebPortletKeys.SAMPLESB_CONFIG,	 		
+    configurationPid =SampleSBPortletKeys.SAMPLESB_CONFIG,	 		
     immediate = true,
     property = {
         "com.liferay.portlet.preferences-unique-per-layout=true",           
@@ -34,11 +34,11 @@ import aQute.bnd.annotation.metatype.Configurable;
         "com.liferay.portlet.instanceable=true",
         "com.liferay.portlet.use-default-template=true",
         "javax.portlet.display-name=SampleSB-web Portlet",
-        "javax.portlet.init-param.mvc-action-command-package-prefix=com.liferay.test.web.portlet.action" + SampleSBWebPortletKeys.SAMPLESB_WEB,
+        "javax.portlet.init-param.mvc-action-command-package-prefix=com.liferay.test.web.portlet.action" + SampleSBPortletKeys.SAMPLESB,
     	"javax.portlet.init-param.always-display-default-configuration-icons=true",    		
         "javax.portlet.expiration-cache=0",
         "javax.portlet.init-param.template-path=/",
-        "javax.portlet.name=" + SampleSBWebPortletKeys.SAMPLESB_WEB, 
+        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB, 
         "javax.portlet.resource-bundle=content.Language",
         "javax.portlet.security-role-ref=power-user,user",
         "javax.portlet.supports.mime-type=text/html"
