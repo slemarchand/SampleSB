@@ -49,5 +49,13 @@
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:actionURL>
 	<liferay-ui:icon image="delete" url="<%=deleteSampleSBURL.toString()%>" />
+	
+	<portlet:actionURL name="/samplesb/crud" var="moveToTrashSampleSBURL">
+		<portlet:param name="<%=Constants.CMD%>"
+			value="<%=Constants.MOVE_TO_TRASH%>" />
+		<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
+		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
+	</portlet:actionURL>
+	<liferay-ui:icon image="recycle-bin" url="<%=moveToTrashSampleSBURL.toString()%>" />	
 
 </liferay-ui:icon-menu>

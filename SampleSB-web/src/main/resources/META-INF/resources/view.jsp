@@ -186,7 +186,7 @@
 			form.attr('method', 'post');
 			form.fm('<%=Constants.CMD%>').val('<%=TrashUtil.isTrashEnabled(scopeGroupId) ? Constants.MOVE_TO_TRASH : Constants.DELETE%>');
 			form.fm('deleteEntryIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
-console.log(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));			
+
 			submitForm(form, '<portlet:actionURL name="/samplesb/crud" />');
 		}
 	}

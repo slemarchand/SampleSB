@@ -416,7 +416,7 @@ public class SampleSBLocalServiceImpl
 			sampleSBPersistence.update(entry);
 		}
 
-		updateStatus(userId, entry.getPrimaryKey(),
+		entry = updateStatus(userId, entry.getPrimaryKey(),
 			WorkflowConstants.STATUS_IN_TRASH, new ServiceContext(),
 			new HashMap<String, Serializable>());
 
@@ -634,13 +634,13 @@ public class SampleSBLocalServiceImpl
 
 			// Asset
 
-			assetEntryLocalService.updateVisible(SampleSB.class.getName(),
-				entryId, false);
+			assetEntryLocalService.updateVisible(
+				SampleSB.class.getName(),entryId, false);
 
 			// Social
 
-			if ((oldStatus != WorkflowConstants.STATUS_IN_TRASH)
-					&& (oldStatus != WorkflowConstants.STATUS_SCHEDULED)) {
+			if ((status == WorkflowConstants.STATUS_SCHEDULED) &&
+					(oldStatus != WorkflowConstants.STATUS_IN_TRASH)) {
 
 				if (serviceContext.isCommandUpdate()) {
 
@@ -661,9 +661,11 @@ public class SampleSBLocalServiceImpl
 				CommentManagerUtil
 					.moveDiscussionToTrash(SampleSB.class.getName(), entryId);
 
-				trashEntryLocalService.addTrashEntry(userId, entry.getGroupId(),
-					SampleSB.class.getName(), entryId, entry.getUuid(), null,
-					oldStatus, null, null);
+				trashEntryLocalService.addTrashEntry(
+					userId, entry.getGroupId(), SampleSB.class.getName(),
+					entry.getPrimaryKey(), entry.getUuid(), null, oldStatus, null,
+					null);
+				
 
 			} else if (oldStatus == WorkflowConstants.STATUS_IN_TRASH) {
 				CommentManagerUtil.restoreDiscussionFromTrash(
