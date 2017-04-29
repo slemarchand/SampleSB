@@ -3,21 +3,27 @@ package com.liferay.test.web.portlet.action;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
 import com.liferay.test.web.util.SampleSBValidator;
+import com.liferay.trash.kernel.util.TrashUtil;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -51,25 +57,27 @@ public class SampleSBCrudMVCActionCommand
 			String cmd = ParamUtil.getString(request, Constants.CMD);
 
 			if (cmd.equals(Constants.ADD)) {
-				addSampleSB(request, response);
+				addEntry(request, response);
 
 			} else if (cmd.equals(Constants.UPDATE)) {
-				updateSampleSB(request, response);
+				updateEntry(request, response);
 
 			} else if (cmd.equals(Constants.DELETE)) {
-
-				// Fetch primary key
-				long resourcePrimKey = ParamUtil.getLong(request,
-					"resourcePrimKey", 0);
-
-				_sampleSBLocalService.deleteSampleSB(resourcePrimKey);
-				SessionMessages.add(request, "samplesb-deleted-successfully");
-
-				// Fetch redirect
-				String redirect = ParamUtil.getString(request, "redirect");
-				redirect = PortalUtil.escapeRedirect(redirect);
-
-				sendRedirect(request, response, redirect);
+				deleteEntry(request, response, false);
+//				// Fetch primary key
+//				long resourcePrimKey = ParamUtil.getLong(request,
+//					"resourcePrimKey", 0);
+//
+//				_sampleSBLocalService.deleteSampleSB(resourcePrimKey);
+//				SessionMessages.add(request, "samplesb-deleted-successfully");
+//
+//				// Fetch redirect
+//				String redirect = ParamUtil.getString(request, "redirect");
+//				redirect = PortalUtil.escapeRedirect(redirect);
+//
+//				sendRedirect(request, response, redirect);
+			} else if (cmd.equals(Constants.MOVE_TO_TRASH)) {
+				deleteEntry(request, response, true);
 			}
 		} catch (InvalidParameterException e) {
 			response.setRenderParameter("mvcRenderCommandName",
@@ -81,17 +89,64 @@ public class SampleSBCrudMVCActionCommand
 			SessionErrors.add(request, PortalException.class);
 			hideDefaultSuccessMessage(request);
 		}
-
 	}
 
 	/**
-	 * Add SampleSB
+	 * Delte Entry
+	 *
+	 * @param request
+	 * @param response
+	 * @param moveToTrash true to move to trush.
+	 * @throws PortalException
+	 * @throws Exception
+	 */
+	public void deleteEntry(
+		ActionRequest request, ActionResponse response, boolean moveToTrash)
+		throws PortalException {
+		long[] deleteEntryIds = null;
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
+		long entryId = ParamUtil.getLong(request, "resourcePrimKey", 0L);
+
+		if (entryId > 0) {
+			deleteEntryIds = new long[] { entryId };
+		} else {
+			deleteEntryIds = StringUtil
+				.split(ParamUtil.getString(request, "deleteEntryIds"), 0L);
+		}
+
+		List<TrashedModel> trashedModels = new ArrayList<>();
+
+		for (long deleteEntryId : deleteEntryIds) {
+			if (moveToTrash) {
+				SampleSB entry = _sampleSBLocalService
+					.moveEntryToTrash(themeDisplay.getUserId(), deleteEntryId);
+
+				trashedModels.add(entry);
+			} else {
+				_sampleSBLocalService.deleteEntry(deleteEntryId);
+			}
+		}
+
+		if (moveToTrash && !trashedModels.isEmpty()) {
+			TrashUtil.addTrashSessionMessages(request, trashedModels);
+
+			SessionMessages.add(request,
+				SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE);
+		} else {
+			SessionMessages.add(request, "samplesb-deleted-successfully");
+		}
+	}
+
+	/**
+	 * Add Entry
 	 *
 	 * @param request
 	 * @param response
 	 * @throws Exception
 	 */
-	public void addSampleSB(ActionRequest request, ActionResponse response)
+	public void addEntry(ActionRequest request, ActionResponse response)
 		throws Exception {
 		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
 		// if (isMultipart) {
@@ -136,13 +191,13 @@ public class SampleSBCrudMVCActionCommand
 	}
 
 	/**
-	 * Update SampleSB
+	 * Update Entry
 	 *
 	 * @param request
 	 * @param response
 	 * @throws Exception
 	 */
-	public void updateSampleSB(ActionRequest request, ActionResponse response)
+	public void updateEntry(ActionRequest request, ActionResponse response)
 		throws Exception {
 		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
 		// if (isMultipart) {

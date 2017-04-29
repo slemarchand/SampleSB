@@ -177,6 +177,11 @@ public class SampleSBLocalServiceImpl
 		return count;
 	}
 
+	public SampleSB deleteEntry(long primaryKey) throws PortalException {
+		SampleSB entry = getSampleSB(primaryKey);
+		return deleteEntry(entry);
+	}
+	
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -384,13 +389,6 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-	public SampleSB moveEntryToTrash(long userId, long entryId)
-		throws PortalException {
-
-		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
-
-		return moveEntryToTrash(userId, entry);
-	}
 
 	/**
 	 * Moves the entry to the recycle bin. Social activity counters for this
@@ -400,8 +398,7 @@ public class SampleSBLocalServiceImpl
 	 * @param entry the entry to be moved
 	 * @return the moved entry
 	 */
-	@Indexable(
-		type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SampleSB moveEntryToTrash(long userId, SampleSB entry)
 		throws PortalException {
@@ -445,6 +442,14 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
+	public SampleSB moveEntryToTrash(long userId, long entryId)
+		throws PortalException {
+
+		SampleSB entry = sampleSBPersistence.findByPrimaryKey(entryId);
+
+		return moveEntryToTrash(userId, entry);
+	}
+	
 	/**
 	 * Restores the entry with the ID from the recycle bin. Social activity
 	 * counters for this entry get activated.

@@ -117,6 +117,8 @@ public interface SampleSBLocalService extends BaseLocalService,
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException;
 
+	public SampleSB deleteEntry(long primaryKey) throws PortalException;
+
 	/**
 	* Deletes the sample sb from the database. Also notifies the appropriate model listeners.
 	*

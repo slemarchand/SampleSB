@@ -109,6 +109,12 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.deleteEntry(entry);
 	}
 
+	@Override
+	public com.liferay.test.model.SampleSB deleteEntry(long primaryKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _sampleSBLocalService.deleteEntry(primaryKey);
+	}
+
 	/**
 	* Deletes the sample sb from the database. Also notifies the appropriate model listeners.
 	*

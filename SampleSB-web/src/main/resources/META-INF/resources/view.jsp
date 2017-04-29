@@ -45,19 +45,14 @@
 
 <liferay-frontend:management-bar 
 	includeCheckBox="<%=true%>"
-	searchContainerId="sampleSBId">
+	searchContainerId="entryList">
 
 	<liferay-frontend:management-bar-filters>
-
 		<liferay-frontend:management-bar-sort orderByCol="<%=orderByCol%>"
 			orderByType="<%=orderByType%>"
 			orderColumns='<%=new String[] { "title", "display-date" }%>'
 			portletURL="<%=navigationPortletURL%>" />
 	</liferay-frontend:management-bar-filters>
-	<liferay-frontend:management-bar-action-buttons>
-		<liferay-frontend:management-bar-button href='#' icon='times'
-			label='<%=TrashUtil.isTrashEnabled(scopeGroupId) ? "recycle-bin" : "delete"%>' />
-	</liferay-frontend:management-bar-action-buttons>
 
 	<liferay-frontend:management-bar-action-buttons>
 		<liferay-frontend:management-bar-button
@@ -83,7 +78,9 @@
 		<liferay-ui:error exception="<%=PortletException.class%>"
 			message="there-was-an-unexpected-error.-please-refresh-the-current-page" />
 
-		<liferay-ui:search-container id="sampleSBId" deltaConfigurable="true"
+		<liferay-ui:search-container 
+			id="entryList" 
+			deltaConfigurable="true"
 			rowChecker="<%=new EmptyOnClickRowChecker(renderResponse)%>"
 			searchContainer='<%=new SearchContainer(renderRequest,
 							PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse), null,
@@ -94,7 +91,10 @@
 			</liferay-ui:search-container-results>
 
 			<liferay-ui:search-container-row
-				className="com.liferay.test.model.SampleSB" keyProperty="sampleSBId"
+				className="com.liferay.test.model.SampleSB" 
+				escapedModel="<%= true %>"
+				keyProperty="samplesbId"
+				rowIdProperty="samplesbId"
 				modelVar="sampleSB">
 
 				<liferay-ui:search-container-column-text name="SampleSB Id"
@@ -186,7 +186,7 @@
 			form.attr('method', 'post');
 			form.fm('<%=Constants.CMD%>').val('<%=TrashUtil.isTrashEnabled(scopeGroupId) ? Constants.MOVE_TO_TRASH : Constants.DELETE%>');
 			form.fm('deleteEntryIds').val(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));
-
+console.log(Liferay.Util.listCheckedExcept(form, '<portlet:namespace />allRowIds'));			
 			submitForm(form, '<portlet:actionURL name="/samplesb/crud" />');
 		}
 	}

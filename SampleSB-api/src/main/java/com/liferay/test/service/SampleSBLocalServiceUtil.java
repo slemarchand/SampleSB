@@ -108,6 +108,11 @@ public class SampleSBLocalServiceUtil {
 		return getService().deleteEntry(entry);
 	}
 
+	public static com.liferay.test.model.SampleSB deleteEntry(long primaryKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().deleteEntry(primaryKey);
+	}
+
 	/**
 	* Deletes the sample sb from the database. Also notifies the appropriate model listeners.
 	*

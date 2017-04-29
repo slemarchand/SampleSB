@@ -98,7 +98,7 @@
 				cssClass="btn-lg"
 				onClick="<%=renderResponse.getNamespace()+\"saveEditors()\"%>"
 				value="<%=publishButtonLabel %>" />
-				&nbsp;&nbsp;&minus; or &minus;&nbsp;&nbsp;
+				&nbsp;&nbsp;&minus; or &minus
 			<% if (!fromAsset) { %>
 			<aui:button onClick="<%= redirect %>" type="cancel" />
 			<% } %>
