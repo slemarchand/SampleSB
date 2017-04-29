@@ -72,11 +72,11 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	@Override
-	public com.liferay.test.model.SampleSB addSampleSB(
+	public com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.addSampleSB(orgEntry, serviceContext);
+		return _sampleSBLocalService.addEntry(orgEntry, serviceContext);
 	}
 
 	/**
@@ -226,11 +226,11 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	@Override
-	public com.liferay.test.model.SampleSB updateSampleSB(
-		com.liferay.test.model.SampleSB orgEntry,
+	public com.liferay.test.model.SampleSB updateEntry(
+		com.liferay.test.model.SampleSB entry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.updateSampleSB(orgEntry, serviceContext);
+		return _sampleSBLocalService.updateEntry(entry, serviceContext);
 	}
 
 	/**

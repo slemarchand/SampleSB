@@ -93,7 +93,7 @@ public interface SampleSBLocalService extends BaseLocalService,
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB addSampleSB(SampleSB orgEntry, ServiceContext serviceContext)
+	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -204,8 +204,8 @@ public interface SampleSBLocalService extends BaseLocalService,
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB updateSampleSB(SampleSB orgEntry,
-		ServiceContext serviceContext) throws PortalException;
+	public SampleSB updateEntry(SampleSB entry, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

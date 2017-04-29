@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
@@ -30,7 +29,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.social.kernel.model.SocialActivityConstants;
-import com.liferay.social.kernel.service.SocialActivityLocalService;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
 import com.liferay.test.social.SampleSBActivityKeys;
@@ -45,13 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import aQute.bnd.annotation.ProviderType;
-import aQute.bnd.annotation.component.Reference;
-
 /**
  * @author Yasuyuki Takeo
  */
-@ProviderType
 public class SampleSBLocalServiceImpl
 	extends SampleSBLocalServiceBaseImpl {
 
@@ -106,11 +100,9 @@ public class SampleSBLocalServiceImpl
 			entry.getPrimaryKey(), groupPermissions, guestPermissions);
 	}
 
-	@Indexable(
-		type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public
-		SampleSB addSampleSB(SampleSB orgEntry, ServiceContext serviceContext)
+	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
 			throws PortalException {
 
 		long userId = serviceContext.getUserId();
@@ -185,11 +177,9 @@ public class SampleSBLocalServiceImpl
 		return count;
 	}
 
-	@Indexable(
-		type = IndexableType.DELETE)
+	@Indexable(type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(
-		type = SystemEventConstants.TYPE_DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException {
 
 		// Entry
@@ -536,9 +526,8 @@ public class SampleSBLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public SampleSB updateSampleSB(
-		SampleSB entry, ServiceContext serviceContext)
-		throws PortalException {
+	public SampleSB updateEntry(
+		SampleSB entry, ServiceContext serviceContext) throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(entry.getUserId());
 
@@ -548,11 +537,10 @@ public class SampleSBLocalServiceImpl
 		entry.setUrlTitle(_getUniqueURLTitle(entry));
 
 		if (entry.isPending() || entry.isDraft()) {
-		}
-		else {
+		} else {
 			entry.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
-		
+
 		SampleSB updatedEntry = sampleSBPersistence.update(entry);
 
 		// Asset
@@ -562,13 +550,13 @@ public class SampleSBLocalServiceImpl
 			serviceContext.getAssetLinkEntryIds(),
 			serviceContext.getAssetPriority());
 
-		updatedEntry = startWorkflowInstance(user.getUserId(), updatedEntry, serviceContext);
+		updatedEntry = startWorkflowInstance(user.getUserId(), updatedEntry,
+			serviceContext);
 
 		return updatedEntry;
 	}
 
-	@Indexable(
-		type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB updateStatus(
 		long userId, long entryId, int status, ServiceContext serviceContext,
 		Map<String, Serializable> workflowContext) throws PortalException {
@@ -685,9 +673,7 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-	@Indexable(
-		type = IndexableType.REINDEX)
-	private SampleSB _addSampleSB(SampleSB entry, ServiceContext serviceContext)
+	protected SampleSB _addSampleSB(SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
 		SampleSB newEntry = sampleSBPersistence
@@ -705,10 +691,8 @@ public class SampleSBLocalServiceImpl
 
 		newEntry.setUuid(serviceContext.getUuid());
 		newEntry.setUrlTitle(_getUniqueURLTitle(newEntry));
-		// fileobj.setSampleSBassetTitleFieldName(validSampleSB
-		// .getSampleSBassetTitleFieldName());
-		// fileobj.setSampleSBassetSummaryFieldName(validSampleSB
-		// .getSampleSBassetSummaryFieldName());
+		newEntry.setSamplesbTitleName(entry.getSamplesbTitleName());
+		newEntry.setSamplesbSummaryName(entry.getSamplesbSummaryName());
 
 		newEntry.setTitle(entry.getTitle());
 		newEntry.setStartDate(entry.getStartDate());
@@ -774,23 +758,6 @@ public class SampleSBLocalServiceImpl
 		return urlTitle;
 	}
 
-	@Reference(
-		unbind = "-")
-	protected void setIndexerRegistry(IndexerRegistry indexerRegistry) {
-		_indexerRegistry = indexerRegistry;
-	}
-
-	@Reference(
-		unbind = "-")
-	protected void setSocialActivityLocalService(
-		SocialActivityLocalService socialActivityLocalService) {
-
-		_socialActivityLocalService = socialActivityLocalService;
-	}
-
 	private static Pattern _friendlyURLPattern = Pattern.compile("[^a-z0-9_-]");
-
-	private IndexerRegistry _indexerRegistry;
-	private SocialActivityLocalService _socialActivityLocalService;
 
 }

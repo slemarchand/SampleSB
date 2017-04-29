@@ -41,34 +41,37 @@ public class ActionUtil {
 	/**
 	 * Get Record
 	 *
-	 * @param primaryKey
-	 *            Primary key
+	 * @param primaryKey Primary key
 	 * @return SampleSB object
-	 * @throws PortletException 
+	 * @throws PortletException
 	 */
-	public static SampleSB getNewObject(long primaryKey) throws PortletException {
+	public static SampleSB getNewObject(long primaryKey)
+		throws PortletException {
 
-		primaryKey = (primaryKey <= 0) ? 0 : CounterLocalServiceUtil.increment();
+		primaryKey = (primaryKey <= 0)
+			? 0
+			: CounterLocalServiceUtil.increment();
 		return SampleSBLocalServiceUtil.createSampleSB(primaryKey);
-	}	
-	
+	}
+
 	/**
 	 * Get Data list from Database
 	 *
-	 * @param request
-	 *            PortletRequest
+	 * @param request PortletRequest
 	 * @param pagenationContext
 	 * @return SearchContainerResults<SampleSB>
 	 */
-	public static SearchContainerResults<SampleSB> getListFromDB(PortletRequest request,
-			SearchContainer<?> searchContainer) {
+	public static SearchContainerResults<SampleSB> getListFromDB(
+		PortletRequest request, SearchContainer<?> searchContainer) {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
 		PortletPreferences portletPreferences = request.getPreferences();
 
 		// Filter type
-		String prefsViewType = portletPreferences.getValue(SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
-				SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT);
+		String prefsViewType = portletPreferences.getValue(
+			SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
+			SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT);
 
 		long groupId = themeDisplay.getScopeGroupId();
 		int containerStart = searchContainer.getStart();
@@ -79,19 +82,25 @@ public class ActionUtil {
 		List<SampleSB> results = null;
 		int total = 0;
 
-		if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT)) {
-			results = SampleSBLocalServiceUtil.findAllInGroup(groupId, containerStart, containerEnd, null);
+		if (prefsViewType
+			.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT)) {
+			results = SampleSBLocalServiceUtil.findAllInGroup(groupId,
+				containerStart, containerEnd, null);
 			total = SampleSBLocalServiceUtil.countAllInGroup(groupId);
 
-		} else if (prefsViewType.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_USER)) {
-			results = SampleSBLocalServiceUtil.findAllInUser(themeDisplay.getUserId(), containerStart, containerEnd,
-					null);
-			total = SampleSBLocalServiceUtil.countAllInUser(themeDisplay.getUserId());
+		} else if (prefsViewType
+			.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_USER)) {
+			results = SampleSBLocalServiceUtil.findAllInUser(
+				themeDisplay.getUserId(), containerStart, containerEnd, null);
+			total = SampleSBLocalServiceUtil
+				.countAllInUser(themeDisplay.getUserId());
 
 		} else {
-			results = SampleSBLocalServiceUtil.findAllInUserAndGroup(themeDisplay.getUserId(), groupId, containerStart,
-					containerEnd, null);
-			total = SampleSBLocalServiceUtil.countAllInUserAndGroup(themeDisplay.getUserId(), groupId);
+			results = SampleSBLocalServiceUtil.findAllInUserAndGroup(
+				themeDisplay.getUserId(), groupId, containerStart, containerEnd,
+				null);
+			total = SampleSBLocalServiceUtil
+				.countAllInUserAndGroup(themeDisplay.getUserId(), groupId);
 
 		}
 
@@ -101,20 +110,24 @@ public class ActionUtil {
 	/**
 	 * Get Data list from Index
 	 *
-	 * @param request
-	 *            PortletRequest
+	 * @param request PortletRequest
 	 * @param pagenationContext
 	 * @return PagenationContext<SampleSB>
 	 * @throws SearchException
 	 */
-	public static SearchContainerResults<SampleSB> getListFromIndex(PortletRequest request,
-			SearchContainer<?> searchContainer) throws SearchException {
+	public static SearchContainerResults<SampleSB> getListFromIndex(
+		PortletRequest request, SearchContainer<?> searchContainer)
+		throws SearchException {
 
 		// Search Key
-		String searchFilter = ParamUtil.getString(request, DisplayTerms.KEYWORDS);
+		String searchFilter = ParamUtil.getString(request,
+			DisplayTerms.KEYWORDS);
 
-		Indexer<SampleSB> indexer = IndexerRegistryUtil.getIndexer(SampleSB.class);
-		SearchContext searchContext = SearchContextFactory.getInstance(PortalUtil.getHttpServletRequest(request));
+		Indexer<SampleSB> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(SampleSB.class);
+		
+		SearchContext searchContext = SearchContextFactory
+			.getInstance(PortalUtil.getHttpServletRequest(request));
 
 		searchContext.setKeywords(searchFilter);
 		searchContext.setStart(searchContainer.getStart());
@@ -143,7 +156,9 @@ public class ActionUtil {
 				tempResults.add(resReg);
 			} catch (Exception e) {
 				if (_log.isWarnEnabled()) {
-					_log.warn("SampleSB search index is stale and contains entry " + entryId);
+					_log.warn(
+						"SampleSB search index is stale and contains entry "
+								+ entryId);
 				}
 
 				continue;
@@ -156,19 +171,18 @@ public class ActionUtil {
 	/**
 	 * Converte Date Time into Date()
 	 * 
-	 * @param request
-	 *            PortletRequest
-	 * @param prefix
-	 *            Prefix of the parameter
+	 * @param request PortletRequest
+	 * @param prefix Prefix of the parameter
 	 * @return Date object
 	 */
-	public static Date getDateTimeFromRequest(PortletRequest request, String prefix) {
-        int Year = ParamUtil.getInteger(request,prefix + "Year");
-        int Month = ParamUtil.getInteger(request,prefix + "Month") + 1;
-        int Day = ParamUtil.getInteger(request,prefix + "Day");
-        int Hour = ParamUtil.getInteger(request,prefix + "Hour");
-        int Minute = ParamUtil.getInteger(request,prefix + "Minute");
-        int AmPm = ParamUtil.getInteger(request,prefix + "AmPm");
+	public static
+		Date getDateTimeFromRequest(PortletRequest request, String prefix) {
+		int Year = ParamUtil.getInteger(request, prefix + "Year");
+		int Month = ParamUtil.getInteger(request, prefix + "Month") + 1;
+		int Day = ParamUtil.getInteger(request, prefix + "Day");
+		int Hour = ParamUtil.getInteger(request, prefix + "Hour");
+		int Minute = ParamUtil.getInteger(request, prefix + "Minute");
+		int AmPm = ParamUtil.getInteger(request, prefix + "AmPm");
 
 		if (AmPm == Calendar.PM) {
 			Hour += 12;
@@ -183,11 +197,13 @@ public class ActionUtil {
 	 *
 	 * @param request PortletRequest
 	 * @return SampleSB Object
-	 * @throws PortletException 
+	 * @throws PortletException
 	 */
-	public static SampleSB SampleSBFromRequest(long primaryKey, PortletRequest request) throws PortletException {
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		
+	public static SampleSB SampleSBFromRequest(
+		long primaryKey, PortletRequest request) throws PortletException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
 		// Create or fetch existing data
 		SampleSB sampleSB;
 		if (primaryKey <= 0) {
@@ -198,17 +214,30 @@ public class ActionUtil {
 
 		sampleSB.setSamplesbId(primaryKey);
 		sampleSB.setTitle(ParamUtil.getString(request, "title"));
-		sampleSB.setStartDate(ActionUtil.getDateTimeFromRequest(request, "startDate"));
-		sampleSB.setEndDate(ActionUtil.getDateTimeFromRequest(request, "endDate"));
-		sampleSB.setSamplesbBooleanStat(ParamUtil.getBoolean(request, "samplesbBooleanStat"));
-		sampleSB.setSamplesbDateTime(ActionUtil.getDateTimeFromRequest(request, "samplesbDateTime"));
-		sampleSB.setSamplesbDocument(ParamUtil.getLong(request, "samplesbDocument"));
+		sampleSB.setStartDate(
+			ActionUtil.getDateTimeFromRequest(request, "startDate"));
+		sampleSB
+			.setEndDate(ActionUtil.getDateTimeFromRequest(request, "endDate"));
+		sampleSB.setSamplesbBooleanStat(
+			ParamUtil.getBoolean(request, "samplesbBooleanStat"));
+		sampleSB.setSamplesbDateTime(
+			ActionUtil.getDateTimeFromRequest(request, "samplesbDateTime"));
+		sampleSB.setSamplesbDocument(
+			ParamUtil.getLong(request, "samplesbDocument"));
 		sampleSB.setFolderDLId(ParamUtil.getLong(request, "folderDLId"));
-		sampleSB.setSamplesbDocumentLibrary(ParamUtil.getString(request, "samplesbDocumentLibrary"));
-		sampleSB.setSamplesbDouble(ParamUtil.getDouble(request, "samplesbDouble"));
-		sampleSB.setSamplesbInteger(ParamUtil.getInteger(request, "samplesbInteger"));
-		sampleSB.setSamplesbRichText(ParamUtil.getString(request, "samplesbRichText"));
+		sampleSB.setSamplesbDocumentLibrary(
+			ParamUtil.getString(request, "samplesbDocumentLibrary"));
+		sampleSB
+			.setSamplesbDouble(ParamUtil.getDouble(request, "samplesbDouble"));
+		sampleSB.setSamplesbInteger(
+			ParamUtil.getInteger(request, "samplesbInteger"));
+		sampleSB.setSamplesbRichText(
+			ParamUtil.getString(request, "samplesbRichText"));
 		sampleSB.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
+		sampleSB.setSamplesbTitleName(
+			ParamUtil.getString(request, "samplesbTitleName"));
+		sampleSB.setSamplesbSummaryName(
+			ParamUtil.getString(request, "samplesbSummaryName"));
 
 		sampleSB.setCompanyId(themeDisplay.getCompanyId());
 		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
@@ -223,11 +252,13 @@ public class ActionUtil {
 	 * @param primaryKey primaly key
 	 * @param request PortletRequest
 	 * @return SampleSB Object
-	 * @throws PortletException 
+	 * @throws PortletException
 	 */
-	public static SampleSB SampleSBInitialize(long primaryKey, PortletRequest request) throws PortletException {
-		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		
+	public static SampleSB SampleSBInitialize(
+		long primaryKey, PortletRequest request) throws PortletException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
 		// Create or fetch existing data
 		SampleSB sampleSB = ActionUtil.getNewObject(primaryKey);
 
@@ -244,6 +275,8 @@ public class ActionUtil {
 		sampleSB.setSamplesbInteger(0);
 		sampleSB.setSamplesbRichText("");
 		sampleSB.setSamplesbText("");
+		sampleSB.setSamplesbTitleName("");
+		sampleSB.setSamplesbSummaryName("");
 
 		sampleSB.setCompanyId(themeDisplay.getCompanyId());
 		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
@@ -251,6 +284,6 @@ public class ActionUtil {
 
 		return sampleSB;
 	}
-	
+
 	private static Log _log = LogFactoryUtil.getLog(ActionUtil.class);
 }

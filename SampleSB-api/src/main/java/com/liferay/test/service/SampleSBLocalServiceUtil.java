@@ -73,11 +73,11 @@ public class SampleSBLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static com.liferay.test.model.SampleSB addSampleSB(
+	public static com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().addSampleSB(orgEntry, serviceContext);
+		return getService().addEntry(orgEntry, serviceContext);
 	}
 
 	/**
@@ -214,11 +214,11 @@ public class SampleSBLocalServiceUtil {
 		return getService().restoreEntryFromTrash(userId, entryId);
 	}
 
-	public static com.liferay.test.model.SampleSB updateSampleSB(
-		com.liferay.test.model.SampleSB orgEntry,
+	public static com.liferay.test.model.SampleSB updateEntry(
+		com.liferay.test.model.SampleSB entry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().updateSampleSB(orgEntry, serviceContext);
+		return getService().updateEntry(entry, serviceContext);
 	}
 
 	/**

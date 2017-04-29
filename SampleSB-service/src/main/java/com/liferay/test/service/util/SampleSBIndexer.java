@@ -1,10 +1,20 @@
 package com.liferay.test.service.util;
 
-import com.liferay.portal.kernel.dao.orm.*;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.*;
+import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.IndexWriterHelper;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -14,24 +24,34 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
 import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+
+import java.util.Locale;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
-import java.util.Date;
-import java.util.Locale;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
+ * Indexer
+ * 
+ * This class is used to index model records.
+ * 
  * @author Yasuyuki Takeo
  */
-@Component(
-	immediate = true, service = Indexer.class)
+@Component(immediate = true, service = Indexer.class)
 public class SampleSBIndexer
 	extends BaseIndexer<SampleSB> {
 
 	public static final String CLASS_NAME = SampleSB.class.getName();
 
+	/**
+	 * Constructor
+	 * 
+	 * This method is called at deployment of this bundle.
+	 * Define fields to be indexed here.
+	 */
 	public SampleSBIndexer() {
 		setDefaultSelectedFieldNames(Field.ASSET_TAG_NAMES, Field.COMPANY_ID,
 			Field.CONTENT, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
@@ -57,7 +77,7 @@ public class SampleSBIndexer
 
 	@Override
 	public boolean isVisible(long classPK, int status) throws Exception {
-		SampleSB entry = sampleSBLocalService.getSampleSB(classPK);
+		SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
 
 		return isVisible(entry.getStatus(), status);
 	}
@@ -71,34 +91,34 @@ public class SampleSBIndexer
 	}
 
 	@Override
-	protected void doDelete(SampleSB SampleSB) throws Exception {
-		deleteDocument(SampleSB.getCompanyId(), SampleSB.getSamplesbId());
+	protected void doDelete(SampleSB entry) throws Exception {
+		deleteDocument(entry.getCompanyId(), entry.getPrimaryKey());
 	}
 
 	@Override
-	protected Document doGetDocument(SampleSB sampleSB) throws Exception {
+	protected Document doGetDocument(SampleSB entry) throws Exception {
 
 		// TODO : These should be modified according to your requirements.
 
-		Document document = getBaseModelDocument(CLASS_NAME, sampleSB);
+		Document document = getBaseModelDocument(CLASS_NAME, entry);
 
 		// TODO : This should be replaced by assetSummaryFieldName field
-		document.addText(Field.CAPTION, sampleSB.getTitle());
+		document.addText(Field.CAPTION, entry.getTitle());
 
 		// TODO : This should be repleaced by fullContentFieldName field.
 		document.addText(Field.CONTENT,
-			HtmlUtil.extractText(sampleSB.getSamplesbRichText()));
+			HtmlUtil.extractText(entry.getSamplesbRichText()));
 
 		// TODO : This should be replaced by assetTitleFieldName field
-		document.addText(Field.DESCRIPTION, sampleSB.getTitle());
+		document.addText(Field.DESCRIPTION, entry.getTitle());
 
-		document.addDate(Field.MODIFIED_DATE, sampleSB.getModifiedDate());
-
-		// TODO : This should be replaced by assetTitleFieldName field
-		document.addText(Field.SUBTITLE, sampleSB.getTitle());
+		document.addDate(Field.MODIFIED_DATE, entry.getModifiedDate());
 
 		// TODO : This should be replaced by assetTitleFieldName field
-		document.addText(Field.TITLE, sampleSB.getTitle());
+		document.addText(Field.SUBTITLE, entry.getTitle());
+
+		// TODO : This should be replaced by assetTitleFieldName field
+		document.addText(Field.TITLE, entry.getTitle());
 
 		return document;
 	}
@@ -116,16 +136,16 @@ public class SampleSBIndexer
 	}
 
 	@Override
-	protected void doReindex(SampleSB SampleSB) throws Exception {
-		Document document = getDocument(SampleSB);
+	protected void doReindex(SampleSB entry) throws Exception {
+		Document document = getDocument(entry);
 
-		indexWriterHelper.updateDocument(getSearchEngineId(),
-			SampleSB.getCompanyId(), document, isCommitImmediately());
+		_indexWriterHelper.updateDocument(getSearchEngineId(),
+			entry.getCompanyId(), document, isCommitImmediately());
 	}
 
 	@Override
 	protected void doReindex(String className, long classPK) throws Exception {
-		SampleSB entry = sampleSBLocalService.getSampleSB(classPK);
+		SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
 
 		doReindex(entry);
 	}
@@ -138,7 +158,7 @@ public class SampleSBIndexer
 	}
 
 	protected void reindexEntries(long companyId) throws PortalException {
-		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = sampleSBLocalService
+		final IndexableActionableDynamicQuery indexableActionableDynamicQuery = _sampleSBLocalService
 			.getIndexableActionableDynamicQuery();
 
 		indexableActionableDynamicQuery.setAddCriteriaMethod(
@@ -169,8 +189,8 @@ public class SampleSBIndexer
 						indexableActionableDynamicQuery.addDocuments(document);
 					} catch (PortalException pe) {
 						if (_log.isWarnEnabled()) {
-							_log.warn("Unable to index SampleSB entry "
-									+ entry.getSamplesbId(),
+							_log.warn("Unable to index entry "
+									+ entry.getPrimaryKey(),
 								pe);
 						}
 					}
@@ -183,10 +203,10 @@ public class SampleSBIndexer
 	}
 
 	@Reference
-	protected SampleSBLocalService sampleSBLocalService;
+	protected SampleSBLocalService _sampleSBLocalService;
 
 	@Reference
-	protected IndexWriterHelper indexWriterHelper;
+	protected IndexWriterHelper _indexWriterHelper;
 
 	private static final Log _log = LogFactoryUtil
 		.getLog(SampleSBIndexer.class);

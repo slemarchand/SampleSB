@@ -119,7 +119,7 @@ public class SampleSBCrudMVCActionCommand
 			try {
 				ServiceContext serviceContext = ServiceContextFactory
 					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.addSampleSB(sampleSB, serviceContext);
+				_sampleSBLocalService.addEntry(sampleSB, serviceContext);
 				SessionMessages.add(request, "samplesb-added-successfully");
 
 			} catch (Exception cvex) {
@@ -173,7 +173,7 @@ public class SampleSBCrudMVCActionCommand
 			try {
 				ServiceContext serviceContext = ServiceContextFactory
 					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.updateSampleSB(sampleSB, serviceContext);
+				_sampleSBLocalService.updateEntry(sampleSB, serviceContext);
 
 				SessionMessages.add(request, "samplesb-updated-successfully");
 
