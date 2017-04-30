@@ -458,8 +458,7 @@ public class SampleSBLocalServiceImpl
 	 * @param entryId the primary key of the entry to be restored
 	 * @return the restored entry from the recycle bin
 	 */
-	@Indexable(
-		type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SampleSB restoreEntryFromTrash(long userId, long entryId)
 		throws PortalException {
