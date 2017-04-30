@@ -1,16 +1,14 @@
 package com.liferay.test.trash;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.LayoutConstants;
-import com.liferay.portal.kernel.portlet.PortletProvider;
-import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.BaseTrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandler;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
@@ -47,9 +45,14 @@ public class SampleSBTrashHandler
 	public String getRestoreContainedModelLink(
 		PortletRequest portletRequest, long classPK)
 		throws PortalException {
+
+		SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
 		
 		PortletURL portletURL = getRestoreURL(portletRequest, classPK, true);
 
+		portletURL.setParameter(Constants.CMD, Constants.UPDATE);
+		portletURL.setParameter("resourcePrimKey", String.valueOf(entry.getPrimaryKey()));
+		
 		return portletURL.toString();
 	}
 
@@ -69,7 +72,7 @@ public class SampleSBTrashHandler
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		return themeDisplay.translate(SampleSBPortletKeys.SAMPLESB);
+		return themeDisplay.translate("SampleSB");
 	}
 
 	@Override
@@ -93,26 +96,19 @@ public class SampleSBTrashHandler
 		PortletURL portletURL = null;
 
 		SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
-		String portletId = PortletProviderUtil.getPortletId(
-			SampleSB.class.getName(), PortletProvider.Action.VIEW);
 
-		long plid = _portal.getPlidFromPortletId(entry.getGroupId(), portletId);
+		long plid = _portal.getPlidFromPortletId(entry.getGroupId(), SampleSBPortletKeys.SAMPLESB);
 
-		if (plid == LayoutConstants.DEFAULT_PLID) {
-			portletId = PortletProviderUtil.getPortletId(
-				SampleSB.class.getName(), PortletProvider.Action.MANAGE);
-
-			portletURL = _portal.getControlPanelPortletURL(
-				portletRequest, portletId, PortletRequest.RENDER_PHASE);
-		}
-		else {
-			portletURL = PortletURLFactoryUtil.create(
-				portletRequest, portletId, plid, PortletRequest.RENDER_PHASE);
-		}
-
+		portletURL = PortletURLFactoryUtil.create(
+			portletRequest, SampleSBPortletKeys.SAMPLESB, plid,
+			PortletRequest.RENDER_PHASE);
+		
 		if (!containerModel) {
 			portletURL.setParameter(
-				"mvcRenderCommandName", "/samplesb/view");
+				"mvcRenderCommandName", "/samplesb/crud");
+		} else {
+			portletURL.setParameter(
+				"mvcRenderCommandName", "/samplesb/view");			
 		}
 
 		return portletURL;
