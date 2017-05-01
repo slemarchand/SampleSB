@@ -29,12 +29,14 @@
 	<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 </portlet:renderURL>
 
-<div class="container-fluid-1280">
-	<aui:button-row>
-		<aui:button href="<%=samplesbAddURL%>" cssClass="btn btn-default"
-			icon="icon-plus" value="add-samplesb" />
-	</aui:button-row>
-</div>
+<c:if test="<%= SampleSBResourcePermissionChecker.contains(permissionChecker, themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY) %>">
+    <div class="container-fluid-1280">
+        <aui:button-row>
+            <aui:button href="<%=samplesbAddURL%>" cssClass="btn btn-default"
+                icon="icon-plus" value="add-samplesb" />
+        </aui:button-row>
+    </div>
+</c:if>
 
 <aui:nav-bar cssClass="collapse-basic-search" markupView="lexicon">
 	<aui:form action="<%=portletURL.toString()%>" name="searchFm">

@@ -32,6 +32,7 @@
 <%@ page import="com.liferay.portal.kernel.dao.search.DisplayTerms" %>
 <%@ page import="com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil"%>
 <%@ page import="com.liferay.portal.kernel.dao.search.RowChecker" %>
+<%@ page import="com.liferay.portal.kernel.security.permission.ActionKeys" %>
 <%@ page import="javax.portlet.PortletPreferences" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.ArrayList" %>
@@ -53,6 +54,8 @@
 <%@ page import="com.liferay.test.model.SampleSB" %>
 <%@ page import="com.liferay.test.service.SampleSBLocalServiceUtil"%>
 <%@ page import="com.liferay.test.web.portlet.action.SampleSBConfiguration" %>
+<%@ page import="com.liferay.test.service.permission.SampleSBPermissionChecker" %>
+<%@ page import="com.liferay.test.service.permission.SampleSBResourcePermissionChecker" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>

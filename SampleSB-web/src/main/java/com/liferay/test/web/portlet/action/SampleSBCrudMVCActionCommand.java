@@ -6,6 +6,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -19,6 +21,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
+import com.liferay.test.service.permission.SampleSBPermissionChecker;
+import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
 import com.liferay.test.web.util.SampleSBValidator;
 import com.liferay.trash.kernel.util.TrashUtil;
 
@@ -64,20 +68,10 @@ public class SampleSBCrudMVCActionCommand
 
 			} else if (cmd.equals(Constants.DELETE)) {
 				deleteEntry(request, response, false);
-//				// Fetch primary key
-//				long resourcePrimKey = ParamUtil.getLong(request,
-//					"resourcePrimKey", 0);
-//
-//				_sampleSBLocalService.deleteSampleSB(resourcePrimKey);
-//				SessionMessages.add(request, "samplesb-deleted-successfully");
-//
-//				// Fetch redirect
-//				String redirect = ParamUtil.getString(request, "redirect");
-//				redirect = PortalUtil.escapeRedirect(redirect);
-//
-//				sendRedirect(request, response, redirect);
+
 			} else if (cmd.equals(Constants.MOVE_TO_TRASH)) {
 				deleteEntry(request, response, true);
+				
 			}
 		} catch (InvalidParameterException e) {
 			response.setRenderParameter("mvcRenderCommandName",
@@ -106,11 +100,14 @@ public class SampleSBCrudMVCActionCommand
 		long[] deleteEntryIds = null;
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
+		PermissionChecker permissionChecker = themeDisplay
+			.getPermissionChecker();
 
 		long entryId = ParamUtil.getLong(request, "resourcePrimKey", 0L);
 
 		if (entryId > 0) {
-			deleteEntryIds = new long[] { entryId };
+			deleteEntryIds = new long[] {
+				entryId };
 		} else {
 			deleteEntryIds = StringUtil
 				.split(ParamUtil.getString(request, "deleteEntryIds"), 0L);
@@ -119,6 +116,14 @@ public class SampleSBCrudMVCActionCommand
 		List<TrashedModel> trashedModels = new ArrayList<>();
 
 		for (long deleteEntryId : deleteEntryIds) {
+			
+			//Permission check
+			if (!SampleSBPermissionChecker.contains(permissionChecker,
+				deleteEntryId, ActionKeys.DELETE)) {
+				SessionErrors.add(request, "permission-error for ID - " + String.valueOf(deleteEntryId));
+				continue;
+			}
+
 			if (moveToTrash) {
 				SampleSB entry = _sampleSBLocalService
 					.moveEntryToTrash(themeDisplay.getUserId(), deleteEntryId);
@@ -148,33 +153,29 @@ public class SampleSBCrudMVCActionCommand
 	 */
 	public void addEntry(ActionRequest request, ActionResponse response)
 		throws Exception {
-		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
-		// if (isMultipart) {
-		// uploadManager = new SampleSBUpload();
-		// request = extractFields(request, false);
-		// }
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+		PermissionChecker permissionChecker = themeDisplay
+			.getPermissionChecker();
+
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB sampleSB = ActionUtil.SampleSBFromRequest(primaryKey, request);
-		// ThemeDisplay themeDisplay = (ThemeDisplay)
-		// request.getAttribute(WebKeys.THEME_DISPLAY);
-		// PermissionChecker permissionChecker =
-		// themeDisplay.getPermissionChecker();
-		//
-		// if (!SampleSBPermission.contains(permissionChecker,
-		// themeDisplay.getScopeGroupId(), "ADD_SAMPLESB")) {
-		// SampleSBUtil.addParametersForDefaultView(response);
-		// SessionErrors.add(request, "permission-error");
-		// return;
-		// }
+		SampleSB entry = ActionUtil.SampleSBFromRequest(primaryKey, request);
+
 		List<String> errors = SampleSBValidator.validateSampleSB(request);
+
+		// Permission check
+		if (!SampleSBResourcePermissionChecker.contains(permissionChecker,
+			themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY)) {
+			errors.add("permission-error");
+		}
 
 		if (errors.isEmpty()) {
 			// sampleSB = uploadManager.uploadFiles(request, sampleSB);
 			try {
 				ServiceContext serviceContext = ServiceContextFactory
 					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.addEntry(sampleSB, serviceContext);
+				_sampleSBLocalService.addEntry(entry, serviceContext);
 				SessionMessages.add(request, "samplesb-added-successfully");
 
 			} catch (Exception cvex) {
@@ -199,36 +200,28 @@ public class SampleSBCrudMVCActionCommand
 	 */
 	public void updateEntry(ActionRequest request, ActionResponse response)
 		throws Exception {
-		// boolean isMultipart = PortletFileUpload.isMultipartContent(request);
-		// if (isMultipart) {
-		// uploadManager = new SampleSBUpload();
-		// request = extractFields(request, true);
-		// }
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+		PermissionChecker permissionChecker = themeDisplay
+			.getPermissionChecker();
+
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB sampleSB = ActionUtil.SampleSBFromRequest(primaryKey, request);
-		// ThemeDisplay themeDisplay = (ThemeDisplay)
-		// request.getAttribute(WebKeys.THEME_DISPLAY);
-		// PermissionChecker permissionChecker =
-		// themeDisplay.getPermissionChecker();
-		//
-		// if (!SampleSBEntryPermission.contains(permissionChecker, sampleSB,
-		// ActionKeys.UPDATE)) {
-		// SampleSBUtil.addParametersForDefaultView(response);
-		// SessionErrors.add(request, "permission-error");
-		// return;
-		// }
+		SampleSB entry = ActionUtil.SampleSBFromRequest(primaryKey, request);
 
 		List<String> errors = SampleSBValidator.validateSampleSB(request);
 
-		// boolean fromAsset = SampleSBUtil.isFromAsset(request);
-		//
-		// sampleSB = uploadManager.uploadFiles(request, sampleSB);
+		// Permission check
+		if (!SampleSBPermissionChecker.contains(permissionChecker,
+			entry.getPrimaryKey(), ActionKeys.UPDATE)) {
+			errors.add("permission-error");
+		}
+
 		if (errors.isEmpty()) {
 			try {
 				ServiceContext serviceContext = ServiceContextFactory
 					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.updateEntry(sampleSB, serviceContext);
+				_sampleSBLocalService.updateEntry(entry, serviceContext);
 
 				SessionMessages.add(request, "samplesb-updated-successfully");
 
@@ -239,11 +232,12 @@ public class SampleSBCrudMVCActionCommand
 			for (String error : errors) {
 				SessionErrors.add(request, error);
 			}
-			request.setAttribute("sampleSB", sampleSB);
+			request.setAttribute("sampleSB", entry);
 		}
 	}
 
-	@Reference(unbind = "-")
+	@Reference(
+		unbind = "-")
 	protected void setSampleSBLocalService(
 		SampleSBLocalService samplesblocalservice) {
 		_sampleSBLocalService = samplesblocalservice;

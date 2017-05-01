@@ -11,19 +11,16 @@
 		<weight>1</weight>
 		<permissions>
 			<supports>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
-				<action-key>ADD_TO_PAGE</action-key>
-				<action-key>CONFIGURATION</action-key>
-				<action-key>VIEW</action-key>
+				<action-key>ADD_ENTRY</action-key>
+				<action-key>PERMISSIONS</action-key>
 			</supports>
 			<site-member-defaults>
-				<action-key>VIEW</action-key>
 			</site-member-defaults>
 			<guest-defaults>
-				<action-key>VIEW</action-key>
 			</guest-defaults>
 			<guest-unsupported>
-				<action-key>ACCESS_IN_CONTROL_PANEL</action-key>
+				<action-key>ADD_ENTRY</action-key>
+				<action-key>PERMISSIONS</action-key>
 			</guest-unsupported>
 		</permissions>
 	</model-resource>
