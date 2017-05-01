@@ -56,6 +56,6 @@
 		<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 		<portlet:param name="resourcePrimKey" value="<%=primKey%>" />
 	</portlet:actionURL>
-	<liferay-ui:icon image="recycle-bin" url="<%=moveToTrashSampleSBURL.toString()%>" />	
+	<liferay-ui:icon image="trash" url="<%=moveToTrashSampleSBURL.toString()%>" />	
 
 </liferay-ui:icon-menu>
