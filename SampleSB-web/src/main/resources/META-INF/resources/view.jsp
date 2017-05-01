@@ -28,15 +28,32 @@
 	<portlet:param name="<%=Constants.CMD%>" value="<%=Constants.ADD%>" />
 	<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 </portlet:renderURL>
-
-<c:if test="<%= SampleSBResourcePermissionChecker.contains(permissionChecker, themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY) %>">
-    <div class="container-fluid-1280">
-        <aui:button-row>
+    <div class="container-fluid-1280 icons-container lfr-meta-actions">
+		<div class="add-record-button-container pull-left">
+			<c:if test="<%= SampleSBResourcePermissionChecker.contains(permissionChecker, themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY) %>">
             <aui:button href="<%=samplesbAddURL%>" cssClass="btn btn-default"
                 icon="icon-plus" value="add-samplesb" />
-        </aui:button-row>
+			</c:if>
+        </div>
+		<div class="lfr-icon-actions">
+			<c:if test="<%= SampleSBResourcePermissionChecker.contains(permissionChecker, themeDisplay.getScopeGroupId(), ActionKeys.PERMISSIONS) %>">
+				<liferay-security:permissionsURL
+					modelResource="com.liferay.test"
+					modelResourceDescription="<%= HtmlUtil.escape(themeDisplay.getScopeGroupName()) %>"
+					resourcePrimKey="<%= String.valueOf(themeDisplay.getScopeGroupId()) %>"
+					var="modelPermissionsURL"
+				/>
+				<liferay-ui:icon
+					cssClass="lfr-icon-action pull-right"
+					icon="cog"
+					label="<%= true %>"
+					markupView="lexicon"
+					message="permissions"
+					url="<%= modelPermissionsURL %>"
+				/>				
+			</c:if>
+		</div>           
     </div>
-</c:if>
 
 <aui:nav-bar cssClass="collapse-basic-search" markupView="lexicon">
 	<aui:form action="<%=portletURL.toString()%>" name="searchFm">
