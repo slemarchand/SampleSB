@@ -14,7 +14,7 @@
 	int delta = ParamUtil.getInteger(request, SearchContainer.DEFAULT_DELTA_PARAM);
 	String orderByCol = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "samplesbId");
 	String orderByType = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM, "asc");
-	String[] orderColumns = new String[] { "samplesbId","title","startDate","endDate","samplesbBooleanStat","samplesbDateTime","samplesbDocument","folderDLId","samplesbDocumentLibrary","samplesbDouble","samplesbInteger","samplesbRichText","samplesbText" };
+	String[] orderColumns = new String[] { "samplesbId","title","startDate","endDate","samplesbBooleanStat","samplesbDateTime","samplesbDocument","samplesbDocumentLibrary","samplesbDouble","samplesbInteger","samplesbRichText","samplesbText" };
 	
 	navigationPortletURL.setParameter(DisplayTerms.KEYWORDS, keywords);
 	navigationPortletURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, String.valueOf(cur));
