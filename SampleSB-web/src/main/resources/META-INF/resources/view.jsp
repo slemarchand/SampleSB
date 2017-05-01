@@ -12,9 +12,10 @@
 	String keywords = ParamUtil.getString(request, DisplayTerms.KEYWORDS);
 	int cur = ParamUtil.getInteger(request, SearchContainer.DEFAULT_CUR_PARAM);
 	int delta = ParamUtil.getInteger(request, SearchContainer.DEFAULT_DELTA_PARAM);
-	String orderByCol = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "title");
+	String orderByCol = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "samplesbId");
 	String orderByType = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM, "asc");
-
+	String[] orderColumns = new String[] { "samplesbId", "title", "startDate", "endDate" };
+	
 	navigationPortletURL.setParameter(DisplayTerms.KEYWORDS, keywords);
 	navigationPortletURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, String.valueOf(cur));
 	navigationPortletURL.setParameter("mvcRenderCommandName", "/samplesb/view");
@@ -50,7 +51,7 @@
 	<liferay-frontend:management-bar-filters>
 		<liferay-frontend:management-bar-sort orderByCol="<%=orderByCol%>"
 			orderByType="<%=orderByType%>"
-			orderColumns='<%=new String[] { "title", "display-date" }%>'
+			orderColumns='<%=orderColumns%>'
 			portletURL="<%=navigationPortletURL%>" />
 	</liferay-frontend:management-bar-filters>
 

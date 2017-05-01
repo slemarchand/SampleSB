@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.search.SearchContextFactory;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -38,6 +40,7 @@ import javax.portlet.PortletRequest;
  */
 public class ActionUtil {
 
+	
 	/**
 	 * Get Record
 	 *
@@ -52,6 +55,41 @@ public class ActionUtil {
 			? 0
 			: CounterLocalServiceUtil.increment();
 		return SampleSBLocalServiceUtil.createSampleSB(primaryKey);
+	}
+
+	/**
+	 * Order string to boolean
+	 * 
+	 * @param order
+	 * @return if true if order is "asc" or false
+	 */
+	protected static boolean getOrder(String order) {
+		return ("asc".equalsIgnoreCase(order)) ? true : false;
+	}
+	
+	/**
+	 * 
+	 * Order Comparetor
+	 * 
+	 * @param searchContainer
+	 * @return OrderByComparator
+	 */
+	public static OrderByComparator<SampleSB> getOrderByComparator(
+		SearchContainer<?> searchContainer) {
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("searchContainer.getOrderByCol()"
+					+ (null != searchContainer.getOrderByCol()
+						? searchContainer.getOrderByCol()
+						: "null"));
+			_log.debug("searchContainer.getOrderByType()"
+					+ (null != searchContainer.getOrderByType()
+						? searchContainer.getOrderByType()
+						: "null"));
+		}
+
+		return OrderByComparatorFactoryUtil.create("SampleSB_SampleSB",
+			searchContainer.getOrderByCol(), getOrder(searchContainer.getOrderByType()));
 	}
 
 	/**
@@ -82,23 +120,28 @@ public class ActionUtil {
 		List<SampleSB> results = null;
 		int total = 0;
 
+		// Get Order
+		OrderByComparator<SampleSB> orderByComparator = getOrderByComparator(
+			searchContainer);
+
 		if (prefsViewType
 			.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT)) {
 			results = SampleSBLocalServiceUtil.findAllInGroup(groupId,
-				containerStart, containerEnd, null);
+				containerStart, containerEnd, orderByComparator);
 			total = SampleSBLocalServiceUtil.countAllInGroup(groupId);
 
 		} else if (prefsViewType
 			.equals(SampleSBConfiguration.PREFS_VIEW_TYPE_USER)) {
 			results = SampleSBLocalServiceUtil.findAllInUser(
-				themeDisplay.getUserId(), containerStart, containerEnd, null);
+				themeDisplay.getUserId(), containerStart, containerEnd,
+				orderByComparator);
 			total = SampleSBLocalServiceUtil
 				.countAllInUser(themeDisplay.getUserId());
 
 		} else {
 			results = SampleSBLocalServiceUtil.findAllInUserAndGroup(
 				themeDisplay.getUserId(), groupId, containerStart, containerEnd,
-				null);
+				orderByComparator);
 			total = SampleSBLocalServiceUtil
 				.countAllInUserAndGroup(themeDisplay.getUserId(), groupId);
 
@@ -123,9 +166,9 @@ public class ActionUtil {
 		String searchFilter = ParamUtil.getString(request,
 			DisplayTerms.KEYWORDS);
 
-		Indexer<SampleSB> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(SampleSB.class);
-		
+		Indexer<SampleSB> indexer = IndexerRegistryUtil
+			.nullSafeGetIndexer(SampleSB.class);
+
 		SearchContext searchContext = SearchContextFactory
 			.getInstance(PortalUtil.getHttpServletRequest(request));
 

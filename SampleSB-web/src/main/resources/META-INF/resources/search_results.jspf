@@ -1,5 +1,8 @@
 <%@page import="javax.portlet.RenderRequest"%>
 <%
+searchContainer.setOrderByCol(orderByCol);
+searchContainer.setOrderByType(orderByType);
+
 SearchContainerResults<SampleSB> searchContainerResults = null;
 if (Validator.isNull(keywords)) {
 	searchContainerResults = ActionUtil.getListFromDB(renderRequest, searchContainer);
