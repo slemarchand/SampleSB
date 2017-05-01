@@ -39,11 +39,6 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 
 		try {
 			if (cmd.equalsIgnoreCase(Constants.UPDATE)) {
-				// if (!SampleSBEntryPermission.contains(
-				// permissionChecker, sampleSB, ActionKeys.UPDATE)) {
-				// SessionErrors.add(renderRequest, "permission-error");
-				// return;
-				// }
 
 				SampleSB record = SampleSBLocalServiceUtil.getSampleSB(primaryKey);
 				request.setAttribute("folderDLId", String.valueOf(record.getFolderDLId()));
@@ -51,22 +46,13 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 				renderJSP = SampleSBjspKeys.EDIT_JSP;
 
 			} else if (cmd.equalsIgnoreCase(Constants.VIEW)) {
-				// if (!SampleSBEntryPermission.contains(
-				// permissionChecker, sampleSB, ActionKeys.VIEW)){
-				// SessionErrors.add(renderRequest, "permission-error");
-				// return;
-				// }
+
 				SampleSB record = SampleSBLocalServiceUtil.getSampleSB(primaryKey);
 				request.setAttribute("sampleSB", record);
 				renderJSP = SampleSBjspKeys.VIEW_SAMPLESB_JSP;
 
 			} else {
-				// if (!SampleSBPermission.contains(
-				// permissionChecker, themeDisplay.getScopeGroupId(),
-				// "ADD_SAMPLESB")){
-				// SessionErrors.add(renderRequest, "permission-error");
-				// return;
-				// }
+
 				SampleSB record = ActionUtil.getNewObject(primaryKey);
 
 				if (Validator.isNull(request.getParameter("addErrors"))) {
