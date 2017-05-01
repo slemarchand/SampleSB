@@ -14,7 +14,7 @@
 	int delta = ParamUtil.getInteger(request, SearchContainer.DEFAULT_DELTA_PARAM);
 	String orderByCol = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "samplesbId");
 	String orderByType = ParamUtil.getString(request, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM, "asc");
-	String[] orderColumns = new String[] { "samplesbId", "title", "startDate", "endDate" };
+	String[] orderColumns = new String[] { "samplesbId","title","startDate","endDate","samplesbBooleanStat","samplesbDateTime","samplesbDocument","folderDLId","samplesbDocumentLibrary","samplesbDouble","samplesbInteger","samplesbRichText","samplesbText" };
 	
 	navigationPortletURL.setParameter(DisplayTerms.KEYWORDS, keywords);
 	navigationPortletURL.setParameter(SearchContainer.DEFAULT_CUR_PARAM, String.valueOf(cur));
@@ -44,14 +44,12 @@
 	</aui:form>
 </aui:nav-bar>
 
-<liferay-frontend:management-bar 
-	includeCheckBox="<%=true%>"
+<liferay-frontend:management-bar includeCheckBox="<%=true%>"
 	searchContainerId="entryList">
 
 	<liferay-frontend:management-bar-filters>
 		<liferay-frontend:management-bar-sort orderByCol="<%=orderByCol%>"
-			orderByType="<%=orderByType%>"
-			orderColumns='<%=orderColumns%>'
+			orderByType="<%=orderByType%>" orderColumns='<%=orderColumns%>'
 			portletURL="<%=navigationPortletURL%>" />
 	</liferay-frontend:management-bar-filters>
 
@@ -67,7 +65,8 @@
 <div class="container-fluid-1280"
 	id="<portlet:namespace />formContainer">
 
-	<aui:form action="<%=navigationPortletURL.toString()%>" method="get" name="fm">
+	<aui:form action="<%=navigationPortletURL.toString()%>" method="get"
+		name="fm">
 		<aui:input name="<%=Constants.CMD%>" type="hidden" />
 		<aui:input name="redirect" type="hidden"
 			value="<%=navigationPortletURL.toString()%>" />
@@ -79,9 +78,7 @@
 		<liferay-ui:error exception="<%=PortletException.class%>"
 			message="there-was-an-unexpected-error.-please-refresh-the-current-page" />
 
-		<liferay-ui:search-container 
-			id="entryList" 
-			deltaConfigurable="true"
+		<liferay-ui:search-container id="entryList" deltaConfigurable="true"
 			rowChecker="<%=new EmptyOnClickRowChecker(renderResponse)%>"
 			searchContainer='<%=new SearchContainer(renderRequest,
 							PortletURLUtil.clone(navigationPortletURL, liferayPortletResponse), null,
@@ -92,63 +89,40 @@
 			</liferay-ui:search-container-results>
 
 			<liferay-ui:search-container-row
-				className="com.liferay.test.model.SampleSB" 
-				escapedModel="<%= true %>"
-				keyProperty="samplesbId"
-				rowIdProperty="samplesbId"
-				modelVar="sampleSB">
+				className="com.liferay.test.model.SampleSB"
+				escapedModel="<%= true %>" keyProperty="samplesbId"
+				rowIdProperty="samplesbId" modelVar="sampleSB">
 
 				<liferay-ui:search-container-column-text name="SampleSB Id"
 					property="samplesbId" align="left" />
 
-				<liferay-ui:search-container-column-text
-					name="Title"
-				    property="title"
-					orderable="true"
-					orderableProperty="title"
-					align="left"
-				/>
-					
- 				<liferay-ui:search-container-column-text
-					name="Start Date"
+				<liferay-ui:search-container-column-text name="Title"
+					property="title" orderable="true" orderableProperty="title"
+					align="left" />
+
+				<liferay-ui:search-container-column-text name="Start Date"
 					value="<%= dateFormat.format(sampleSB.getStartDate()) %>"
-					orderable="true"
-					orderableProperty="startDate"
-					align="left"
-				/> 
-				
-				<liferay-ui:search-container-column-text
-					name="End Date"
+					orderable="true" orderableProperty="startDate" align="left" />
+
+				<liferay-ui:search-container-column-text name="End Date"
 					value="<%= dateFormat.format(sampleSB.getEndDate()) %>"
-					orderable="true"
-					orderableProperty="endDate"
-					align="left"
-				/>
-				
+					orderable="true" orderableProperty="endDate" align="left" />
+
 				<liferay-ui:search-container-column-text name="SamplesbBoolean Stat"
-					property="samplesbBooleanStat" align="left" />		
-		
-				<liferay-ui:search-container-column-text
-					name="Samplesb DateTime"
+					property="samplesbBooleanStat" align="left" />
+
+				<liferay-ui:search-container-column-text name="Samplesb DateTime"
 					value="<%= dateTimeFormat.format(sampleSB.getSamplesbDateTime()) %>"
-					orderable="true"
-					orderableProperty="samplesbDateTime"
-					align="left"
-				/>
-									
-				<liferay-ui:search-container-column-text
-					name="SampleSB Double"
-				    property="samplesbDouble"
-					align="left"
-				/>		
-				
-				<liferay-ui:search-container-column-text
-					name="SampleSB Ingeger"
-				    property="samplesbInteger"
-					align="left"
-				/>		
-				
-				<liferay-ui:search-container-column-text name="SampleSB richtext" align="center">
+					orderable="true" orderableProperty="samplesbDateTime" align="left" />
+
+				<liferay-ui:search-container-column-text name="SampleSB Double"
+					property="samplesbDouble" align="left" />
+
+				<liferay-ui:search-container-column-text name="SampleSB Ingeger"
+					property="samplesbInteger" align="left" />
+
+				<liferay-ui:search-container-column-text name="SampleSB richtext"
+					align="center">
 					<%
 		 				String samplesbRichTextIcon = iconUnchecked;
 						String samplesbRichText = sampleSB.getSamplesbRichText();
@@ -156,10 +130,11 @@
 							samplesbRichTextIcon= iconChecked;
 		 				}
 		 			  %>
-		 			  <liferay-ui:icon image="<%= samplesbRichTextIcon %>"/>
-				</liferay-ui:search-container-column-text>	
-				
-				<liferay-ui:search-container-column-text name="SampleSB richtext" align="center">
+					<liferay-ui:icon image="<%= samplesbRichTextIcon %>" />
+				</liferay-ui:search-container-column-text>
+
+				<liferay-ui:search-container-column-text name="SampleSB richtext"
+					align="center">
 					<%
 		 				String samplesbTextIcon = iconUnchecked;
 						String samplesbText = sampleSB.getSamplesbText();
@@ -167,8 +142,8 @@
 							samplesbTextIcon= iconChecked;
 		 				}
 		 			  %>
-		 			  <liferay-ui:icon image="<%= samplesbTextIcon %>"/>
-				</liferay-ui:search-container-column-text>																	
+					<liferay-ui:icon image="<%= samplesbTextIcon %>" />
+				</liferay-ui:search-container-column-text>
 
 				<liferay-ui:search-container-column-jsp align="right"
 					path="/edit_actions.jsp" />
