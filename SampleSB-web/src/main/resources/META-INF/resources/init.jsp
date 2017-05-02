@@ -4,21 +4,20 @@
 <%@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %>
 <%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
 <%@ taglib uri="http://liferay.com/tld/security" prefix="liferay-security" %>
+<%@ taglib uri="http://liferay.com/tld/item-selector" prefix="liferay-item-selector" %>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/trash" prefix="liferay-trash" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.UnicodeFormatter" %>
-<%@ page import="com.liferay.portal.kernel.util.Validator" %>
-<%@ page import="com.liferay.trash.kernel.util.TrashUtil" %>
-<%@ page import="com.liferay.portal.kernel.util.Constants" %>
+<%@ page import="com.liferay.portal.kernel.util.*" %>
 <%@ page import="javax.portlet.PortletException" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker" %>
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer" %>
-<%@ page import="com.liferay.portal.kernel.portlet.PortletURLUtil" %>
+<%@ page import="com.liferay.portal.kernel.portlet.*" %>
 <%@ page import="com.liferay.portal.kernel.util.HttpUtil"%>
 <%@ page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 <%@ page import="com.liferay.trash.kernel.util.TrashUtil"%>
@@ -43,7 +42,6 @@
 <%@ page import="javax.portlet.WindowState" %>
 
 <%@ page import="com.liferay.portal.kernel.model.Group" %>
-<%@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState"%>
 <%@ page import="com.liferay.portal.kernel.service.GroupLocalServiceUtil"%>
 <%@ page import="com.liferay.portal.kernel.service.LayoutLocalServiceUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.PortletKeys"%>
@@ -56,12 +54,12 @@
 <%@ page import="com.liferay.test.web.portlet.action.SampleSBConfiguration" %>
 <%@ page import="com.liferay.test.service.permission.SampleSBPermissionChecker" %>
 <%@ page import="com.liferay.test.service.permission.SampleSBResourcePermissionChecker" %>
+<%@ page import="com.liferay.test.web.constants.SampleSBWebKeys" %>
+<%@ page import="com.liferay.test.web.upload.SampleSBItemSelectorHelper" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>
 <portlet:defineObjects/>
-
-<liferay-theme:defineObjects />
 
 <%
 SampleSBConfiguration sampleSBConfiguration =
