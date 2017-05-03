@@ -7,7 +7,7 @@
 <div class="container-fluid-1280">
 	<aui:fieldset>
 		<div class="form-group">
-			<h3>Title</h3>
+			<h3><liferay-ui:message key="samplesb-title" /></h3>
 			<p class="form-control"><%=sampleSB.getTitle()%></p>
 		</div>
 		<aui:button-row>

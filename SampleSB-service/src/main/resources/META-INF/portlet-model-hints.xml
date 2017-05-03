@@ -5,17 +5,37 @@
 		<field name="uuid" type="String" />
 		<field name="samplesbId" type="long" />
 		<field name="title" type="String" />
-		<field name="startDate" type="Date" />
-		<field name="endDate" type="Date" />
+		<field name="startDate" type="Date">
+			<hint name="show-time">false</hint>
+			<hint name="year-range-delta">80</hint>
+		</field>
+		<field name="endDate" type="Date">
+			<hint name="show-time">false</hint>
+			<hint name="year-range-delta">80</hint>
+		</field>
 		<field name="samplesbBooleanStat" type="boolean" />
-		<field name="samplesbDateTime" type="Date" />
+		<field name="samplesbDateTime" type="Date">
+			<hint name="show-time">true</hint>
+			<hint name="year-range-delta">80</hint>
+		</field>
 		<field name="samplesbDocument" type="long" />
 		<field name="folderDLId" type="long" />
-		<field name="samplesbDocumentLibrary" type="String" />
+		<field name="samplesbDocumentLibrary" type="String">
+			<hint name="display-width">60</hint>
+			<hint name="max-length">512</hint>
+		</field>
 		<field name="samplesbDouble" type="double" />
-		<field name="samplesbInteger" type="int" />
-		<field name="samplesbRichText" type="String" />
-		<field name="samplesbText" type="String" />
+		<field name="samplesbInteger" type="int">
+			<hint name="display-width">60</hint>
+		</field>
+		<field name="samplesbRichText" type="String">
+			<hint-collection name="TEXTAREA" />
+			<hint name="max-length">4001</hint>
+		</field>
+		<field name="samplesbText" type="String">
+			<hint-collection name="TEXTAREA" />
+			<hint name="max-length">4001</hint>
+		</field>
 		<field name="groupId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />
@@ -23,8 +43,14 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="urlTitle" type="String" />
-		<field name="samplesbTitleName" type="String" />
-		<field name="samplesbSummaryName" type="String" />
+		<field name="samplesbTitleName" type="String">
+			<hint name="display-width">200</hint>
+			<hint name="max-length">255</hint>
+		</field>
+		<field name="samplesbSummaryName" type="String">
+			<hint-collection name="TEXTAREA" />
+			<hint name="max-length">4001</hint>
+		</field>
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />
 		<field name="statusByUserName" type="String" />

@@ -72,8 +72,8 @@
 		<%
 			requiredLabel = "";
 		%>
-		<aui:input name="samplesbDocumentLibrary" disabled="false"
-			label='<%=LanguageUtil.get(request,
+		<aui:input name="samplesbDocumentLibrary" 
+			readonly="true" type="text" label='<%=LanguageUtil.get(request,
 						"samplesb-samplesbdocumentlibrary") + requiredLabel%>' />
 		<%
 		String samplesbDocumentLibraryClick = renderResponse.getNamespace() + "dlBrowse('samplesbDocumentLibrary Files select','" + 

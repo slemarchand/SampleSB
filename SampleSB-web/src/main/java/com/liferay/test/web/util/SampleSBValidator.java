@@ -55,21 +55,12 @@ public class SampleSBValidator {
 			errors.add("error : samplesbDateTime");
 		}
 
-		// Field samplesbDocument
-		// TODO : Document need to be implimented.
-
-//		if (!validateSamplesbDocument(request.getAttribute("samplesbDocument").toString())) {
-//
-//			errors.add("error : samplesbDocument");
-//		}
-
 		// Field samplesbDocumentLibrary
-		// TODO : Document and Libraly need to be implemented
 		
-//		if (!validateSamplesbDocumentLibrary(ParamUtil.getString(request, "samplesbDocumentLibrary"))) {
-//
-//			errors.add("error : samplesbDocumentLibrary");
-//		}
+		if (!validateSamplesbDocumentLibrary(ParamUtil.getString(request, "samplesbDocumentLibrary"))) {
+
+			errors.add("error : samplesbDocumentLibrary");
+		}
 
 		// Field samplesbDouble
 
@@ -136,19 +127,6 @@ public class SampleSBValidator {
 	 * @return boolean
 	 */
 	private static boolean validateSamplesbDateTime(String field) {
-		boolean valid = true;
-
-		return valid;
-	}
-
-	/**
-	 * Field samplesbDocument Validation
-	 *
-	 * @param field
-	 *            samplesbDocument
-	 * @return boolean
-	 */
-	private static boolean validateSamplesbDocument(String field) {
 		boolean valid = true;
 
 		return valid;

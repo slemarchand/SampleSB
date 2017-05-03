@@ -40,7 +40,6 @@ import javax.portlet.PortletRequest;
  */
 public class ActionUtil {
 
-	
 	/**
 	 * Get Record
 	 *
@@ -66,7 +65,7 @@ public class ActionUtil {
 	protected static boolean getOrder(String order) {
 		return ("asc".equalsIgnoreCase(order)) ? true : false;
 	}
-	
+
 	/**
 	 * 
 	 * Order Comparetor
@@ -89,7 +88,8 @@ public class ActionUtil {
 		}
 
 		return OrderByComparatorFactoryUtil.create("SampleSB_SampleSB",
-			searchContainer.getOrderByCol(), getOrder(searchContainer.getOrderByType()));
+			searchContainer.getOrderByCol(),
+			getOrder(searchContainer.getOrderByType()));
 	}
 
 	/**
