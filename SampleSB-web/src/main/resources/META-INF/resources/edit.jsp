@@ -14,7 +14,6 @@
 	<portlet:param name="redirect" value="<%=currentURL%>" />
 </portlet:actionURL>
 
-
 <aui:fieldset>
 	<aui:form name="samplesbEdit" action="<%=samplesbEditURL%>"
 		method="post">
@@ -76,7 +75,12 @@
 		<aui:input name="samplesbDocumentLibrary" disabled="false"
 			label='<%=LanguageUtil.get(request,
 						"samplesb-samplesbdocumentlibrary") + requiredLabel%>' />
-		<aui:button name="chooseImage" value="Choose" />
+		<%
+		String samplesbDocumentLibraryClick = renderResponse.getNamespace() + "dlBrowse('samplesbDocumentLibrary Files select','" + 
+		renderResponse.getNamespace()+"samplesbDocumentLibrary')";
+		%>
+						
+		<aui:button onClick="<%=samplesbDocumentLibraryClick%>" value="select" />						
 
 		<%
 			requiredLabel = "";
@@ -202,34 +206,36 @@
 			+ "selectItem";
 %>
 
-<aui:script use="liferay-item-selector-dialog">
-    $('#<portlet:namespace />chooseImage').on(
-        'click', 
-        function(event) {
-        	event.preventDefault();
-        	
-            var itemSelectorDialog = new A.LiferayItemSelectorDialog(  
-                {
-                    eventName: '<%=selectItemName%>',
-                    on: {
-                            selectedItemChange: function(event) {
-                                var selectedItem = event.newVal;
-
-                                if (selectedItem) {
-                                    var itemValue = JSON.parse(
-                                    selectedItem.value
-                                    );
-                                    itemSrc = itemValue.url;
-                                }
-                            }
-                    },
-                    title: '<liferay-ui:message key="select-document" />',
-                    url: '<%=sampleSBItemSelectorHelper.getItemSelectorURL(
-					requestBackedPortletURLFactory, themeDisplay,
-					selectItemName)%>'
-                }
-            );
-            itemSelectorDialog.open();
-        }
-    );
+<aui:script>
+    function <portlet:namespace />dlBrowse (title, inputField) {
+       	event.preventDefault();
+       	var itemSrc = $('#'+inputField);
+		AUI().use(
+			'liferay-item-selector-dialog',
+			function(A) {
+				var itemSelectorDialog = new A.LiferayItemSelectorDialog(  
+				    {
+				        eventName: '<%=selectItemName%>',
+				        on: {
+			                selectedItemChange: function(event) {
+			                    var selectedItem = event.newVal;
+			
+			                    if (selectedItem) {
+			                        var itemValue = JSON.parse(
+			                        	selectedItem.value
+			                        );
+			                        itemSrc.val(itemValue.url);
+			                    }
+			                }
+				        },
+				        title: title,
+				        url: '<%=sampleSBItemSelectorHelper.getItemSelectorURL(
+						requestBackedPortletURLFactory, themeDisplay,
+						selectItemName)%>'
+				    }
+				);
+				itemSelectorDialog.open();
+			}
+		);       	
+    }
 </aui:script>
