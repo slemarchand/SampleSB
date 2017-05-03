@@ -16,6 +16,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+/**
+ * @author Yasuyuki Takeo
+ */
 @Component(service = SampleSBItemSelectorHelper.class)
 public class SampleSBItemSelectorHelper {
 

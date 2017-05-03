@@ -21,7 +21,7 @@ import aQute.bnd.annotation.metatype.Configurable;
 /**
  * SampleSB Portlet
  *
- * @author yasuflatland
+ * @author Yasuyuki Takeo
  */
 @Component(
     configurationPid =SampleSBPortletKeys.SAMPLESB_CONFIG,	 		

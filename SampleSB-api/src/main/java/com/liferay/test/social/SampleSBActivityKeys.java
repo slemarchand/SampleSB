@@ -1,8 +1,6 @@
 package com.liferay.test.social;
 
 /**
- * @author Jack A. Rider
- * @author Davide N.P. Rossi.
  * @author Yasuyuki Takeo
  */
 public class SampleSBActivityKeys {

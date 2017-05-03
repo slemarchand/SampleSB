@@ -37,8 +37,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * CRUD Actions for SampleSB
- *
  * @author Yasuyuki Takeo
  */
 @Component(

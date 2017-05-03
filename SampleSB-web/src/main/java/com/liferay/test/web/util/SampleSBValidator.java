@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Validator
  *
- * @author yasuflatland
+ * @author Yasuyuki Takeo
  */
 public class SampleSBValidator {
 

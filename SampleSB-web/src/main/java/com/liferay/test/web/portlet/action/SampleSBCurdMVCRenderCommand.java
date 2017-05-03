@@ -12,6 +12,9 @@ import org.osgi.service.component.annotations.*;
 
 import javax.portlet.*;
 
+/**
+ * @author Yasuyuki Takeo
+ */
 @Component(
     immediate = true,
     property = {

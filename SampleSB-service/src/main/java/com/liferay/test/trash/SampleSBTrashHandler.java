@@ -21,7 +21,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author yasuflatland
+ * Trash handler
+ * 
+ * @author Yasuyuki Takeo
  */
 @Component(
 	property = {"model.class.name=com.liferay.test.model.SampleSB"},

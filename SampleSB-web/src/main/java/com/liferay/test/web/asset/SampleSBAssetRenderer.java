@@ -16,9 +16,15 @@ import javax.portlet.PortletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SampleSBAssetRenderer extends BaseJSPAssetRenderer<SampleSB> implements TrashRenderer {
+/**
+ * @author Yasuyuki Takeo
+ */
+public class SampleSBAssetRenderer
+	extends BaseJSPAssetRenderer<SampleSB>
+	implements TrashRenderer {
 
-	public SampleSBAssetRenderer(SampleSB entry) {
+	public SampleSBAssetRenderer(
+		SampleSB entry) {
 		_entry = entry;
 	}
 
@@ -41,40 +47,39 @@ public class SampleSBAssetRenderer extends BaseJSPAssetRenderer<SampleSB> implem
 	public String getDiscussionPath() {
 		return null;
 	}
-	
+
 	@Override
 	public long getGroupId() {
 		return _entry.getGroupId();
 	}
-	
+
 	@Override
 	public String getJspPath(HttpServletRequest request, String template) {
-		if (template.equals(TEMPLATE_ABSTRACT) ||
-			template.equals(TEMPLATE_FULL_CONTENT)) {
+		if (template.equals(TEMPLATE_ABSTRACT)
+				|| template.equals(TEMPLATE_FULL_CONTENT)) {
 
 			request.setAttribute("sampleSB", _entry);
 			return "/asset/" + template + ".jsp";
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public String getPortletId() {
-		AssetRendererFactory<SampleSB> assetRendererFactory =
-			getAssetRendererFactory();
+		AssetRendererFactory<SampleSB> assetRendererFactory = getAssetRendererFactory();
 
 		return assetRendererFactory.getPortletId();
 	}
-	
+
 	@Override
 	public int getStatus() {
 		return _entry.getStatus();
 	}
-	
+
 	@Override
-	public String getSummary(PortletRequest portletRequest, PortletResponse portletResponse) {
+	public String getSummary(
+		PortletRequest portletRequest, PortletResponse portletResponse) {
 		return HtmlUtil.stripHtml(_entry.getSamplesbSummaryName());
 	}
 
@@ -87,9 +92,11 @@ public class SampleSBAssetRenderer extends BaseJSPAssetRenderer<SampleSB> implem
 	public String getType() {
 		return SampleSBAssetRendererFactory.TYPE;
 	}
-	
+
 	@Override
-	public boolean include(HttpServletRequest request, HttpServletResponse response, String template) throws Exception {
+	public boolean include(
+		HttpServletRequest request, HttpServletResponse response,
+		String template) throws Exception {
 		request.setAttribute("sampleSB", _entry);
 
 		return super.include(request, response, template);
@@ -111,22 +118,22 @@ public class SampleSBAssetRenderer extends BaseJSPAssetRenderer<SampleSB> implem
 	}
 
 	public boolean hasDeletePermission(PermissionChecker permissionChecker) {
-		return SampleSBPermissionChecker.contains(
-			permissionChecker, _entry, ActionKeys.DELETE);
+		return SampleSBPermissionChecker.contains(permissionChecker, _entry,
+			ActionKeys.DELETE);
 	}
 
 	@Override
 	public boolean hasEditPermission(PermissionChecker permissionChecker) {
-		return SampleSBPermissionChecker.contains(
-			permissionChecker, _entry, ActionKeys.UPDATE);
+		return SampleSBPermissionChecker.contains(permissionChecker, _entry,
+			ActionKeys.UPDATE);
 	}
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker) {
-		return SampleSBPermissionChecker.contains(
-			permissionChecker, _entry, ActionKeys.VIEW);
+		return SampleSBPermissionChecker.contains(permissionChecker, _entry,
+			ActionKeys.VIEW);
 	}
-	
+
 	private SampleSB _entry;
 
 }
