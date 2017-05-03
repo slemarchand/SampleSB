@@ -198,21 +198,22 @@
 		.getAttribute(SampleSBWebKeys.SAMPLESB_ITEM_SELECTOR_HELPER);
 	RequestBackedPortletURLFactory requestBackedPortletURLFactory = RequestBackedPortletURLFactoryUtil
 		.create(liferayPortletRequest);
-	String sampleSBSelectItemName = liferayPortletResponse
-		.getNamespace() + "sampleSBSelectItem";
+	String selectItemName = liferayPortletResponse.getNamespace()
+			+ "selectItem";
 %>
 
 <aui:script use="liferay-item-selector-dialog">
     $('#<portlet:namespace />chooseImage').on(
         'click', 
         function(event) {
+        	event.preventDefault();
+        	
             var itemSelectorDialog = new A.LiferayItemSelectorDialog(  
                 {
-                    eventName: '<%=sampleSBSelectItemName%>',
+                    eventName: '<%=selectItemName%>',
                     on: {
                             selectedItemChange: function(event) {
                                 var selectedItem = event.newVal;
-console.log(selectedItem);
 
                                 if (selectedItem) {
                                     var itemValue = JSON.parse(
@@ -222,10 +223,10 @@ console.log(selectedItem);
                                 }
                             }
                     },
-                    title: '<liferay-ui:message key="select-image" />',
+                    title: '<liferay-ui:message key="select-document" />',
                     url: '<%=sampleSBItemSelectorHelper.getItemSelectorURL(
 					requestBackedPortletURLFactory, themeDisplay,
-					sampleSBSelectItemName)%>'
+					selectItemName)%>'
                 }
             );
             itemSelectorDialog.open();

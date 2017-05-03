@@ -25,7 +25,7 @@ public class SampleSBItemSelectorHelper {
 
 		List<ItemSelectorReturnType> desiredItemSelectorReturnTypes =
 			new ArrayList<>();
-		desiredItemSelectorReturnTypes.add(new URLItemSelectorReturnType());
+		desiredItemSelectorReturnTypes.add(new FileEntryItemSelectorReturnType());
 
 		FileItemSelectorCriterion fileItemSelectorCriterion =
 			new FileItemSelectorCriterion();
@@ -34,7 +34,7 @@ public class SampleSBItemSelectorHelper {
 			desiredItemSelectorReturnTypes);
 
 		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
-			requestBackedPortletURLFactory, "sampleSBSelectItem",
+			requestBackedPortletURLFactory, itemSelectedEventName,
 			fileItemSelectorCriterion);
 
 		return itemSelectorURL.toString();
