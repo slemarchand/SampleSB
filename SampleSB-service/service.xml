@@ -4,154 +4,158 @@
 <service-builder package-path="com.liferay.test">
 <namespace>SampleSB</namespace>
 
-    <!--<entity data-source="sampleDataSource" local-service="true" name="SampleSB" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
-    <entity name="SampleSB" local-service="true" remote-service="false" uuid="true">
+	<!--<entity data-source="sampleDataSource" local-service="true" name="SampleSB" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
+	<entity local-service="true" name="SampleSB" remote-service="false" uuid="true" trash-enabled="true">
 
-        <!-- PK field -->
-        <column name="samplesbId" type="long" primary="true" />
-        <column name="title" type="String"  />
-        <column name="startDate" type="Date"  />
-        <column name="endDate" type="Date"  />
-        <column name="samplesbBooleanStat" type="boolean"  />
-        <column name="samplesbDateTime" type="Date"  />
-        <column name="samplesbDocument" type="long"  />
-        <column name="folderDLId" type="long" />
-        <column name="samplesbDocumentLibrary" type="String"  />
-        <column name="samplesbDouble" type="double"  />
-        <column name="samplesbInteger" type="int"  />
-        <column name="samplesbRichText" type="String"  />
-        <column name="samplesbText" type="String"  />
+		<!-- PK field -->
+		<column name="samplesbId" primary="true" type="long" />
+		<column name="title" type="String"  />
+		<column name="startDate" type="Date"  />
+		<column name="endDate" type="Date"  />
+		<column name="samplesbBooleanStat" type="boolean"  />
+		<column name="samplesbDateTime" type="Date"  />
+		<column name="samplesbDocument" type="long"  />
+		<column name="folderDLId" type="long" />
+		<column name="samplesbDocumentLibrary" type="String"  />
+		<column name="samplesbDouble" type="double"  />
+		<column name="samplesbInteger" type="int"  />
+		<column name="samplesbRichText" type="String"  />
+		<column name="samplesbText" type="String"  />
 
-        <!-- Group instance -->
-        <column name="groupId" type="long"/>
+		<!-- Group instance -->
+		<column name="groupId" type="long" />
 
-        <!-- Audit fields -->
-        <column name="companyId" type="long"/>
-        <column name="userId" type="long"/>
-        <column name="userName" type="String"/>
-        <column name="createDate" type="Date"/>
-        <column name="modifiedDate" type="Date"/>
+		<!-- Audit fields -->
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
 
-        <!-- Asset related fields-->
-        <column name="urlTitle" type="String" />
-        <column name="samplesbTitleName" type="String" />
-        <column name="samplesbSummaryName" type="String" />
+		<!-- Asset related fields-->
+		<column name="urlTitle" type="String" />
+		<column name="samplesbTitleName" type="String" />
+		<column name="samplesbSummaryName" type="String" />
 
-        <!-- Workflow related fields -->
-        <column name="status" type="int" />
-        <column name="statusByUserId" type="long" />
-        <column name="statusByUserName" type="String" />
-        <column name="statusDate" type="Date" />
+		<!-- Workflow related fields -->
+		<column name="status" type="int" />
+		<column name="statusByUserId" type="long" />
+		<column name="statusByUserName" type="String" />
+		<column name="statusDate" type="Date" />
 
-        <!-- Workflow related Finders -->
-        <finder name="C_S" return-type="Collection">
-            <finder-column name="companyId" />
-            <finder-column name="status" />
-        </finder>
-        <finder name="G_S" return-type="Collection">
-            <finder-column name="groupId" />
-            <finder-column name="status" />
-        </finder>
-        <finder name="C_U_S" return-type="Collection">
-            <finder-column name="companyId" />
-            <finder-column name="userId" />
-            <finder-column name="status" />
-        </finder>
-        <finder name="G_U_S" return-type="Collection">
-            <finder-column name="groupId" />
-            <finder-column name="userId" />
-            <finder-column name="status" />
-        </finder>
-        <finder name="U_S" return-type="Collection">
-            <finder-column name="userId" />
-            <finder-column name="status" />
-        </finder>
-        <finder name="G_UT_ST" return-type="Collection">
-            <finder-column name="groupId" />
-            <finder-column name="urlTitle" />
-            <finder-column name="status" />
-        </finder>
+		<!-- Workflow related Finders -->
+		<finder name="C_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="C_U_S" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="userId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_U_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="userId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="U_S" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="status" />
+		</finder>
+		<finder name="G_UT_ST" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="urlTitle" />
+			<finder-column name="status" />
+		</finder>
 
+		<!-- Asset related Finders-->
+		<finder name="G_UT" return-type="SampleSB" unique="true">
+			<finder-column name="groupId" />
+			<finder-column name="urlTitle" />
+		</finder>
+		<finder name="URLTitle" return-type="SampleSB" unique="true">
+			<finder-column name="urlTitle" />
+		</finder>
 
-        <!-- Asset related Finders-->
-        <finder name="G_UT" return-type="SampleSB" unique="true">
-            <finder-column name="groupId" />
-            <finder-column name="urlTitle" />
-        </finder>
-        <finder name="URLTitle" return-type="SampleSB" unique="true">
-            <finder-column name="urlTitle" />
-        </finder>
+		<!-- Finder Methods Standard -->
+		<finder name="GroupId" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserIdGroupId" return-type="Collection">
+			<finder-column name="userId" />
+			<finder-column name="groupId" />
+		</finder>
+		<finder name="UserId" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 
-        <!-- Finder Methods Standard -->
-        <finder name="GroupId" return-type="Collection">
-            <finder-column name="groupId" />
-        </finder>
-        <finder name="UserIdGroupId" return-type="Collection">
-            <finder-column name="userId" />
-            <finder-column name="groupId" />
-        </finder>
-        <finder name="UserId" return-type="Collection">
-            <finder-column name="userId" />
-        </finder>
-        <finder name="CompanyId" return-type="Collection">
-            <finder-column name="companyId" />
-        </finder>
+		<finder name="SamplesbId" return-type="Collection">
+			<finder-column name="samplesbId" />
+		</finder>
 
-        <finder name="SamplesbId" return-type="Collection">
-            <finder-column name="samplesbId" />
-        </finder>
+		<finder name="Title" return-type="Collection">
+			<finder-column name="title" />
+		</finder>
 
-        <finder name="Title" return-type="Collection">
-            <finder-column name="title" />
-        </finder>
+		<finder name="StartDate" return-type="Collection">
+			<finder-column name="startDate" />
+		</finder>
 
-        <finder name="StartDate" return-type="Collection">
-            <finder-column name="startDate" />
-        </finder>
+		<finder name="EndDate" return-type="Collection">
+			<finder-column name="endDate" />
+		</finder>
 
-        <finder name="EndDate" return-type="Collection">
-            <finder-column name="endDate" />
-        </finder>
+		<finder name="SamplesbBooleanStat" return-type="Collection">
+			<finder-column name="samplesbBooleanStat" />
+		</finder>
 
-        <finder name="SamplesbBooleanStat" return-type="Collection">
-            <finder-column name="samplesbBooleanStat" />
-        </finder>
+		<finder name="SamplesbDateTime" return-type="Collection">
+			<finder-column name="samplesbDateTime" />
+		</finder>
 
-        <finder name="SamplesbDateTime" return-type="Collection">
-            <finder-column name="samplesbDateTime" />
-        </finder>
+		<finder name="SamplesbDocument" return-type="Collection">
+			<finder-column name="samplesbDocument" />
+		</finder>
 
-        <finder name="SamplesbDocument" return-type="Collection">
-            <finder-column name="samplesbDocument" />
-        </finder>
+		<finder name="SamplesbDocumentLibrary" return-type="Collection">
+			<finder-column name="samplesbDocumentLibrary" />
+		</finder>
 
-        <finder name="SamplesbDocumentLibrary" return-type="Collection">
-            <finder-column name="samplesbDocumentLibrary" />
-        </finder>
+		<finder name="SamplesbDouble" return-type="Collection">
+			<finder-column name="samplesbDouble" />
+		</finder>
 
-        <finder name="SamplesbDouble" return-type="Collection">
-            <finder-column name="samplesbDouble" />
-        </finder>
+		<finder name="SamplesbInteger" return-type="Collection">
+			<finder-column name="samplesbInteger" />
+		</finder>
 
-        <finder name="SamplesbInteger" return-type="Collection">
-            <finder-column name="samplesbInteger" />
-        </finder>
+		<finder name="SamplesbRichText" return-type="Collection">
+			<finder-column name="samplesbRichText" />
+		</finder>
 
-        <finder name="SamplesbRichText" return-type="Collection">
-            <finder-column name="samplesbRichText" />
-        </finder>
+		<finder name="SamplesbText" return-type="Collection">
+			<finder-column name="samplesbText" />
+		</finder>
 
-        <finder name="SamplesbText" return-type="Collection">
-            <finder-column name="samplesbText" />
-        </finder>
-
-        <reference package-path="com.liferay.portlet.documentlibrary" entity="DLFolder" />
-        <reference package-path="com.liferay.portal" entity="WorkflowInstanceLink" />
-        <reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
-        <reference package-path="com.liferay.portlet.asset" entity="AssetLink" />
-    </entity>
-    <exceptions>
-        <exception>NoSuchSampleSB</exception>
-    </exceptions>
+		<reference entity="DLFolder" package-path="com.liferay.portlet.documentlibrary" />
+		<reference entity="PortletPreferences" package-path="com.liferay.portal" />
+		<reference entity="Resource" package-path="com.liferay.portal" />		
+		<reference entity="WorkflowInstanceLink" package-path="com.liferay.portal" />
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="AssetLink" package-path="com.liferay.portlet.asset" />
+		<reference entity="RatingsStats" package-path="com.liferay.portlet.ratings" />
+		<reference entity="TrashEntry" package-path="com.liferay.portlet.trash" />
+		<reference entity="TrashVersion" package-path="com.liferay.portlet.trash" />		
+	</entity>
+	<exceptions>
+		<exception>NoSuchSampleSB</exception>
+	</exceptions>
 
 </service-builder>

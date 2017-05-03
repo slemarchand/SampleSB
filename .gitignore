@@ -3,3 +3,9 @@ build/
 target/
 .idea
 *.iml
+SampleSB-service/bin
+SampleSB-api/.settings
+.settings
+SampleSB-api/bin
+SampleSB-web/bin
+out
