@@ -28,6 +28,9 @@ public class SampleSBValidator {
 		if (!validateTitle(ParamUtil.getString(request, "title"))) {
 			errors.add("error : title");
 		}
+		if (Validator.isNull(ParamUtil.getString(request, "title"))) {
+			errors.add("samplesb-title-required");
+		}		
 
 		// Field startDate
 

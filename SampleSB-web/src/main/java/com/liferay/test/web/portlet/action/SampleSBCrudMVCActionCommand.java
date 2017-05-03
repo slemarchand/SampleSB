@@ -187,6 +187,7 @@ public class SampleSBCrudMVCActionCommand
 				SessionErrors.add(request, error);
 			}
 			PortalUtil.copyRequestParameters(request, response);
+			throw new InvalidParameterException();
 		}
 
 	}
@@ -233,6 +234,8 @@ public class SampleSBCrudMVCActionCommand
 				SessionErrors.add(request, error);
 			}
 			request.setAttribute("sampleSB", entry);
+			throw new InvalidParameterException();
+			
 		}
 	}
 
