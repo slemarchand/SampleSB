@@ -96,7 +96,7 @@ public class ActionUtil {
 	 * Get Data list from Database
 	 *
 	 * @param request PortletRequest
-	 * @param pagenationContext
+	 * @param searchContainer SearchContainer<?>
 	 * @return SearchContainerResults<SampleSB>
 	 */
 	public static SearchContainerResults<SampleSB> getListFromDB(
@@ -114,8 +114,6 @@ public class ActionUtil {
 		long groupId = themeDisplay.getScopeGroupId();
 		int containerStart = searchContainer.getStart();
 		int containerEnd = searchContainer.getEnd();
-
-		// TODO : need to impliment Comparator
 
 		List<SampleSB> results = null;
 		int total = 0;
@@ -154,8 +152,7 @@ public class ActionUtil {
 	 * Get Data list from Index
 	 *
 	 * @param request PortletRequest
-	 * @param pagenationContext
-	 * @return PagenationContext<SampleSB>
+	 * @return searchContainer SearchContainer<?>
 	 * @throws SearchException
 	 */
 	public static SearchContainerResults<SampleSB> getListFromIndex(
@@ -242,7 +239,7 @@ public class ActionUtil {
 	 * @return SampleSB Object
 	 * @throws PortletException
 	 */
-	public static SampleSB SampleSBFromRequest(
+	public static SampleSB getSampleSBFromRequest(
 		long primaryKey, PortletRequest request) throws PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
@@ -297,7 +294,7 @@ public class ActionUtil {
 	 * @return SampleSB Object
 	 * @throws PortletException
 	 */
-	public static SampleSB SampleSBInitialize(
+	public static SampleSB getInitializedSampleSB(
 		long primaryKey, PortletRequest request) throws PortletException {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);

@@ -1,5 +1,6 @@
 <%@ include file="/init.jsp"%>
 <%
+	PortletURL portletURL = PortletURLUtil.clone(renderResponse.createRenderURL(), liferayPortletResponse);
 	boolean fromAsset = (request.getAttribute("fromAsset") != null
 		? (Boolean) request.getAttribute("fromAsset")
 		: false);
@@ -11,7 +12,7 @@
 
 <portlet:actionURL name="/samplesb/crud" var="samplesbEditURL">
 	<portlet:param name="<%=Constants.CMD%>" value="<%=CMD%>" />
-	<portlet:param name="redirect" value="<%=currentURL%>" />
+	<portlet:param name="redirect" value="<%=portletURL.toString()%>" />
 </portlet:actionURL>
 
 <aui:fieldset>

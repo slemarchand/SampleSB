@@ -717,7 +717,7 @@ public class SampleSBLocalServiceImpl
 		return sampleSBPersistence.update(newEntry);
 	}
 
-	private String _createUrlTitle(long entryId, String title) {
+	protected String _createUrlTitle(long entryId, String title) {
 		if (title == null) {
 			return String.valueOf(entryId);
 		}
@@ -735,7 +735,7 @@ public class SampleSBLocalServiceImpl
 			title);
 	}
 
-	private String _getUniqueURLTitle(SampleSB entry) {
+	protected String _getUniqueURLTitle(SampleSB entry) {
 		String urlTitle = _createUrlTitle(entry.getPrimaryKey(),
 			entry.getSamplesbTitleName());
 

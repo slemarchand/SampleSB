@@ -158,7 +158,7 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = ActionUtil.SampleSBFromRequest(primaryKey, request);
+		SampleSB entry = ActionUtil.getSampleSBFromRequest(primaryKey, request);
 
 		List<String> errors = SampleSBValidator.validateSampleSB(request);
 
@@ -206,7 +206,7 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = ActionUtil.SampleSBFromRequest(primaryKey, request);
+		SampleSB entry = ActionUtil.getSampleSBFromRequest(primaryKey, request);
 
 		List<String> errors = SampleSBValidator.validateSampleSB(request);
 
