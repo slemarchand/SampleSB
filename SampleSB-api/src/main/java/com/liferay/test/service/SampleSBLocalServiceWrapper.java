@@ -159,6 +159,18 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getNewObject(long primaryKey) {
+		return _sampleSBLocalService.getNewObject(primaryKey);
+	}
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb

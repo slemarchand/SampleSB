@@ -154,6 +154,17 @@ public class SampleSBLocalServiceUtil {
 	}
 
 	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	public static com.liferay.test.model.SampleSB getNewObject(long primaryKey) {
+		return getService().getNewObject(primaryKey);
+	}
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb

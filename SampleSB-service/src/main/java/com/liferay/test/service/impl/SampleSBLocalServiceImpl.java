@@ -43,11 +43,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.portlet.PortletException;
+
 /**
  * @author Yasuyuki Takeo
  */
 public class SampleSBLocalServiceImpl
 	extends SampleSBLocalServiceBaseImpl {
+
+	/**
+	 * Get Record
+	 *
+	 * @param primaryKey Primary key
+	 * @return SampleSB object
+	 * @throws PortletException
+	 */
+	public SampleSB getNewObject(long primaryKey) {
+
+		primaryKey = (primaryKey <= 0)
+			? 0
+			: counterLocalService.increment();
+		return createSampleSB(primaryKey);
+	}
 
 	@Override
 	public void addEntryResources(
@@ -136,7 +153,7 @@ public class SampleSBLocalServiceImpl
 		long userId, SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
-		Map<String, Serializable> workflowContext = new HashMap<>();
+		Map<String, Serializable> workflowContext = new HashMap<String, Serializable>();
 
 		String userPortraitURL = StringPool.BLANK;
 		String userURL = StringPool.BLANK;

@@ -52,7 +52,7 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 
 			} else {
 
-				SampleSB record = ActionUtil.getNewObject(primaryKey);
+				SampleSB record = _sampleSBLocalService.getNewObject(primaryKey);
 
 				if (Validator.isNull(request.getParameter("addErrors"))) {
 
@@ -73,6 +73,12 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 		return renderJSP;
 	}
 
+	@Reference(unbind = "-")
+	protected void setSampleSBLocalService(
+		SampleSBLocalService samplesblocalservice) {
+		_sampleSBLocalService = samplesblocalservice;
+	}
+
     @Reference(unbind = "-")
     public void setItemSelectorHelper(
         SampleSBItemSelectorHelper sampleSBItemSelectorHelper) {
@@ -80,5 +86,6 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
         _sampleSBItemSelectorHelper = sampleSBItemSelectorHelper;
     }
 
+	private SampleSBLocalService _sampleSBLocalService;
     private SampleSBItemSelectorHelper _sampleSBItemSelectorHelper;
 }

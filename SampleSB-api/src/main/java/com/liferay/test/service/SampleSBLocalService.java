@@ -153,6 +153,16 @@ public interface SampleSBLocalService extends BaseLocalService,
 		long groupId);
 
 	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getNewObject(long primaryKey);
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb

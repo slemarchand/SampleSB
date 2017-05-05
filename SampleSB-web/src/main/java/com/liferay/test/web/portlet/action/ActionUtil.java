@@ -1,7 +1,6 @@
 package com.liferay.test.web.portlet.action;
 
 import com.google.common.collect.Lists;
-import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.dao.search.SearchContainerResults;
@@ -39,22 +38,6 @@ import javax.portlet.PortletRequest;
  * @author Yasuyuki Takeo
  */
 public class ActionUtil {
-
-	/**
-	 * Get Record
-	 *
-	 * @param primaryKey Primary key
-	 * @return SampleSB object
-	 * @throws PortletException
-	 */
-	public static SampleSB getNewObject(long primaryKey)
-		throws PortletException {
-
-		primaryKey = (primaryKey <= 0)
-			? 0
-			: CounterLocalServiceUtil.increment();
-		return SampleSBLocalServiceUtil.createSampleSB(primaryKey);
-	}
 
 	/**
 	 * Order string to boolean
@@ -247,7 +230,7 @@ public class ActionUtil {
 		// Create or fetch existing data
 		SampleSB sampleSB;
 		if (primaryKey <= 0) {
-			sampleSB = ActionUtil.getNewObject(primaryKey);
+			sampleSB = SampleSBLocalServiceUtil.getNewObject(primaryKey);
 		} else {
 			sampleSB = SampleSBLocalServiceUtil.fetchSampleSB(primaryKey);
 		}
@@ -300,7 +283,7 @@ public class ActionUtil {
 			.getAttribute(WebKeys.THEME_DISPLAY);
 
 		// Create or fetch existing data
-		SampleSB sampleSB = ActionUtil.getNewObject(primaryKey);
+		SampleSB sampleSB = SampleSBLocalServiceUtil.getNewObject(primaryKey);
 
 		sampleSB.setSamplesbId(primaryKey);
 		sampleSB.setTitle("");
