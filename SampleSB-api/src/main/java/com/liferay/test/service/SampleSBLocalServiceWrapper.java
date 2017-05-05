@@ -71,6 +71,14 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	/**
+	* Add Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @return created SampleSB model.
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
@@ -207,8 +215,9 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
-	* Moves the entry to the recycle bin. Social activity counters for this
-	* entry get disabled.
+	* Moves the entry to the recycle bin.
+	*
+	* Social activity counters for this entry get disabled.
 	*
 	* @param userId the primary key of the user moving the entry
 	* @param entry the entry to be moved
@@ -245,10 +254,10 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 
 	@Override
 	public com.liferay.test.model.SampleSB updateEntry(
-		com.liferay.test.model.SampleSB entry,
+		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.updateEntry(entry, serviceContext);
+		return _sampleSBLocalService.updateEntry(orgEntry, serviceContext);
 	}
 
 	/**

@@ -169,7 +169,6 @@ public class SampleSBCrudMVCActionCommand
 		}
 
 		if (errors.isEmpty()) {
-			// sampleSB = uploadManager.uploadFiles(request, sampleSB);
 			try {
 				ServiceContext serviceContext = ServiceContextFactory
 					.getInstance(SampleSB.class.getName(), request);

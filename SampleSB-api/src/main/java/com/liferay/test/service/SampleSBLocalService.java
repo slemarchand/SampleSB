@@ -92,6 +92,14 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	/**
+	* Add Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @return created SampleSB model.
+	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
 		throws PortalException;
@@ -189,8 +197,9 @@ public interface SampleSBLocalService extends BaseLocalService,
 		long groupId) throws PortalException;
 
 	/**
-	* Moves the entry to the recycle bin. Social activity counters for this
-	* entry get disabled.
+	* Moves the entry to the recycle bin.
+	*
+	* Social activity counters for this entry get disabled.
 	*
 	* @param userId the primary key of the user moving the entry
 	* @param entry the entry to be moved
@@ -216,7 +225,7 @@ public interface SampleSBLocalService extends BaseLocalService,
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB updateEntry(SampleSB entry, ServiceContext serviceContext)
+	public SampleSB updateEntry(SampleSB orgEntry, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**

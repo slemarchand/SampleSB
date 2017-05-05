@@ -51,21 +51,6 @@ import javax.portlet.PortletException;
 public class SampleSBLocalServiceImpl
 	extends SampleSBLocalServiceBaseImpl {
 
-	/**
-	 * Get Record
-	 *
-	 * @param primaryKey Primary key
-	 * @return SampleSB object
-	 * @throws PortletException
-	 */
-	public SampleSB getNewObject(long primaryKey) {
-
-		primaryKey = (primaryKey <= 0)
-			? 0
-			: counterLocalService.increment();
-		return createSampleSB(primaryKey);
-	}
-
 	@Override
 	public void addEntryResources(
 		long entryId, boolean addGroupPermissions, boolean addGuestPermissions)
@@ -117,14 +102,22 @@ public class SampleSBLocalServiceImpl
 			entry.getPrimaryKey(), groupPermissions, guestPermissions);
 	}
 
+	/**
+	 * Add Entry
+	 * 
+	 * @param orgEntry SampleSB model
+	 * @param serviceContext ServiceContext
+	 * @exception PortalException
+	 * @return created SampleSB model.
+	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
-			throws PortalException {
+		throws PortalException {
 
 		long userId = serviceContext.getUserId();
 
-		SampleSB entry = _addSampleSB(orgEntry, serviceContext);
+		SampleSB entry = _addEntry(orgEntry, serviceContext);
 
 		// Resources
 
@@ -149,6 +142,15 @@ public class SampleSBLocalServiceImpl
 		return startWorkflowInstance(userId, entry, serviceContext);
 	}
 
+	/**
+	 * Start workflow
+	 * 
+	 * @param userId User id of this model's owner
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return model with workflow configrations.
+	 * @throws PortalException
+	 */
 	protected SampleSB startWorkflowInstance(
 		long userId, SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
@@ -198,10 +200,12 @@ public class SampleSBLocalServiceImpl
 		SampleSB entry = getSampleSB(primaryKey);
 		return deleteEntry(entry);
 	}
-	
-	@Indexable(type = IndexableType.DELETE)
+
+	@Indexable(
+		type = IndexableType.DELETE)
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	@SystemEvent(
+		type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException {
 
 		// Entry
@@ -406,10 +410,10 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-
 	/**
-	 * Moves the entry to the recycle bin. Social activity counters for this
-	 * entry get disabled.
+	 * Moves the entry to the recycle bin. 
+	 * 
+	 * Social activity counters for this entry get disabled.
 	 *
 	 * @param userId the primary key of the user moving the entry
 	 * @param entry the entry to be moved
@@ -466,7 +470,7 @@ public class SampleSBLocalServiceImpl
 
 		return moveEntryToTrash(userId, entry);
 	}
-	
+
 	/**
 	 * Restores the entry with the ID from the recycle bin. Social activity
 	 * counters for this entry get activated.
@@ -547,15 +551,16 @@ public class SampleSBLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public SampleSB updateEntry(
-		SampleSB entry, ServiceContext serviceContext) throws PortalException {
+	public SampleSB updateEntry(SampleSB orgEntry, ServiceContext serviceContext)
+			throws PortalException {
 
-		User user = userPersistence.findByPrimaryKey(entry.getUserId());
+		User user = userPersistence.findByPrimaryKey(orgEntry.getUserId());
 
-		entry.setUserName(user.getFullName());
-
-		entry.setModifiedDate(serviceContext.getModifiedDate(null));
-		entry.setUrlTitle(_getUniqueURLTitle(entry));
+		//Update entry
+		SampleSB entry = _updateEntry(
+			orgEntry.getPrimaryKey(), 
+			orgEntry,
+			serviceContext);
 
 		if (entry.isPending() || entry.isDraft()) {
 		} else {
@@ -650,13 +655,13 @@ public class SampleSBLocalServiceImpl
 
 			// Asset
 
-			assetEntryLocalService.updateVisible(
-				SampleSB.class.getName(),entryId, false);
+			assetEntryLocalService.updateVisible(SampleSB.class.getName(),
+				entryId, false);
 
 			// Social
 
-			if ((status == WorkflowConstants.STATUS_SCHEDULED) &&
-					(oldStatus != WorkflowConstants.STATUS_IN_TRASH)) {
+			if ((status == WorkflowConstants.STATUS_SCHEDULED)
+					&& (oldStatus != WorkflowConstants.STATUS_IN_TRASH)) {
 
 				if (serviceContext.isCommandUpdate()) {
 
@@ -677,11 +682,9 @@ public class SampleSBLocalServiceImpl
 				CommentManagerUtil
 					.moveDiscussionToTrash(SampleSB.class.getName(), entryId);
 
-				trashEntryLocalService.addTrashEntry(
-					userId, entry.getGroupId(), SampleSB.class.getName(),
-					entry.getPrimaryKey(), entry.getUuid(), null, oldStatus, null,
-					null);
-				
+				trashEntryLocalService.addTrashEntry(userId, entry.getGroupId(),
+					SampleSB.class.getName(), entry.getPrimaryKey(),
+					entry.getUuid(), null, oldStatus, null, null);
 
 			} else if (oldStatus == WorkflowConstants.STATUS_IN_TRASH) {
 				CommentManagerUtil.restoreDiscussionFromTrash(
@@ -696,7 +699,18 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-	protected SampleSB _addSampleSB(SampleSB entry, ServiceContext serviceContext)
+	/**
+	 * Copy models at add entry
+	 * 
+	 * To process storing a record into database, copy the model passed into a
+	 * new model object here.
+	 * 
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return
+	 * @throws PortalException
+	 */
+	protected SampleSB _addEntry(SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
 		SampleSB newEntry = sampleSBPersistence
@@ -734,6 +748,76 @@ public class SampleSBLocalServiceImpl
 		return sampleSBPersistence.update(newEntry);
 	}
 
+	/**
+	 * Copy models at update entry
+	 * 
+	 * To process storing a record into database, copy the model passed into a
+	 * new model object here.
+	 * 
+	 * @param primaryKey Primary key
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return updated entry
+	 * @throws PortalException
+	 */
+	protected SampleSB _updateEntry(
+		long primaryKey, SampleSB entry, ServiceContext serviceContext)
+		throws PortalException {
+
+		SampleSB updateEntry = fetchSampleSB(primaryKey);
+
+		User user = userPersistence.findByPrimaryKey(entry.getUserId());
+
+		Date now = new Date();
+		updateEntry.setCompanyId(entry.getCompanyId());
+		updateEntry.setGroupId(entry.getGroupId());
+		updateEntry.setUserId(user.getUserId());
+		updateEntry.setUserName(user.getFullName());
+		updateEntry.setCreateDate(entry.getCreateDate());
+		updateEntry.setModifiedDate(now);
+
+		updateEntry.setUuid(entry.getUuid());
+		updateEntry.setUrlTitle(_getUniqueURLTitle(updateEntry));
+		updateEntry.setSamplesbTitleName(entry.getSamplesbTitleName());
+		updateEntry.setSamplesbSummaryName(entry.getSamplesbSummaryName());
+
+		updateEntry.setTitle(entry.getTitle());
+		updateEntry.setStartDate(entry.getStartDate());
+		updateEntry.setEndDate(entry.getEndDate());
+		updateEntry.setSamplesbBooleanStat(entry.getSamplesbBooleanStat());
+		updateEntry.setSamplesbDateTime(entry.getSamplesbDateTime());
+		updateEntry.setSamplesbDocument(entry.getSamplesbDocument());
+		updateEntry.setFolderDLId(entry.getFolderDLId());
+		updateEntry
+			.setSamplesbDocumentLibrary(entry.getSamplesbDocumentLibrary());
+		updateEntry.setSamplesbDouble(entry.getSamplesbDouble());
+		updateEntry.setSamplesbInteger(entry.getSamplesbInteger());
+		updateEntry.setSamplesbRichText(entry.getSamplesbRichText());
+		updateEntry.setSamplesbText(entry.getSamplesbText());
+
+		return updateEntry;
+	}
+
+	/**
+	 * Get Record
+	 *
+	 * @param primaryKey Primary key
+	 * @return SampleSB object
+	 * @throws PortletException
+	 */
+	public SampleSB getNewObject(long primaryKey) {
+
+		primaryKey = (primaryKey <= 0) ? 0 : counterLocalService.increment();
+		return createSampleSB(primaryKey);
+	}
+
+	/**
+	 * Generating URL Title for unique URL
+	 * 
+	 * @param entryId primaryKey of the model
+	 * @param title title for the asset
+	 * @return URL title string
+	 */
 	protected String _createUrlTitle(long entryId, String title) {
 		if (title == null) {
 			return String.valueOf(entryId);
@@ -752,6 +836,12 @@ public class SampleSBLocalServiceImpl
 			title);
 	}
 
+	/**
+	 * Generating a unique URL for asset
+	 * 
+	 * @param entry SampleSB object
+	 * @return unique URL strings
+	 */
 	protected String _getUniqueURLTitle(SampleSB entry) {
 		String urlTitle = _createUrlTitle(entry.getPrimaryKey(),
 			entry.getSamplesbTitleName());
