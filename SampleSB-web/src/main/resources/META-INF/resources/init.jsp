@@ -56,6 +56,7 @@
 <%@ page import="com.liferay.test.service.permission.SampleSBResourcePermissionChecker" %>
 <%@ page import="com.liferay.test.web.constants.SampleSBWebKeys" %>
 <%@ page import="com.liferay.test.web.upload.SampleSBItemSelectorHelper" %>
+<%@ page import="com.liferay.test.web.util.SampleSBViewHelper" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>

@@ -5,9 +5,9 @@ searchContainer.setOrderByType(orderByType);
 
 SearchContainerResults<SampleSB> searchContainerResults = null;
 if (Validator.isNull(keywords)) {
-	searchContainerResults = ActionUtil.getListFromDB(renderRequest, searchContainer);
+	searchContainerResults = sampleSBViewHelper.getListFromDB(renderRequest, searchContainer);
 } else {
-	searchContainerResults = ActionUtil.getListFromIndex(renderRequest, searchContainer);
+	searchContainerResults = sampleSBViewHelper.getListFromIndex(renderRequest, searchContainer);
 }
 
 searchContainer.setTotal(searchContainerResults.getTotal());

@@ -10,4 +10,7 @@ public class SampleSBWebKeys {
 
 	public static final String SAMPLESB_ITEM_SELECTOR_HELPER =
 		"SAMPLESB_ITEM_SELECTOR_HELPER";
+	
+	public static final String SAMPLESB_VIEW_HELPER =
+			"SAMPLESB_VIEW_HELPER";	
 }

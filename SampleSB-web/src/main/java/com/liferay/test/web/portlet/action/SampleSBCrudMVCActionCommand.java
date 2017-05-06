@@ -236,8 +236,7 @@ public class SampleSBCrudMVCActionCommand
 		}
 	}
 
-	@Reference(
-		unbind = "-")
+	@Reference(unbind = "-")
 	protected void setSampleSBLocalService(
 		SampleSBLocalService samplesblocalservice) {
 		_sampleSBLocalService = samplesblocalservice;
