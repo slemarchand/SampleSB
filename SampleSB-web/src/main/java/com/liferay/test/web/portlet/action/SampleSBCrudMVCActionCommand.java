@@ -158,9 +158,9 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = ActionUtil.getSampleSBFromRequest(primaryKey, request);
+		SampleSB entry = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 
-		List<String> errors = SampleSBValidator.validateSampleSB(request);
+		List<String> errors = SampleSBValidator.validate(request);
 
 		// Permission check
 		if (!SampleSBResourcePermissionChecker.contains(permissionChecker,
@@ -205,9 +205,9 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = ActionUtil.getSampleSBFromRequest(primaryKey, request);
+		SampleSB entry = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 
-		List<String> errors = SampleSBValidator.validateSampleSB(request);
+		List<String> errors = SampleSBValidator.validate(request);
 
 		// Permission check
 		if (!SampleSBPermissionChecker.contains(permissionChecker,

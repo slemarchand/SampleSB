@@ -18,14 +18,17 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.social.kernel.model.SocialActivityConstants;
@@ -37,6 +40,9 @@ import com.liferay.trash.kernel.exception.TrashEntryException;
 import com.liferay.trash.kernel.model.TrashEntry;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +50,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 
 /**
  * @author Yasuyuki Takeo
@@ -411,7 +418,7 @@ public class SampleSBLocalServiceImpl
 	}
 
 	/**
-	 * Moves the entry to the recycle bin. 
+	 * Moves the entry to the recycle bin.
 	 * 
 	 * Social activity counters for this entry get disabled.
 	 *
@@ -556,10 +563,8 @@ public class SampleSBLocalServiceImpl
 
 		User user = userPersistence.findByPrimaryKey(orgEntry.getUserId());
 
-		//Update entry
-		SampleSB entry = _updateEntry(
-			orgEntry.getPrimaryKey(), 
-			orgEntry,
+		// Update entry
+		SampleSB entry = _updateEntry(orgEntry.getPrimaryKey(), orgEntry,
 			serviceContext);
 
 		if (entry.isPending() || entry.isDraft()) {
@@ -869,6 +874,120 @@ public class SampleSBLocalServiceImpl
 		}
 
 		return urlTitle;
+	}
+
+	/**
+	 * Converte Date Time into Date()
+	 * 
+	 * @param request PortletRequest
+	 * @param prefix Prefix of the parameter
+	 * @return Date object
+	 */
+	public Date getDateTimeFromRequest(PortletRequest request, String prefix) {
+		int Year = ParamUtil.getInteger(request, prefix + "Year");
+		int Month = ParamUtil.getInteger(request, prefix + "Month") + 1;
+		int Day = ParamUtil.getInteger(request, prefix + "Day");
+		int Hour = ParamUtil.getInteger(request, prefix + "Hour");
+		int Minute = ParamUtil.getInteger(request, prefix + "Minute");
+		int AmPm = ParamUtil.getInteger(request, prefix + "AmPm");
+
+		if (AmPm == Calendar.PM) {
+			Hour += 12;
+		}
+
+		LocalDateTime ldt = LocalDateTime.of(Year, Month, Day, Hour, Minute, 0);
+		return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	/**
+	 * Populate Model with values from a form
+	 *
+	 * @param request PortletRequest
+	 * @return SampleSB Object
+	 * @throws PortletException
+	 */
+	public SampleSB getSampleSBFromRequest(
+		long primaryKey, PortletRequest request) throws PortletException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
+		// Create or fetch existing data
+		SampleSB sampleSB;
+		if (primaryKey <= 0) {
+			sampleSB = getNewObject(primaryKey);
+		} else {
+			sampleSB = fetchSampleSB(primaryKey);
+		}
+
+		sampleSB.setSamplesbId(primaryKey);
+		sampleSB.setTitle(ParamUtil.getString(request, "title"));
+		sampleSB.setStartDate(getDateTimeFromRequest(request, "startDate"));
+		sampleSB.setEndDate(getDateTimeFromRequest(request, "endDate"));
+		sampleSB.setSamplesbBooleanStat(
+			ParamUtil.getBoolean(request, "samplesbBooleanStat"));
+		sampleSB.setSamplesbDateTime(
+			getDateTimeFromRequest(request, "samplesbDateTime"));
+		sampleSB.setSamplesbDocument(
+			ParamUtil.getLong(request, "samplesbDocument"));
+		sampleSB.setFolderDLId(ParamUtil.getLong(request, "folderDLId"));
+		sampleSB.setSamplesbDocumentLibrary(
+			ParamUtil.getString(request, "samplesbDocumentLibrary"));
+		sampleSB
+			.setSamplesbDouble(ParamUtil.getDouble(request, "samplesbDouble"));
+		sampleSB.setSamplesbInteger(
+			ParamUtil.getInteger(request, "samplesbInteger"));
+		sampleSB.setSamplesbRichText(
+			ParamUtil.getString(request, "samplesbRichText"));
+		sampleSB.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
+		sampleSB.setSamplesbTitleName(
+			ParamUtil.getString(request, "samplesbTitleName"));
+		sampleSB.setSamplesbSummaryName(
+			ParamUtil.getString(request, "samplesbSummaryName"));
+
+		sampleSB.setCompanyId(themeDisplay.getCompanyId());
+		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
+		sampleSB.setUserId(themeDisplay.getUserId());
+
+		return sampleSB;
+	}
+
+	/**
+	 * Populate Model with values from a form
+	 *
+	 * @param primaryKey primaly key
+	 * @param request PortletRequest
+	 * @return SampleSB Object
+	 * @throws PortletException
+	 */
+	public SampleSB getInitializedSampleSB(
+		long primaryKey, PortletRequest request) throws PortletException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
+		// Create or fetch existing data
+		SampleSB sampleSB = getNewObject(primaryKey);
+
+		sampleSB.setSamplesbId(primaryKey);
+		sampleSB.setTitle("");
+		sampleSB.setStartDate(new Date());
+		sampleSB.setEndDate(new Date());
+		sampleSB.setSamplesbBooleanStat(true);
+		sampleSB.setSamplesbDateTime(new Date());
+		sampleSB.setSamplesbDocument(0);
+		sampleSB.setFolderDLId(0);
+		sampleSB.setSamplesbDocumentLibrary("");
+		sampleSB.setSamplesbDouble(0.0);
+		sampleSB.setSamplesbInteger(0);
+		sampleSB.setSamplesbRichText("");
+		sampleSB.setSamplesbText("");
+		sampleSB.setSamplesbTitleName("");
+		sampleSB.setSamplesbSummaryName("");
+
+		sampleSB.setCompanyId(themeDisplay.getCompanyId());
+		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
+		sampleSB.setUserId(themeDisplay.getUserId());
+
+		return sampleSB;
 	}
 
 	private static Pattern _friendlyURLPattern = Pattern.compile("[^a-z0-9_-]");

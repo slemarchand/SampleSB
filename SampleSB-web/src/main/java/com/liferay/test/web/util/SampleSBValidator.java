@@ -13,13 +13,20 @@ import javax.portlet.ActionRequest;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Validator
+ * Web parameter validators
+ * 
+ * This validator is for validating parameters from UI.
+ * 
+ * For value range validations,
+ * @see com.liferay.test.service.util.SampleSBValidator
+ * If you don't use Remote service, e.g and you can only consider validatoin from parameter,
+ * you can only validate here without using SampleSBValidator
  *
  * @author Yasuyuki Takeo
  */
 public class SampleSBValidator {
 
-	public static List<String> validateSampleSB(ActionRequest request) throws IOException {
+	public static List<String> validate(ActionRequest request) throws IOException {
 
 		List<String> errors = Lists.newArrayList();
 

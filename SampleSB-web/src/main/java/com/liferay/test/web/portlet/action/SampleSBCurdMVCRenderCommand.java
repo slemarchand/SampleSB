@@ -64,10 +64,10 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 
 				if (Validator.isNull(request.getParameter("addErrors"))) {
 
-					record = ActionUtil.getInitializedSampleSB(primaryKey, request);
+					record = _sampleSBLocalService.getInitializedSampleSB(primaryKey, request);
 				} else {
 
-					record = ActionUtil.getSampleSBFromRequest(primaryKey, request);
+					record = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 				}
 				request.setAttribute("sampleSB", record);
 				renderJSP = SampleSBWebKeys.EDIT_JSP;

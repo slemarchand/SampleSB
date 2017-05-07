@@ -162,6 +162,20 @@ public class SampleSBLocalServiceUtil {
 	}
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	public static com.liferay.test.model.SampleSB getInitializedSampleSB(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return getService().getInitializedSampleSB(primaryKey, request);
+	}
+
+	/**
 	* Get Record
 	*
 	* @param primaryKey Primary key
@@ -202,6 +216,19 @@ public class SampleSBLocalServiceUtil {
 		java.lang.String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getSampleSBByUuidAndGroupId(uuid, groupId);
+	}
+
+	/**
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	public static com.liferay.test.model.SampleSB getSampleSBFromRequest(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return getService().getSampleSBFromRequest(primaryKey, request);
 	}
 
 	/**
@@ -307,6 +334,18 @@ public class SampleSBLocalServiceUtil {
 	*/
 	public static java.lang.String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	public static java.util.Date getDateTimeFromRequest(
+		javax.portlet.PortletRequest request, java.lang.String prefix) {
+		return getService().getDateTimeFromRequest(request, prefix);
 	}
 
 	/**

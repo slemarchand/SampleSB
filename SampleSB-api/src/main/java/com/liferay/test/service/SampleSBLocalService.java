@@ -43,8 +43,12 @@ import com.liferay.test.model.SampleSB;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 
 /**
  * Provides the local service interface for SampleSB. Methods of this
@@ -161,6 +165,18 @@ public interface SampleSBLocalService extends BaseLocalService,
 		long groupId);
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getInitializedSampleSB(long primaryKey,
+		PortletRequest request) throws PortletException;
+
+	/**
 	* Get Record
 	*
 	* @param primaryKey Primary key
@@ -195,6 +211,17 @@ public interface SampleSBLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SampleSB getSampleSBByUuidAndGroupId(java.lang.String uuid,
 		long groupId) throws PortalException;
+
+	/**
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getSampleSBFromRequest(long primaryKey,
+		PortletRequest request) throws PortletException;
 
 	/**
 	* Moves the entry to the recycle bin.
@@ -274,6 +301,17 @@ public interface SampleSBLocalService extends BaseLocalService,
 	* @return the OSGi service identifier
 	*/
 	public java.lang.String getOSGiServiceIdentifier();
+
+	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Date getDateTimeFromRequest(PortletRequest request,
+		java.lang.String prefix);
 
 	/**
 	* Performs a dynamic query on the database and returns the matching rows.

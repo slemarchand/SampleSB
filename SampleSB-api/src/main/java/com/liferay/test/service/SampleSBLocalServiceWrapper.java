@@ -167,6 +167,21 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getInitializedSampleSB(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return _sampleSBLocalService.getInitializedSampleSB(primaryKey, request);
+	}
+
+	/**
 	* Get Record
 	*
 	* @param primaryKey Primary key
@@ -212,6 +227,20 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		java.lang.String uuid, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _sampleSBLocalService.getSampleSBByUuidAndGroupId(uuid, groupId);
+	}
+
+	/**
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getSampleSBFromRequest(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 	}
 
 	/**
@@ -328,6 +357,19 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	@Override
 	public java.lang.String getOSGiServiceIdentifier() {
 		return _sampleSBLocalService.getOSGiServiceIdentifier();
+	}
+
+	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	@Override
+	public java.util.Date getDateTimeFromRequest(
+		javax.portlet.PortletRequest request, java.lang.String prefix) {
+		return _sampleSBLocalService.getDateTimeFromRequest(request, prefix);
 	}
 
 	/**
