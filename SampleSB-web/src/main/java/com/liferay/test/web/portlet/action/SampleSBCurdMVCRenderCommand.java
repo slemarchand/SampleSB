@@ -1,16 +1,24 @@
 package com.liferay.test.web.portlet.action;
 
-import com.liferay.portal.kernel.exception.*;
-import com.liferay.portal.kernel.portlet.bridges.mvc.*;
-import com.liferay.portal.kernel.util.*;
-import com.liferay.test.constants.*;
-import com.liferay.test.model.*;
-import com.liferay.test.service.*;
-import com.liferay.test.web.constants.*;
-import com.liferay.test.web.upload.*;
-import org.osgi.service.component.annotations.*;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.test.constants.SampleSBPortletKeys;
+import com.liferay.test.model.SampleSB;
+import com.liferay.test.service.SampleSBLocalService;
+import com.liferay.test.service.SampleSBLocalServiceUtil;
+import com.liferay.test.web.constants.SampleSBWebKeys;
+import com.liferay.test.web.upload.SampleSBItemSelectorHelper;
+import com.liferay.test.web.util.SampleSBViewHelper;
 
-import javax.portlet.*;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Yasuyuki Takeo
@@ -52,14 +60,14 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 
 			} else {
 
-				SampleSB record = ActionUtil.getNewObject(primaryKey);
+				SampleSB record = _sampleSBLocalService.getNewObject(primaryKey);
 
 				if (Validator.isNull(request.getParameter("addErrors"))) {
 
-					record = ActionUtil.SampleSBInitialize(primaryKey,request);
+					record = _sampleSBLocalService.getInitializedSampleSB(primaryKey, request);
 				} else {
 
-					record = ActionUtil.SampleSBFromRequest(primaryKey, request);
+					record = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 				}
 				request.setAttribute("sampleSB", record);
 				renderJSP = SampleSBWebKeys.EDIT_JSP;
@@ -73,12 +81,19 @@ public class SampleSBCurdMVCRenderCommand implements MVCRenderCommand {
 		return renderJSP;
 	}
 
+	@Reference(unbind = "-")
+	protected void setSampleSBLocalService(
+		SampleSBLocalService samplesblocalservice) {
+		_sampleSBLocalService = samplesblocalservice;
+	}
+
     @Reference(unbind = "-")
     public void setItemSelectorHelper(
         SampleSBItemSelectorHelper sampleSBItemSelectorHelper) {
-
         _sampleSBItemSelectorHelper = sampleSBItemSelectorHelper;
     }
-
+ 
+	private SampleSBLocalService _sampleSBLocalService;
     private SampleSBItemSelectorHelper _sampleSBItemSelectorHelper;
+
 }

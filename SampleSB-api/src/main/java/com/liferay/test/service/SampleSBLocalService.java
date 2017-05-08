@@ -39,12 +39,17 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import com.liferay.test.exception.SampleSBValidateException;
 import com.liferay.test.model.SampleSB;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 
 /**
  * Provides the local service interface for SampleSB. Methods of this
@@ -92,9 +97,18 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	/**
+	* Add Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return created SampleSB model.
+	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
-		throws PortalException;
+		throws PortalException, SampleSBValidateException;
 
 	/**
 	* Adds the sample sb to the database. Also notifies the appropriate model listeners.
@@ -113,6 +127,13 @@ public interface SampleSBLocalService extends BaseLocalService,
 	*/
 	public SampleSB createSampleSB(long samplesbId);
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException;
@@ -153,6 +174,28 @@ public interface SampleSBLocalService extends BaseLocalService,
 		long groupId);
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getInitializedSampleSB(long primaryKey,
+		PortletRequest request) throws PortletException;
+
+	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getNewObject(long primaryKey);
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb
@@ -179,8 +222,22 @@ public interface SampleSBLocalService extends BaseLocalService,
 		long groupId) throws PortalException;
 
 	/**
-	* Moves the entry to the recycle bin. Social activity counters for this
-	* entry get disabled.
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	* @throws SampleSBValidateException
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SampleSB getSampleSBFromRequest(long primaryKey,
+		PortletRequest request)
+		throws SampleSBValidateException, PortletException;
+
+	/**
+	* Moves the entry to the recycle bin.
+	*
+	* Social activity counters for this entry get disabled.
 	*
 	* @param userId the primary key of the user moving the entry
 	* @param entry the entry to be moved
@@ -205,9 +262,18 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public SampleSB restoreEntryFromTrash(long userId, long entryId)
 		throws PortalException;
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	@Indexable(type = IndexableType.REINDEX)
-	public SampleSB updateEntry(SampleSB entry, ServiceContext serviceContext)
-		throws PortalException;
+	public SampleSB updateEntry(SampleSB orgEntry, ServiceContext serviceContext)
+		throws PortalException, SampleSBValidateException;
 
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -257,6 +323,17 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public java.lang.String getOSGiServiceIdentifier();
 
 	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Date getDateTimeFromRequest(PortletRequest request,
+		java.lang.String prefix);
+
+	/**
 	* Performs a dynamic query on the database and returns the matching rows.
 	*
 	* @param dynamicQuery the dynamic query
@@ -303,13 +380,6 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public List<SampleSB> findAllInGroup(long groupId, int start, int end,
 		OrderByComparator<SampleSB> orderByComparator);
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	public List<SampleSB> findAllInUser(long userId);
 
 	public List<SampleSB> findAllInUser(long userId,

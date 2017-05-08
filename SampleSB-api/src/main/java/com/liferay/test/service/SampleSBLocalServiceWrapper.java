@@ -71,11 +71,21 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.getPersistedModel(primaryKeyObj);
 	}
 
+	/**
+	* Add Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return created SampleSB model.
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return _sampleSBLocalService.addEntry(orgEntry, serviceContext);
 	}
 
@@ -102,6 +112,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.createSampleSB(samplesbId);
 	}
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB deleteEntry(
 		com.liferay.test.model.SampleSB entry)
@@ -159,6 +176,33 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getInitializedSampleSB(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return _sampleSBLocalService.getInitializedSampleSB(primaryKey, request);
+	}
+
+	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getNewObject(long primaryKey) {
+		return _sampleSBLocalService.getNewObject(primaryKey);
+	}
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb
@@ -195,8 +239,25 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	}
 
 	/**
-	* Moves the entry to the recycle bin. Social activity counters for this
-	* entry get disabled.
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	* @throws SampleSBValidateException
+	*/
+	@Override
+	public com.liferay.test.model.SampleSB getSampleSBFromRequest(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws com.liferay.test.exception.SampleSBValidateException,
+			javax.portlet.PortletException {
+		return _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
+	}
+
+	/**
+	* Moves the entry to the recycle bin.
+	*
+	* Social activity counters for this entry get disabled.
 	*
 	* @param userId the primary key of the user moving the entry
 	* @param entry the entry to be moved
@@ -231,12 +292,22 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.restoreEntryFromTrash(userId, entryId);
 	}
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB updateEntry(
-		com.liferay.test.model.SampleSB entry,
+		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return _sampleSBLocalService.updateEntry(entry, serviceContext);
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
+		return _sampleSBLocalService.updateEntry(orgEntry, serviceContext);
 	}
 
 	/**
@@ -307,6 +378,19 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	@Override
 	public java.lang.String getOSGiServiceIdentifier() {
 		return _sampleSBLocalService.getOSGiServiceIdentifier();
+	}
+
+	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	@Override
+	public java.util.Date getDateTimeFromRequest(
+		javax.portlet.PortletRequest request, java.lang.String prefix) {
+		return _sampleSBLocalService.getDateTimeFromRequest(request, prefix);
 	}
 
 	/**
@@ -383,13 +467,6 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 			orderByComparator);
 	}
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	@Override
 	public java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
 		long userId) {
