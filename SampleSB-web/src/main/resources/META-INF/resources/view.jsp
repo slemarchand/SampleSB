@@ -21,6 +21,9 @@
 	navigationPortletURL.setParameter("mvcRenderCommandName", "/samplesb/view");
 	navigationPortletURL.setParameter(SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, orderByCol);
 	navigationPortletURL.setParameter(SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM, orderByType);
+	
+	SampleSBViewHelper sampleSBViewHelper = (SampleSBViewHelper) request
+			.getAttribute(SampleSBWebKeys.SAMPLESB_VIEW_HELPER);	
 %>
 
 <portlet:renderURL var="samplesbAddURL">

@@ -73,10 +73,20 @@ public class SampleSBLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
+	/**
+	* Add Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return created SampleSB model.
+	*/
 	public static com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return getService().addEntry(orgEntry, serviceContext);
 	}
 
@@ -102,6 +112,13 @@ public class SampleSBLocalServiceUtil {
 		return getService().createSampleSB(samplesbId);
 	}
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	public static com.liferay.test.model.SampleSB deleteEntry(
 		com.liferay.test.model.SampleSB entry)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -154,6 +171,31 @@ public class SampleSBLocalServiceUtil {
 	}
 
 	/**
+	* Populate Model with values from a form
+	*
+	* @param primaryKey primaly key
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	*/
+	public static com.liferay.test.model.SampleSB getInitializedSampleSB(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws javax.portlet.PortletException {
+		return getService().getInitializedSampleSB(primaryKey, request);
+	}
+
+	/**
+	* Get Record
+	*
+	* @param primaryKey Primary key
+	* @return SampleSB object
+	* @throws PortletException
+	*/
+	public static com.liferay.test.model.SampleSB getNewObject(long primaryKey) {
+		return getService().getNewObject(primaryKey);
+	}
+
+	/**
 	* Returns the sample sb with the primary key.
 	*
 	* @param samplesbId the primary key of the sample sb
@@ -186,8 +228,24 @@ public class SampleSBLocalServiceUtil {
 	}
 
 	/**
-	* Moves the entry to the recycle bin. Social activity counters for this
-	* entry get disabled.
+	* Populate Model with values from a form
+	*
+	* @param request PortletRequest
+	* @return SampleSB Object
+	* @throws PortletException
+	* @throws SampleSBValidateException
+	*/
+	public static com.liferay.test.model.SampleSB getSampleSBFromRequest(
+		long primaryKey, javax.portlet.PortletRequest request)
+		throws com.liferay.test.exception.SampleSBValidateException,
+			javax.portlet.PortletException {
+		return getService().getSampleSBFromRequest(primaryKey, request);
+	}
+
+	/**
+	* Moves the entry to the recycle bin.
+	*
+	* Social activity counters for this entry get disabled.
 	*
 	* @param userId the primary key of the user moving the entry
 	* @param entry the entry to be moved
@@ -219,11 +277,21 @@ public class SampleSBLocalServiceUtil {
 		return getService().restoreEntryFromTrash(userId, entryId);
 	}
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	public static com.liferay.test.model.SampleSB updateEntry(
-		com.liferay.test.model.SampleSB entry,
+		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-		return getService().updateEntry(entry, serviceContext);
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
+		return getService().updateEntry(orgEntry, serviceContext);
 	}
 
 	/**
@@ -287,6 +355,18 @@ public class SampleSBLocalServiceUtil {
 	*/
 	public static java.lang.String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	/**
+	* Converte Date Time into Date()
+	*
+	* @param request PortletRequest
+	* @param prefix Prefix of the parameter
+	* @return Date object
+	*/
+	public static java.util.Date getDateTimeFromRequest(
+		javax.portlet.PortletRequest request, java.lang.String prefix) {
+		return getService().getDateTimeFromRequest(request, prefix);
 	}
 
 	/**
@@ -357,13 +437,6 @@ public class SampleSBLocalServiceUtil {
 				   .findAllInGroup(groupId, start, end, orderByComparator);
 	}
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
 		long userId) {
 		return getService().findAllInUser(userId);

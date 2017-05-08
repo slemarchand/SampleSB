@@ -12,36 +12,49 @@ import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.ModelValidator;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.social.kernel.model.SocialActivityConstants;
+import com.liferay.test.exception.SampleSBValidateException;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.base.SampleSBLocalServiceBaseImpl;
+import com.liferay.test.service.util.SampleSBValidator;
 import com.liferay.test.social.SampleSBActivityKeys;
 import com.liferay.trash.kernel.exception.RestoreEntryException;
 import com.liferay.trash.kernel.exception.TrashEntryException;
 import com.liferay.trash.kernel.model.TrashEntry;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
 
 /**
  * @author Yasuyuki Takeo
@@ -100,17 +113,31 @@ public class SampleSBLocalServiceImpl
 			entry.getPrimaryKey(), groupPermissions, guestPermissions);
 	}
 
+	/**
+	 * Add Entry
+	 * 
+	 * @param orgEntry SampleSB model
+	 * @param serviceContext ServiceContext
+	 * @exception PortalException
+	 * @exception SampleSBValidateException
+	 * @return created SampleSB model.
+	 */
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
-			throws PortalException {
+		throws PortalException, SampleSBValidateException {
 
 		long userId = serviceContext.getUserId();
 
-		SampleSB entry = _addSampleSB(orgEntry, serviceContext);
-
+		//Validation
+		
+		ModelValidator<SampleSB> modelValidator = new SampleSBValidator();
+		modelValidator.validate(orgEntry);
+		
+		SampleSB entry = _addEntry(orgEntry, serviceContext);
+		
 		// Resources
-
+		
 		if (serviceContext.isAddGroupPermissions()
 				|| serviceContext.isAddGuestPermissions()) {
 
@@ -132,11 +159,20 @@ public class SampleSBLocalServiceImpl
 		return startWorkflowInstance(userId, entry, serviceContext);
 	}
 
+	/**
+	 * Start workflow
+	 * 
+	 * @param userId User id of this model's owner
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return model with workflow configrations.
+	 * @throws PortalException
+	 */
 	protected SampleSB startWorkflowInstance(
 		long userId, SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
-		Map<String, Serializable> workflowContext = new HashMap<>();
+		Map<String, Serializable> workflowContext = new HashMap<String, Serializable>();
 
 		String userPortraitURL = StringPool.BLANK;
 		String userURL = StringPool.BLANK;
@@ -181,7 +217,14 @@ public class SampleSBLocalServiceImpl
 		SampleSB entry = getSampleSB(primaryKey);
 		return deleteEntry(entry);
 	}
-	
+
+	/**
+	 * Delete entry
+	 * 
+	 * @param entry SampleSB
+	 * @return SampleSB oject
+	 * @exception PortalException
+	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -225,6 +268,12 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
+	/**
+	 * Delete discussion (comments)
+	 * 
+	 * @param entry
+	 * @throws PortalException
+	 */
 	protected void deleteDiscussion(SampleSB entry) throws PortalException {
 		CommentManagerUtil.deleteDiscussion(SampleSB.class.getName(),
 			entry.getPrimaryKey());
@@ -254,13 +303,6 @@ public class SampleSBLocalServiceImpl
 		return list;
 	}
 
-	/**
-	 * Get a user information
-	 *
-	 * @param userId
-	 * @return
-	 * @throws SystemException
-	 */
 	public List<SampleSB> findAllInUser(long userId) {
 		List<SampleSB> list = (List<SampleSB>) sampleSBPersistence
 			.findByU_S(userId, WorkflowConstants.STATUS_APPROVED);
@@ -389,10 +431,10 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-
 	/**
-	 * Moves the entry to the recycle bin. Social activity counters for this
-	 * entry get disabled.
+	 * Moves the entry to the recycle bin.
+	 * 
+	 * Social activity counters for this entry get disabled.
 	 *
 	 * @param userId the primary key of the user moving the entry
 	 * @param entry the entry to be moved
@@ -449,7 +491,7 @@ public class SampleSBLocalServiceImpl
 
 		return moveEntryToTrash(userId, entry);
 	}
-	
+
 	/**
 	 * Restores the entry with the ID from the recycle bin. Social activity
 	 * counters for this entry get activated.
@@ -528,17 +570,30 @@ public class SampleSBLocalServiceImpl
 			groupPermissions, guestPermissions);
 	}
 
+	/**
+	 * Edit Entry
+	 * 
+	 * @param orgEntry SampleSB model
+	 * @param serviceContext ServiceContext
+	 * @exception PortalException
+	 * @exception SampleSBValidateException
+	 * @return updated SampleSB model.
+	 */	
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public SampleSB updateEntry(
-		SampleSB entry, ServiceContext serviceContext) throws PortalException {
+	public SampleSB updateEntry(SampleSB orgEntry, ServiceContext serviceContext)
+			throws PortalException, SampleSBValidateException {
 
-		User user = userPersistence.findByPrimaryKey(entry.getUserId());
+		User user = userPersistence.findByPrimaryKey(orgEntry.getUserId());
 
-		entry.setUserName(user.getFullName());
-
-		entry.setModifiedDate(serviceContext.getModifiedDate(null));
-		entry.setUrlTitle(_getUniqueURLTitle(entry));
+        //Validation
+        
+        ModelValidator<SampleSB> modelValidator = new SampleSBValidator();
+        modelValidator.validate(orgEntry);
+        
+		// Update entry
+		SampleSB entry = _updateEntry(orgEntry.getPrimaryKey(), orgEntry,
+			serviceContext);
 
 		if (entry.isPending() || entry.isDraft()) {
 		} else {
@@ -633,13 +688,13 @@ public class SampleSBLocalServiceImpl
 
 			// Asset
 
-			assetEntryLocalService.updateVisible(
-				SampleSB.class.getName(),entryId, false);
+			assetEntryLocalService.updateVisible(SampleSB.class.getName(),
+				entryId, false);
 
 			// Social
 
-			if ((status == WorkflowConstants.STATUS_SCHEDULED) &&
-					(oldStatus != WorkflowConstants.STATUS_IN_TRASH)) {
+			if ((status == WorkflowConstants.STATUS_SCHEDULED)
+					&& (oldStatus != WorkflowConstants.STATUS_IN_TRASH)) {
 
 				if (serviceContext.isCommandUpdate()) {
 
@@ -660,11 +715,9 @@ public class SampleSBLocalServiceImpl
 				CommentManagerUtil
 					.moveDiscussionToTrash(SampleSB.class.getName(), entryId);
 
-				trashEntryLocalService.addTrashEntry(
-					userId, entry.getGroupId(), SampleSB.class.getName(),
-					entry.getPrimaryKey(), entry.getUuid(), null, oldStatus, null,
-					null);
-				
+				trashEntryLocalService.addTrashEntry(userId, entry.getGroupId(),
+					SampleSB.class.getName(), entry.getPrimaryKey(),
+					entry.getUuid(), null, oldStatus, null, null);
 
 			} else if (oldStatus == WorkflowConstants.STATUS_IN_TRASH) {
 				CommentManagerUtil.restoreDiscussionFromTrash(
@@ -679,7 +732,18 @@ public class SampleSBLocalServiceImpl
 		return entry;
 	}
 
-	protected SampleSB _addSampleSB(SampleSB entry, ServiceContext serviceContext)
+	/**
+	 * Copy models at add entry
+	 * 
+	 * To process storing a record into database, copy the model passed into a
+	 * new model object here.
+	 * 
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return
+	 * @throws PortalException
+	 */
+	protected SampleSB _addEntry(SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
 		SampleSB newEntry = sampleSBPersistence
@@ -717,7 +781,77 @@ public class SampleSBLocalServiceImpl
 		return sampleSBPersistence.update(newEntry);
 	}
 
-	private String _createUrlTitle(long entryId, String title) {
+	/**
+	 * Copy models at update entry
+	 * 
+	 * To process storing a record into database, copy the model passed into a
+	 * new model object here.
+	 * 
+	 * @param primaryKey Primary key
+	 * @param entry model object
+	 * @param serviceContext ServiceContext
+	 * @return updated entry
+	 * @throws PortalException
+	 */
+	protected SampleSB _updateEntry(
+		long primaryKey, SampleSB entry, ServiceContext serviceContext)
+		throws PortalException {
+
+		SampleSB updateEntry = fetchSampleSB(primaryKey);
+
+		User user = userPersistence.findByPrimaryKey(entry.getUserId());
+
+		Date now = new Date();
+		updateEntry.setCompanyId(entry.getCompanyId());
+		updateEntry.setGroupId(entry.getGroupId());
+		updateEntry.setUserId(user.getUserId());
+		updateEntry.setUserName(user.getFullName());
+		updateEntry.setCreateDate(entry.getCreateDate());
+		updateEntry.setModifiedDate(now);
+
+		updateEntry.setUuid(entry.getUuid());
+		updateEntry.setUrlTitle(_getUniqueURLTitle(updateEntry));
+		updateEntry.setSamplesbTitleName(entry.getSamplesbTitleName());
+		updateEntry.setSamplesbSummaryName(entry.getSamplesbSummaryName());
+
+		updateEntry.setTitle(entry.getTitle());
+		updateEntry.setStartDate(entry.getStartDate());
+		updateEntry.setEndDate(entry.getEndDate());
+		updateEntry.setSamplesbBooleanStat(entry.getSamplesbBooleanStat());
+		updateEntry.setSamplesbDateTime(entry.getSamplesbDateTime());
+		updateEntry.setSamplesbDocument(entry.getSamplesbDocument());
+		updateEntry.setFolderDLId(entry.getFolderDLId());
+		updateEntry
+			.setSamplesbDocumentLibrary(entry.getSamplesbDocumentLibrary());
+		updateEntry.setSamplesbDouble(entry.getSamplesbDouble());
+		updateEntry.setSamplesbInteger(entry.getSamplesbInteger());
+		updateEntry.setSamplesbRichText(entry.getSamplesbRichText());
+		updateEntry.setSamplesbText(entry.getSamplesbText());
+
+		return updateEntry;
+	}
+
+	/**
+	 * Get Record
+	 *
+	 * @param primaryKey Primary key
+	 * @return SampleSB object
+	 * @throws PortletException
+	 */
+	public SampleSB getNewObject(long primaryKey) {
+
+		primaryKey = (primaryKey <= 0) ? 0 : counterLocalService.increment();
+		return createSampleSB(primaryKey);
+	}
+
+	/**
+	 * Generating URL Title for unique URL
+	 * 
+	 * @param entryId primaryKey of the model
+	 * @param title title for the asset
+	 * @return URL title string
+	 */
+	protected String _createUrlTitle(long entryId, String title) {
 		if (title == null) {
 			return String.valueOf(entryId);
 		}
@@ -735,7 +869,13 @@ public class SampleSBLocalServiceImpl
 			title);
 	}
 
-	private String _getUniqueURLTitle(SampleSB entry) {
+	/**
+	 * Generating a unique URL for asset
+	 * 
+	 * @param entry SampleSB object
+	 * @return unique URL strings
+	 */
+	protected String _getUniqueURLTitle(SampleSB entry) {
 		String urlTitle = _createUrlTitle(entry.getPrimaryKey(),
 			entry.getSamplesbTitleName());
 
@@ -762,6 +902,127 @@ public class SampleSBLocalServiceImpl
 		}
 
 		return urlTitle;
+	}
+
+	/**
+	 * Converte Date Time into Date()
+	 * 
+	 * @param request PortletRequest
+	 * @param prefix Prefix of the parameter
+	 * @return Date object
+	 */
+	public Date getDateTimeFromRequest(PortletRequest request, String prefix) {
+		int Year = ParamUtil.getInteger(request, prefix + "Year");
+		int Month = ParamUtil.getInteger(request, prefix + "Month") + 1;
+		int Day = ParamUtil.getInteger(request, prefix + "Day");
+		int Hour = ParamUtil.getInteger(request, prefix + "Hour");
+		int Minute = ParamUtil.getInteger(request, prefix + "Minute");
+		int AmPm = ParamUtil.getInteger(request, prefix + "AmPm");
+
+		if (AmPm == Calendar.PM) {
+			Hour += 12;
+		}
+
+		LocalDateTime ldt = LocalDateTime.of(Year, Month, Day, Hour, Minute, 0);
+		return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	/**
+	 * Populate Model with values from a form
+	 *
+	 * @param request PortletRequest
+	 * @return SampleSB Object
+	 * @throws PortletException
+	 * @throws SampleSBValidateException 
+	 */
+	public SampleSB getSampleSBFromRequest(
+		long primaryKey, PortletRequest request) throws PortletException, SampleSBValidateException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
+		// Create or fetch existing data
+		SampleSB sampleSB;
+		if (primaryKey <= 0) {
+			sampleSB = getNewObject(primaryKey);
+		} else {
+			sampleSB = fetchSampleSB(primaryKey);
+		}
+
+		try {
+			sampleSB.setSamplesbId(primaryKey);
+			sampleSB.setTitle(ParamUtil.getString(request, "title"));
+			sampleSB.setStartDate(getDateTimeFromRequest(request, "startDate"));
+			sampleSB.setEndDate(getDateTimeFromRequest(request, "endDate"));
+			sampleSB.setSamplesbBooleanStat(
+				ParamUtil.getBoolean(request, "samplesbBooleanStat"));
+			sampleSB.setSamplesbDateTime(
+				getDateTimeFromRequest(request, "samplesbDateTime"));
+			sampleSB.setSamplesbDocument(
+				ParamUtil.getLong(request, "samplesbDocument"));
+			sampleSB.setFolderDLId(ParamUtil.getLong(request, "folderDLId"));
+			sampleSB.setSamplesbDocumentLibrary(
+				ParamUtil.getString(request, "samplesbDocumentLibrary"));
+			sampleSB
+				.setSamplesbDouble(ParamUtil.getDouble(request, "samplesbDouble"));
+			sampleSB.setSamplesbInteger(
+				ParamUtil.getInteger(request, "samplesbInteger"));
+			sampleSB.setSamplesbRichText(
+				ParamUtil.getString(request, "samplesbRichText"));
+			sampleSB.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
+			sampleSB.setSamplesbTitleName(
+				ParamUtil.getString(request, "samplesbTitleName"));
+			sampleSB.setSamplesbSummaryName(
+				ParamUtil.getString(request, "samplesbSummaryName"));
+
+			sampleSB.setCompanyId(themeDisplay.getCompanyId());
+			sampleSB.setGroupId(themeDisplay.getScopeGroupId());
+			sampleSB.setUserId(themeDisplay.getUserId());
+		} catch (Throwable e) {
+			List<String> error = new ArrayList<>();
+			error.add("value-convert-error");
+			throw new SampleSBValidateException(error);
+		}
+
+		return sampleSB;
+	}
+
+	/**
+	 * Populate Model with values from a form
+	 *
+	 * @param primaryKey primaly key
+	 * @param request PortletRequest
+	 * @return SampleSB Object
+	 * @throws PortletException
+	 */
+	public SampleSB getInitializedSampleSB(
+		long primaryKey, PortletRequest request) throws PortletException {
+		ThemeDisplay themeDisplay = (ThemeDisplay) request
+			.getAttribute(WebKeys.THEME_DISPLAY);
+
+		// Create or fetch existing data
+		SampleSB sampleSB = getNewObject(primaryKey);
+
+		sampleSB.setSamplesbId(primaryKey);
+		sampleSB.setTitle("");
+		sampleSB.setStartDate(new Date());
+		sampleSB.setEndDate(new Date());
+		sampleSB.setSamplesbBooleanStat(true);
+		sampleSB.setSamplesbDateTime(new Date());
+		sampleSB.setSamplesbDocument(0);
+		sampleSB.setFolderDLId(0);
+		sampleSB.setSamplesbDocumentLibrary("");
+		sampleSB.setSamplesbDouble(0.0);
+		sampleSB.setSamplesbInteger(0);
+		sampleSB.setSamplesbRichText("");
+		sampleSB.setSamplesbText("");
+		sampleSB.setSamplesbTitleName("");
+		sampleSB.setSamplesbSummaryName("");
+
+		sampleSB.setCompanyId(themeDisplay.getCompanyId());
+		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
+		sampleSB.setUserId(themeDisplay.getUserId());
+
+		return sampleSB;
 	}
 
 	private static Pattern _friendlyURLPattern = Pattern.compile("[^a-z0-9_-]");

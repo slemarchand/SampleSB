@@ -48,7 +48,6 @@
 <%@ page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@ page import="com.liferay.portal.kernel.model.GroupConstants"%>
 
-<%@ page import="com.liferay.test.web.portlet.action.ActionUtil" %>
 <%@ page import="com.liferay.test.model.SampleSB" %>
 <%@ page import="com.liferay.test.service.SampleSBLocalServiceUtil"%>
 <%@ page import="com.liferay.test.web.portlet.action.SampleSBConfiguration" %>
@@ -56,6 +55,7 @@
 <%@ page import="com.liferay.test.service.permission.SampleSBResourcePermissionChecker" %>
 <%@ page import="com.liferay.test.web.constants.SampleSBWebKeys" %>
 <%@ page import="com.liferay.test.web.upload.SampleSBItemSelectorHelper" %>
+<%@ page import="com.liferay.test.web.util.SampleSBViewHelper" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>
