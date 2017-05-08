@@ -11,6 +11,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author Yasuyuki Takeo
+ */
 public class SampleSBValidator
 	implements ModelValidator<SampleSB> {
 
