@@ -77,13 +77,15 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	* @param orgEntry SampleSB model
 	* @param serviceContext ServiceContext
 	* @exception PortalException
+	* @exception SampleSBValidateException
 	* @return created SampleSB model.
 	*/
 	@Override
 	public com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return _sampleSBLocalService.addEntry(orgEntry, serviceContext);
 	}
 
@@ -110,6 +112,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.createSampleSB(samplesbId);
 	}
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB deleteEntry(
 		com.liferay.test.model.SampleSB entry)
@@ -235,11 +244,13 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 	* @param request PortletRequest
 	* @return SampleSB Object
 	* @throws PortletException
+	* @throws SampleSBValidateException
 	*/
 	@Override
 	public com.liferay.test.model.SampleSB getSampleSBFromRequest(
 		long primaryKey, javax.portlet.PortletRequest request)
-		throws javax.portlet.PortletException {
+		throws com.liferay.test.exception.SampleSBValidateException,
+			javax.portlet.PortletException {
 		return _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
 	}
 
@@ -281,11 +292,21 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 		return _sampleSBLocalService.restoreEntryFromTrash(userId, entryId);
 	}
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	@Override
 	public com.liferay.test.model.SampleSB updateEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return _sampleSBLocalService.updateEntry(orgEntry, serviceContext);
 	}
 
@@ -446,13 +467,6 @@ public class SampleSBLocalServiceWrapper implements SampleSBLocalService,
 			orderByComparator);
 	}
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	@Override
 	public java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
 		long userId) {

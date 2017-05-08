@@ -19,14 +19,13 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.constants.SampleSBPortletKeys;
+import com.liferay.test.exception.SampleSBValidateException;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
 import com.liferay.test.service.permission.SampleSBPermissionChecker;
 import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
-import com.liferay.test.web.util.SampleSBValidator;
 import com.liferay.trash.kernel.util.TrashUtil;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +39,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Yasuyuki Takeo
  */
 @Component(
-    immediate = true,
-    property = {
-        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
-        "mvc.command.name=/samplesb/crud"
-    },
-    service = MVCActionCommand.class
+	immediate = true, property = {
+		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
+		"mvc.command.name=/samplesb/crud" 
+	},
+	service = MVCActionCommand.class
 )
 public class SampleSBCrudMVCActionCommand
 	extends BaseMVCActionCommand {
@@ -69,9 +67,13 @@ public class SampleSBCrudMVCActionCommand
 
 			} else if (cmd.equals(Constants.MOVE_TO_TRASH)) {
 				deleteEntry(request, response, true);
-				
+
 			}
-		} catch (InvalidParameterException e) {
+		} catch (SampleSBValidateException e) {
+			for (String error : e.getErrors()) {
+				SessionErrors.add(request, error);
+			}
+			PortalUtil.copyRequestParameters(request, response);
 			response.setRenderParameter("mvcRenderCommandName",
 				"/samplesb/crud");
 			hideDefaultSuccessMessage(request);
@@ -114,11 +116,12 @@ public class SampleSBCrudMVCActionCommand
 		List<TrashedModel> trashedModels = new ArrayList<>();
 
 		for (long deleteEntryId : deleteEntryIds) {
-			
-			//Permission check
+
+			// Permission check
 			if (!SampleSBPermissionChecker.contains(permissionChecker,
 				deleteEntryId, ActionKeys.DELETE)) {
-				SessionErrors.add(request, "permission-error for ID - " + String.valueOf(deleteEntryId));
+				SessionErrors.add(request, "permission-error for ID - "
+						+ String.valueOf(deleteEntryId));
 				continue;
 			}
 
@@ -147,10 +150,10 @@ public class SampleSBCrudMVCActionCommand
 	 *
 	 * @param request
 	 * @param response
-	 * @throws Exception
+	 * @throws SampleSBValidateException, Exception
 	 */
 	public void addEntry(ActionRequest request, ActionResponse response)
-		throws Exception {
+		throws SampleSBValidateException, Exception {
 		ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
 		PermissionChecker permissionChecker = themeDisplay
@@ -158,35 +161,24 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
-
-		List<String> errors = SampleSBValidator.validate(request);
+		SampleSB entry = _sampleSBLocalService
+			.getSampleSBFromRequest(primaryKey, request);
 
 		// Permission check
 		if (!SampleSBResourcePermissionChecker.contains(permissionChecker,
 			themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY)) {
-			errors.add("permission-error");
+			List<String> error = new ArrayList<>();
+			error.add("permission-error");
+			throw new SampleSBValidateException(error);
 		}
 
-		if (errors.isEmpty()) {
-			try {
-				ServiceContext serviceContext = ServiceContextFactory
-					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.addEntry(entry, serviceContext);
-				SessionMessages.add(request, "samplesb-added-successfully");
+		ServiceContext serviceContext = ServiceContextFactory
+			.getInstance(SampleSB.class.getName(), request);
 
-			} catch (Exception cvex) {
-				SessionErrors.add(request, "please-enter-a-unique-code");
-				PortalUtil.copyRequestParameters(request, response);
-			}
-		} else {
-			for (String error : errors) {
-				SessionErrors.add(request, error);
-			}
-			PortalUtil.copyRequestParameters(request, response);
-			throw new InvalidParameterException();
-		}
+		// Add entry
+		_sampleSBLocalService.addEntry(entry, serviceContext);
 
+		SessionMessages.add(request, "samplesb-added-successfully");
 	}
 
 	/**
@@ -205,35 +197,24 @@ public class SampleSBCrudMVCActionCommand
 
 		long primaryKey = ParamUtil.getLong(request, "resourcePrimKey", 0);
 
-		SampleSB entry = _sampleSBLocalService.getSampleSBFromRequest(primaryKey, request);
-
-		List<String> errors = SampleSBValidator.validate(request);
+		SampleSB entry = _sampleSBLocalService
+			.getSampleSBFromRequest(primaryKey, request);
 
 		// Permission check
 		if (!SampleSBPermissionChecker.contains(permissionChecker,
 			entry.getPrimaryKey(), ActionKeys.UPDATE)) {
-			errors.add("permission-error");
+            List<String> error = new ArrayList<>();
+            error.add("permission-error");
+            throw new SampleSBValidateException(error);			
 		}
 
-		if (errors.isEmpty()) {
-			try {
-				ServiceContext serviceContext = ServiceContextFactory
-					.getInstance(SampleSB.class.getName(), request);
-				_sampleSBLocalService.updateEntry(entry, serviceContext);
+		ServiceContext serviceContext = ServiceContextFactory
+			.getInstance(SampleSB.class.getName(), request);
+		
+		//Update entry
+		_sampleSBLocalService.updateEntry(entry, serviceContext);
 
-				SessionMessages.add(request, "samplesb-updated-successfully");
-
-			} catch (Exception cvex) {
-				SessionErrors.add(request, "please-enter-a-unique-code");
-			}
-		} else {
-			for (String error : errors) {
-				SessionErrors.add(request, error);
-			}
-			request.setAttribute("sampleSB", entry);
-			throw new InvalidParameterException();
-			
-		}
+		SessionMessages.add(request, "samplesb-updated-successfully");
 	}
 
 	@Reference(unbind = "-")

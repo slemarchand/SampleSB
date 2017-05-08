@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import com.liferay.test.exception.SampleSBValidateException;
 import com.liferay.test.model.SampleSB;
 
 import java.io.Serializable;
@@ -102,11 +103,12 @@ public interface SampleSBLocalService extends BaseLocalService,
 	* @param orgEntry SampleSB model
 	* @param serviceContext ServiceContext
 	* @exception PortalException
+	* @exception SampleSBValidateException
 	* @return created SampleSB model.
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB addEntry(SampleSB orgEntry, ServiceContext serviceContext)
-		throws PortalException;
+		throws PortalException, SampleSBValidateException;
 
 	/**
 	* Adds the sample sb to the database. Also notifies the appropriate model listeners.
@@ -125,6 +127,13 @@ public interface SampleSBLocalService extends BaseLocalService,
 	*/
 	public SampleSB createSampleSB(long samplesbId);
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public SampleSB deleteEntry(SampleSB entry) throws PortalException;
@@ -218,10 +227,12 @@ public interface SampleSBLocalService extends BaseLocalService,
 	* @param request PortletRequest
 	* @return SampleSB Object
 	* @throws PortletException
+	* @throws SampleSBValidateException
 	*/
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SampleSB getSampleSBFromRequest(long primaryKey,
-		PortletRequest request) throws PortletException;
+		PortletRequest request)
+		throws SampleSBValidateException, PortletException;
 
 	/**
 	* Moves the entry to the recycle bin.
@@ -251,9 +262,18 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public SampleSB restoreEntryFromTrash(long userId, long entryId)
 		throws PortalException;
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public SampleSB updateEntry(SampleSB orgEntry, ServiceContext serviceContext)
-		throws PortalException;
+		throws PortalException, SampleSBValidateException;
 
 	/**
 	* Updates the sample sb in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -360,13 +380,6 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public List<SampleSB> findAllInGroup(long groupId, int start, int end,
 		OrderByComparator<SampleSB> orderByComparator);
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	public List<SampleSB> findAllInUser(long userId);
 
 	public List<SampleSB> findAllInUser(long userId,

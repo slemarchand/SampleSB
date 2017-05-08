@@ -79,12 +79,14 @@ public class SampleSBLocalServiceUtil {
 	* @param orgEntry SampleSB model
 	* @param serviceContext ServiceContext
 	* @exception PortalException
+	* @exception SampleSBValidateException
 	* @return created SampleSB model.
 	*/
 	public static com.liferay.test.model.SampleSB addEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return getService().addEntry(orgEntry, serviceContext);
 	}
 
@@ -110,6 +112,13 @@ public class SampleSBLocalServiceUtil {
 		return getService().createSampleSB(samplesbId);
 	}
 
+	/**
+	* Delete entry
+	*
+	* @param entry SampleSB
+	* @return SampleSB oject
+	* @exception PortalException
+	*/
 	public static com.liferay.test.model.SampleSB deleteEntry(
 		com.liferay.test.model.SampleSB entry)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -224,10 +233,12 @@ public class SampleSBLocalServiceUtil {
 	* @param request PortletRequest
 	* @return SampleSB Object
 	* @throws PortletException
+	* @throws SampleSBValidateException
 	*/
 	public static com.liferay.test.model.SampleSB getSampleSBFromRequest(
 		long primaryKey, javax.portlet.PortletRequest request)
-		throws javax.portlet.PortletException {
+		throws com.liferay.test.exception.SampleSBValidateException,
+			javax.portlet.PortletException {
 		return getService().getSampleSBFromRequest(primaryKey, request);
 	}
 
@@ -266,10 +277,20 @@ public class SampleSBLocalServiceUtil {
 		return getService().restoreEntryFromTrash(userId, entryId);
 	}
 
+	/**
+	* Edit Entry
+	*
+	* @param orgEntry SampleSB model
+	* @param serviceContext ServiceContext
+	* @exception PortalException
+	* @exception SampleSBValidateException
+	* @return updated SampleSB model.
+	*/
 	public static com.liferay.test.model.SampleSB updateEntry(
 		com.liferay.test.model.SampleSB orgEntry,
 		com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.test.exception.SampleSBValidateException {
 		return getService().updateEntry(orgEntry, serviceContext);
 	}
 
@@ -416,13 +437,6 @@ public class SampleSBLocalServiceUtil {
 				   .findAllInGroup(groupId, start, end, orderByComparator);
 	}
 
-	/**
-	* Get a user information
-	*
-	* @param userId
-	* @return
-	* @throws SystemException
-	*/
 	public static java.util.List<com.liferay.test.model.SampleSB> findAllInUser(
 		long userId) {
 		return getService().findAllInUser(userId);
