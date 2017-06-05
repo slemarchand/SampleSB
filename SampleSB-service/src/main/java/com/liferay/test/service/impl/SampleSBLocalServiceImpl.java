@@ -941,49 +941,49 @@ public class SampleSBLocalServiceImpl
 			.getAttribute(WebKeys.THEME_DISPLAY);
 
 		// Create or fetch existing data
-		SampleSB sampleSB;
+		SampleSB entry;
 		if (primaryKey <= 0) {
-			sampleSB = getNewObject(primaryKey);
+			entry = getNewObject(primaryKey);
 		} else {
-			sampleSB = fetchSampleSB(primaryKey);
+			entry = fetchSampleSB(primaryKey);
 		}
 
 		try {
-			sampleSB.setSamplesbId(primaryKey);
-			sampleSB.setTitle(ParamUtil.getString(request, "title"));
-			sampleSB.setStartDate(getDateTimeFromRequest(request, "startDate"));
-			sampleSB.setEndDate(getDateTimeFromRequest(request, "endDate"));
-			sampleSB.setSamplesbBooleanStat(
+			entry.setSamplesbId(primaryKey);
+			entry.setTitle(ParamUtil.getString(request, "title"));
+			entry.setStartDate(getDateTimeFromRequest(request, "startDate"));
+			entry.setEndDate(getDateTimeFromRequest(request, "endDate"));
+			entry.setSamplesbBooleanStat(
 				ParamUtil.getBoolean(request, "samplesbBooleanStat"));
-			sampleSB.setSamplesbDateTime(
+			entry.setSamplesbDateTime(
 				getDateTimeFromRequest(request, "samplesbDateTime"));
-			sampleSB.setSamplesbDocument(
+			entry.setSamplesbDocument(
 				ParamUtil.getLong(request, "samplesbDocument"));
-			sampleSB.setFolderDLId(ParamUtil.getLong(request, "folderDLId"));
-			sampleSB.setSamplesbDocumentLibrary(
+			entry.setFolderDLId(ParamUtil.getLong(request, "folderDLId"));
+			entry.setSamplesbDocumentLibrary(
 				ParamUtil.getString(request, "samplesbDocumentLibrary"));
-			sampleSB
+			entry
 				.setSamplesbDouble(ParamUtil.getDouble(request, "samplesbDouble"));
-			sampleSB.setSamplesbInteger(
+			entry.setSamplesbInteger(
 				ParamUtil.getInteger(request, "samplesbInteger"));
-			sampleSB.setSamplesbRichText(
+			entry.setSamplesbRichText(
 				ParamUtil.getString(request, "samplesbRichText"));
-			sampleSB.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
-			sampleSB.setSamplesbTitleName(
+			entry.setSamplesbText(ParamUtil.getString(request, "samplesbText"));
+			entry.setSamplesbTitleName(
 				ParamUtil.getString(request, "samplesbTitleName"));
-			sampleSB.setSamplesbSummaryName(
+			entry.setSamplesbSummaryName(
 				ParamUtil.getString(request, "samplesbSummaryName"));
 
-			sampleSB.setCompanyId(themeDisplay.getCompanyId());
-			sampleSB.setGroupId(themeDisplay.getScopeGroupId());
-			sampleSB.setUserId(themeDisplay.getUserId());
+			entry.setCompanyId(themeDisplay.getCompanyId());
+			entry.setGroupId(themeDisplay.getScopeGroupId());
+			entry.setUserId(themeDisplay.getUserId());
 		} catch (Throwable e) {
 			List<String> error = new ArrayList<>();
 			error.add("value-convert-error");
 			throw new SampleSBValidateException(error);
 		}
 
-		return sampleSB;
+		return entry;
 	}
 
 	/**
@@ -1000,29 +1000,29 @@ public class SampleSBLocalServiceImpl
 			.getAttribute(WebKeys.THEME_DISPLAY);
 
 		// Create or fetch existing data
-		SampleSB sampleSB = getNewObject(primaryKey);
+		SampleSB entry = getNewObject(primaryKey);
 
-		sampleSB.setSamplesbId(primaryKey);
-		sampleSB.setTitle("");
-		sampleSB.setStartDate(new Date());
-		sampleSB.setEndDate(new Date());
-		sampleSB.setSamplesbBooleanStat(true);
-		sampleSB.setSamplesbDateTime(new Date());
-		sampleSB.setSamplesbDocument(0);
-		sampleSB.setFolderDLId(0);
-		sampleSB.setSamplesbDocumentLibrary("");
-		sampleSB.setSamplesbDouble(0.0);
-		sampleSB.setSamplesbInteger(0);
-		sampleSB.setSamplesbRichText("");
-		sampleSB.setSamplesbText("");
-		sampleSB.setSamplesbTitleName("");
-		sampleSB.setSamplesbSummaryName("");
+		entry.setSamplesbId(primaryKey);
+		entry.setTitle("");
+		entry.setStartDate(new Date());
+		entry.setEndDate(new Date());
+		entry.setSamplesbBooleanStat(true);
+		entry.setSamplesbDateTime(new Date());
+		entry.setSamplesbDocument(0);
+		entry.setFolderDLId(0);
+		entry.setSamplesbDocumentLibrary("");
+		entry.setSamplesbDouble(0.0);
+		entry.setSamplesbInteger(0);
+		entry.setSamplesbRichText("");
+		entry.setSamplesbText("");
+		entry.setSamplesbTitleName("");
+		entry.setSamplesbSummaryName("");
 
-		sampleSB.setCompanyId(themeDisplay.getCompanyId());
-		sampleSB.setGroupId(themeDisplay.getScopeGroupId());
-		sampleSB.setUserId(themeDisplay.getUserId());
+		entry.setCompanyId(themeDisplay.getCompanyId());
+		entry.setGroupId(themeDisplay.getScopeGroupId());
+		entry.setUserId(themeDisplay.getUserId());
 
-		return sampleSB;
+		return entry;
 	}
 
 	private static Pattern _friendlyURLPattern = Pattern.compile("[^a-z0-9_-]");

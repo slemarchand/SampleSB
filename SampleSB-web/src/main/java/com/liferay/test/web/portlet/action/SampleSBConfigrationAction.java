@@ -7,8 +7,8 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.test.constants.SampleSBPortletKeys;
-import com.liferay.test.web.util.SampleSBValidator;
 
 import java.util.List;
 import java.util.Map;
@@ -52,16 +52,21 @@ import aQute.bnd.annotation.metatype.Configurable;
         "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
     }, service = ConfigurationAction.class
 )
-public class SampleSBConfigrationAction extends DefaultConfigurationAction {
+public class SampleSBConfigrationAction
+	extends DefaultConfigurationAction {
 
 	@Override
-	public void processAction(PortletConfig portletConfig, ActionRequest actionRequest, ActionResponse actionResponse)
-			throws Exception {
+	public void processAction(
+		PortletConfig portletConfig, ActionRequest actionRequest,
+		ActionResponse actionResponse) throws Exception {
 
-		int prefsViewType = ParamUtil.getInteger(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
-				Integer.valueOf(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT));
-		String dateFormat = ParamUtil.getString(actionRequest, SampleSBConfiguration.CONF_DATE_FORMAT);
-		String datetimeFormat = ParamUtil.getString(actionRequest, SampleSBConfiguration.CONF_DATETIME_FORMAT);
+		int prefsViewType = ParamUtil.getInteger(actionRequest,
+			SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
+			Integer.valueOf(SampleSBConfiguration.PREFS_VIEW_TYPE_DEFAULT));
+		String dateFormat = ParamUtil.getString(actionRequest,
+			SampleSBConfiguration.CONF_DATE_FORMAT);
+		String datetimeFormat = ParamUtil.getString(actionRequest,
+			SampleSBConfiguration.CONF_DATETIME_FORMAT);
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Prefs View Type :" + prefsViewType);
@@ -70,10 +75,15 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 		}
 
 		List<String> errors = Lists.newArrayList();
-		if (SampleSBValidator.validateEditSampleSB(dateFormat, datetimeFormat, errors)) {
-			setPreference(actionRequest, SampleSBConfiguration.CONF_PREFS_VIEW_TYPE, String.valueOf(prefsViewType));
-			setPreference(actionRequest, SampleSBConfiguration.CONF_DATE_FORMAT, dateFormat);
-			setPreference(actionRequest, SampleSBConfiguration.CONF_DATETIME_FORMAT, datetimeFormat);
+		if (validate(dateFormat, datetimeFormat,
+			errors)) {
+			setPreference(actionRequest,
+				SampleSBConfiguration.CONF_PREFS_VIEW_TYPE,
+				String.valueOf(prefsViewType));
+			setPreference(actionRequest, SampleSBConfiguration.CONF_DATE_FORMAT,
+				dateFormat);
+			setPreference(actionRequest,
+				SampleSBConfiguration.CONF_DATETIME_FORMAT, datetimeFormat);
 
 			SessionMessages.add(actionRequest, "prefs-success");
 		}
@@ -82,14 +92,16 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 	}
 
 	@Override
-	public void include(PortletConfig portletConfig, HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse) throws Exception {
+	public void include(
+		PortletConfig portletConfig, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) throws Exception {
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("SampleSB Portlet configuration include");
 		}
 
-		httpServletRequest.setAttribute(SampleSBConfiguration.class.getName(), _sampleSBConfiguration);
+		httpServletRequest.setAttribute(SampleSBConfiguration.class.getName(),
+			_sampleSBConfiguration);
 
 		super.include(portletConfig, httpServletRequest, httpServletResponse);
 	}
@@ -97,10 +109,36 @@ public class SampleSBConfigrationAction extends DefaultConfigurationAction {
 	@Activate
 	@Modified
 	protected void activate(Map<Object, Object> properties) {
-		_sampleSBConfiguration = Configurable.createConfigurable(SampleSBConfiguration.class, properties);
+		_sampleSBConfiguration = Configurable
+			.createConfigurable(SampleSBConfiguration.class, properties);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(SampleSBConfigrationAction.class);
+	/**
+	 * Validate Preference
+	 * 
+	 * @param dateFormat
+	 *            Date Format
+	 * @param datetimeFormat
+	 *            Date Time Format
+	 * @param errors
+	 * @return boolean
+	 */
+	protected boolean validate(
+		String dateFormat, String datetimeFormat, List<String> errors) {
+		boolean valid = true;
+
+		if (Validator.isNull(dateFormat)) {
+			errors.add("date-format-required");
+			valid = false;
+		} else if (Validator.isNull(datetimeFormat)) {
+			errors.add("datetime-format.required");
+			valid = false;
+		}
+		return valid;
+	}
+
+	private static final Log _log = LogFactoryUtil
+		.getLog(SampleSBConfigrationAction.class);
 
 	private volatile SampleSBConfiguration _sampleSBConfiguration;
 }
