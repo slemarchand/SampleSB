@@ -56,6 +56,7 @@
 <%@ page import="com.liferay.test.web.constants.SampleSBWebKeys" %>
 <%@ page import="com.liferay.test.web.upload.SampleSBItemSelectorHelper" %>
 <%@ page import="com.liferay.test.web.util.SampleSBViewHelper" %>
+<%@ page import="com.liferay.test.constants.SampleSBPortletKeys" %>
 
 <liferay-frontend:defineObjects/>
 <liferay-theme:defineObjects/>
