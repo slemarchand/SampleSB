@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Reference;
     },
     service = StrutsAction.class
 )
-public class FindEntryAction extends BaseStrutsAction {
+public class SampleSBFindEntryAction extends BaseStrutsAction {
 
     @Override
     public String execute(
