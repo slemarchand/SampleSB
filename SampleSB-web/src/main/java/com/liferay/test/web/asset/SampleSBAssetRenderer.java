@@ -1,20 +1,19 @@
 package com.liferay.test.web.asset;
 
-import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.asset.kernel.model.BaseJSPAssetRenderer;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.trash.TrashRenderer;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.test.model.SampleSB;
-import com.liferay.test.service.permission.SampleSBPermissionChecker;
+import com.liferay.asset.kernel.model.*;
+import com.liferay.portal.kernel.model.*;
+import com.liferay.portal.kernel.portlet.*;
+import com.liferay.portal.kernel.security.permission.*;
+import com.liferay.portal.kernel.service.*;
+import com.liferay.portal.kernel.trash.*;
+import com.liferay.portal.kernel.util.*;
+import com.liferay.test.constants.*;
+import com.liferay.test.model.*;
+import com.liferay.test.service.permission.*;
 
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.portlet.*;
+import javax.servlet.http.*;
+import java.util.*;
 
 /**
  * @author Yasuyuki Takeo
@@ -55,9 +54,9 @@ public class SampleSBAssetRenderer
 
 	@Override
 	public String getJspPath(HttpServletRequest request, String template) {
-		if (template.equals(TEMPLATE_ABSTRACT)
-				|| template.equals(TEMPLATE_FULL_CONTENT)) {
 
+		if (template.equals(TEMPLATE_ABSTRACT) || 
+			template.equals(TEMPLATE_FULL_CONTENT)) {
 			request.setAttribute("sampleSB", _entry);
 			return "/asset/" + template + ".jsp";
 		} else {
@@ -85,6 +84,7 @@ public class SampleSBAssetRenderer
 
 	@Override
 	public String getTitle(Locale locale) {
+		// TODO : This need to be customized 
 		return _entry.getSamplesbTitleName();
 	}
 
@@ -94,14 +94,22 @@ public class SampleSBAssetRenderer
 	}
 
 	@Override
-	public boolean include(
-		HttpServletRequest request, HttpServletResponse response,
-		String template) throws Exception {
-		request.setAttribute("sampleSB", _entry);
-
-		return super.include(request, response, template);
+	public String getUrlTitle() {
+		// TODO : This need to be customized 
+		return _entry.getSamplesbTitleName();
 	}
+	
+	@Override
+	public String getURLViewInContext(
+		LiferayPortletRequest liferayPortletRequest,
+		LiferayPortletResponse liferayPortletResponse,
+		String noSuchEntryRedirect) {
 
+		return getURLViewInContext(
+			liferayPortletRequest, noSuchEntryRedirect, SampleSBPortletKeys.SAMPLESB_FIND_ENTRY,
+			"resourcePrimKey", _entry.getPrimaryKey());
+	}
+	
 	@Override
 	public long getUserId() {
 		return _entry.getUserId();
@@ -134,6 +142,20 @@ public class SampleSBAssetRenderer
 			ActionKeys.VIEW);
 	}
 
-	private SampleSB _entry;
+	@Override
+	public boolean include(
+		HttpServletRequest request, HttpServletResponse response,
+		String template) throws Exception {
+		request.setAttribute("sampleSB", _entry);
+
+		return super.include(request, response, template);
+	}
+	
+	@Override
+	public boolean isPrintable() {
+		return true;
+	}
+	
+	private final SampleSB _entry;
 
 }

@@ -11,7 +11,6 @@ import com.liferay.test.service.SampleSBLocalService;
 import com.liferay.test.service.SampleSBLocalServiceUtil;
 import com.liferay.test.web.constants.SampleSBWebKeys;
 import com.liferay.test.web.upload.SampleSBItemSelectorHelper;
-import com.liferay.test.web.util.SampleSBViewHelper;
 
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
