@@ -1,76 +1,145 @@
 package com.liferay.test.web.asset;
 
-import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
-import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.test.constants.SampleSBPortletKeys;
-import com.liferay.test.model.SampleSB;
-import com.liferay.test.service.SampleSBLocalService;
+import com.liferay.asset.kernel.model.*;
+import com.liferay.portal.kernel.exception.*;
+import com.liferay.portal.kernel.log.*;
+import com.liferay.portal.kernel.portlet.*;
+import com.liferay.portal.kernel.security.permission.*;
+import com.liferay.portal.kernel.theme.*;
+import com.liferay.portal.kernel.util.*;
+import com.liferay.portal.kernel.workflow.*;
+import com.liferay.test.constants.*;
+import com.liferay.test.model.*;
+import com.liferay.test.service.*;
+import com.liferay.test.service.permission.*;
+import org.osgi.service.component.annotations.*;
 
-import javax.servlet.ServletContext;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import javax.portlet.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 @Component(
-	immediate = true,
-	property = {
-		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB
-	},
-	service = AssetRendererFactory.class
+    immediate = true,
+    property = {
+        "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB
+    },
+    service = AssetRendererFactory.class
 )
 public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<SampleSB> {
 
-	public static final String TYPE = "sampleSB";
+    public static final String TYPE = "samplesb";
 
-	public SampleSBAssetRendererFactory() {
-		setClassName(SampleSB.class.getName());
-		setLinkable(true);
-		setPortletId(SampleSBPortletKeys.SAMPLESB);
-		setSearchable(true);
-	}
-	
-	@Override
-	public AssetRenderer<SampleSB> getAssetRenderer(long classPK, int type) throws PortalException {
-		SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
+    public SampleSBAssetRendererFactory() {
+        setClassName(SampleSB.class.getName());
+        setPortletId(SampleSBPortletKeys.SAMPLESB);
+        setLinkable(true);
+        setSearchable(true);
+    }
 
-		SampleSBAssetRenderer sampleSBAssetRenderer =
-			new SampleSBAssetRenderer(entry);
+    @Override
+    public AssetRenderer<SampleSB> getAssetRenderer(long classPK, int type) throws PortalException {
+        SampleSB entry = _sampleSBLocalService.getSampleSB(classPK);
 
-		sampleSBAssetRenderer.setAssetRendererType(type);
-		sampleSBAssetRenderer.setServletContext(_servletContext);
+        SampleSBAssetRenderer sampleSBAssetRenderer =
+            new SampleSBAssetRenderer(entry);
 
-		return sampleSBAssetRenderer;
-	}
+        sampleSBAssetRenderer.setAssetRendererType(type);
+        sampleSBAssetRenderer.setServletContext(_servletContext);
 
-	@Override
-	public String getClassName() {
-		return SampleSB.class.getName();
-	}
-	
-	@Override
-	public String getIconCssClass() {
-		return TYPE;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
+        return sampleSBAssetRenderer;
+    }
 
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.test.web)", unbind = "-"
-	)
-	public void setServletContext(ServletContext servletContext) {
-		_servletContext = servletContext;
-	}
-	
-	@Reference(unbind = "-")
-	protected void setSampleSBLocalService(SampleSBLocalService sampleSBLocalService) {
-		_sampleSBLocalService = sampleSBLocalService;
-	}
+    @Override
+    public AssetRenderer<SampleSB> getAssetRenderer(
+        long groupId, String urlTitle)
+        throws PortalException {
 
-	private SampleSBLocalService _sampleSBLocalService;	
-	private ServletContext _servletContext;
+        SampleSB entry = _sampleSBLocalService.getSampleSBByUrlTitle(
+            groupId, urlTitle, WorkflowConstants.STATUS_APPROVED);
+
+        return new SampleSBAssetRenderer(entry);
+    }
+
+    @Override
+    public String getClassName() {
+        return SampleSB.class.getName();
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public PortletURL getURLAdd(
+        LiferayPortletRequest liferayPortletRequest,
+        LiferayPortletResponse liferayPortletResponse, long classTypeId) {
+
+        LiferayPortletURL liferayPortletURL =
+            liferayPortletResponse.createLiferayPortletURL(
+                SampleSBPortletKeys.SAMPLESB, PortletRequest.RENDER_PHASE);
+
+        liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/crud");
+        liferayPortletURL.setParameter(Constants.CMD, Constants.ADD);
+        liferayPortletURL.setParameter("fromAsset", "true");
+
+        return liferayPortletURL;
+    }
+
+    @Override
+    public PortletURL getURLView(
+        LiferayPortletResponse liferayPortletResponse,
+        WindowState windowState) {
+
+        String portletId = PortletProviderUtil.getPortletId(
+            SampleSB.class.getName(), PortletProvider.Action.VIEW);
+
+        LiferayPortletURL liferayPortletURL =
+            liferayPortletResponse.createLiferayPortletURL(
+                portletId, PortletRequest.RENDER_PHASE);
+
+        try {
+            liferayPortletURL.setWindowState(windowState);
+        }
+        catch (WindowStateException wse) {
+            _log.error("Windos state is not valid. Skip.");
+        }
+
+        return liferayPortletURL;
+    }
+
+    @Override
+    public boolean hasAddPermission(
+        PermissionChecker permissionChecker, long groupId, long classTypeId)
+        throws Exception {
+
+        return SampleSBResourcePermissionChecker.contains(
+            permissionChecker, groupId, ActionKeys.ADD_ENTRY);
+    }
+
+    @Override
+    public boolean hasPermission(
+        PermissionChecker permissionChecker, long classPK, String actionId)
+        throws Exception {
+
+        return SampleSBPermissionChecker.contains(
+            permissionChecker, classPK, actionId);
+    }
+
+    @Reference(
+        target = "(osgi.web.symbolicname=com.liferay.test.web)", unbind = "-"
+    )
+    public void setServletContext(ServletContext servletContext) {
+        _servletContext = servletContext;
+    }
+
+    @Reference
+    private Portal _portal;
+    @Reference
+    private SampleSBLocalService _sampleSBLocalService;
+
+    private ServletContext       _servletContext;
+
+    private static final Log _log = LogFactoryUtil.getLog(
+        SampleSBAssetRendererFactory.class);
 }
