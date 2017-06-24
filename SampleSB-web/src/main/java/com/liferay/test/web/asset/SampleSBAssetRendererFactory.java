@@ -66,7 +66,6 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
         long groupId, String urlTitle)
         throws PortalException {
 
-System.out.println("@@@@@@@@ urlTitle<" + urlTitle + ">");
         SampleSB entry = _sampleSBLocalService.getSampleSBByUrlTitle(
             groupId, urlTitle, WorkflowConstants.STATUS_ANY);
 
