@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.portlet.PortletException;
@@ -746,8 +747,10 @@ public class SampleSBLocalServiceImpl
 	protected SampleSB _addEntry(SampleSB entry, ServiceContext serviceContext)
 		throws PortalException {
 
+		long id = counterLocalService.increment(SampleSB.class.getName());
+		
 		SampleSB newEntry = sampleSBPersistence
-			.create(counterLocalService.increment(SampleSB.class.getName()));
+			.create(id);
 
 		User user = userPersistence.findByPrimaryKey(entry.getUserId());
 
@@ -760,7 +763,14 @@ public class SampleSBLocalServiceImpl
 		newEntry.setModifiedDate(now);
 
 		newEntry.setUuid(serviceContext.getUuid());
-		newEntry.setUrlTitle(_getUniqueURLTitle(newEntry));
+		newEntry.setUrlTitle(
+				getUniqueUrlTitle(
+					id, 
+					entry.getGroupId(), 
+					String.valueOf(newEntry.getPrimaryKey()), 
+					entry.getSamplesbTitleName(), 
+					null, 
+					serviceContext));		
 		newEntry.setSamplesbTitleName(entry.getSamplesbTitleName());
 		newEntry.setSamplesbSummaryName(entry.getSamplesbSummaryName());
 
@@ -810,7 +820,14 @@ public class SampleSBLocalServiceImpl
 		updateEntry.setModifiedDate(now);
 
 		updateEntry.setUuid(entry.getUuid());
-		updateEntry.setUrlTitle(_getUniqueURLTitle(updateEntry));
+		updateEntry.setUrlTitle(
+				getUniqueUrlTitle(
+					updateEntry.getPrimaryKey(), 
+					entry.getGroupId(), 
+					String.valueOf(updateEntry.getPrimaryKey()), 
+					entry.getSamplesbTitleName(), 
+					updateEntry.getUrlTitle(), 
+					serviceContext));		
 		updateEntry.setSamplesbTitleName(entry.getSamplesbTitleName());
 		updateEntry.setSamplesbSummaryName(entry.getSamplesbSummaryName());
 
@@ -851,50 +868,113 @@ public class SampleSBLocalServiceImpl
 	 * @param title title for the asset
 	 * @return URL title string
 	 */
-	protected String _createUrlTitle(long entryId, String title) {
+	protected String getUrlTitle(long entryId, String title) {
 		if (title == null) {
 			return String.valueOf(entryId);
 		}
 
-		title = title.trim().toLowerCase();
+		title = StringUtil.toLowerCase(title.trim());
 
 		if (Validator.isNull(title) || Validator.isNumber(title)) {
 			title = String.valueOf(entryId);
 		} else {
-			title = FriendlyURLNormalizerUtil.normalize(title,
-				_friendlyURLPattern);
+			title = FriendlyURLNormalizerUtil.normalizeWithPeriodsAndSlashes(title);
 		}
 
-		return ModelHintsUtil.trimString(SampleSB.class.getName(), "urlTitle",
-			title);
+		return ModelHintsUtil.trimString(
+				SampleSB.class.getName(), "urlTitle", title);
+	}
+
+
+	
+	/**
+	 * Get Unique UrlTitle
+	 * 
+	 * @param id CounterLocalService's generated ID at a record creation
+	 * @param groupId Group ID
+	 * @param primaryKey Generated record's id. Usually it's a primary Key
+	 * @param title Title of the record. Usually asset's title.
+	 * @return Unique UrlTitle strings
+	 * @throws PortalException
+	 */
+	protected String getUniqueUrlTitle(
+			long id, long groupId, String primaryKey, String title)
+		throws PortalException {
+
+		String urlTitle = getUrlTitle(id, title);
+
+		return getUniqueUrlTitle(groupId, primaryKey, urlTitle);
 	}
 
 	/**
-	 * Generating a unique URL for asset
+	 * Get Unique UrlTitle
 	 * 
-	 * @param entry SampleSB object
-	 * @return unique URL strings
+	 * @param id CounterLocalService's generated ID at a record creation
+	 * @param groupId Group ID
+	 * @param primaryKey Generated record's id. Usually it's a primary Key
+	 * @param title Title of the record. Usually asset's title.
+	 * @param oldUrlTitle Old url title to be repleaced with title
+	 * @param serviceContext 
+	 * @return Unique UrlTitle strings
+	 * @throws PortalException
 	 */
-	protected String _getUniqueURLTitle(SampleSB entry) {
-		String urlTitle = _createUrlTitle(entry.getPrimaryKey(),
-			entry.getSamplesbTitleName());
+	protected String getUniqueUrlTitle(
+			long id, long groupId, String primaryKey, String title,
+			String oldUrlTitle, ServiceContext serviceContext)
+		throws PortalException {
 
-		long entryId = entry.getPrimaryKey();
+		String serviceContextUrlTitle = ParamUtil.getString(
+			serviceContext, "urlTitle");
+
+		String urlTitle = null;
+
+		if (Validator.isNotNull(serviceContextUrlTitle)) {
+			urlTitle = getUrlTitle(id, serviceContextUrlTitle);
+		}
+		else if (Validator.isNotNull(oldUrlTitle)) {
+			return oldUrlTitle;
+		}
+		else {
+			urlTitle = getUniqueUrlTitle(id, groupId, primaryKey, title);
+		}
+
+		SampleSB entry = getSampleSBByUrlTitle(
+				groupId, urlTitle, WorkflowConstants.STATUS_ANY);
+		if ((entry != null) &&
+			!Objects.equals(entry.getPrimaryKey(), primaryKey)) {
+
+			urlTitle = getUniqueUrlTitle(id, groupId, primaryKey, urlTitle);
+		}
+
+		return urlTitle;
+	}
+
+	/**
+	 * Returns the record's unique URL title.
+	 *
+	 * @param  groupId the primary key of the record's group
+	 * @param  primaryKey the primary key of the record
+	 * @param  urlTitle the record's accessible URL title
+	 * @return the record's unique URL title
+	 */	
+	public String getUniqueUrlTitle(
+			long groupId, String primaryKey, String urlTitle)
+		throws PortalException {
 
 		for (int i = 1;; i++) {
-			SampleSB tmpEntry = sampleSBPersistence
-				.fetchByG_UT(entry.getGroupId(), urlTitle);
+			SampleSB entry = getSampleSBByUrlTitle(groupId, urlTitle, WorkflowConstants.STATUS_ANY);
 
-			if ((tmpEntry == null) || (entryId == tmpEntry.getPrimaryKey())) {
+			if ((entry == null) || primaryKey.equals(entry.getPrimaryKey())) {
 				break;
-			} else {
+			}
+			else {
 				String suffix = StringPool.DASH + i;
 
 				String prefix = urlTitle;
 
 				if (urlTitle.length() > suffix.length()) {
-					prefix = urlTitle.substring(0,
-						urlTitle.length() - suffix.length());
+					prefix = urlTitle.substring(
+						0, urlTitle.length() - suffix.length());
 				}
 
 				urlTitle = prefix + suffix;
@@ -902,8 +982,8 @@ public class SampleSBLocalServiceImpl
 		}
 
 		return urlTitle;
-	}
-
+	}	
+	
 	/**
 	 * Converte Date Time into Date()
 	 * 

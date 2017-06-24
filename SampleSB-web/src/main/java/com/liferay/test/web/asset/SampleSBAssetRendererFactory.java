@@ -1,22 +1,34 @@
 package com.liferay.test.web.asset;
 
-import com.liferay.asset.kernel.model.*;
-import com.liferay.portal.kernel.exception.*;
-import com.liferay.portal.kernel.log.*;
-import com.liferay.portal.kernel.portlet.*;
-import com.liferay.portal.kernel.security.permission.*;
-import com.liferay.portal.kernel.theme.*;
-import com.liferay.portal.kernel.util.*;
-import com.liferay.portal.kernel.workflow.*;
-import com.liferay.test.constants.*;
-import com.liferay.test.model.*;
-import com.liferay.test.service.*;
-import com.liferay.test.service.permission.*;
-import org.osgi.service.component.annotations.*;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.test.constants.SampleSBPortletKeys;
+import com.liferay.test.model.SampleSB;
+import com.liferay.test.service.SampleSBLocalService;
+import com.liferay.test.service.permission.SampleSBPermissionChecker;
+import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
 
-import javax.portlet.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
+import javax.portlet.WindowState;
+import javax.portlet.WindowStateException;
+import javax.servlet.ServletContext;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 @Component(
     immediate = true,
@@ -54,9 +66,14 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
         long groupId, String urlTitle)
         throws PortalException {
 
+System.out.println("@@@@@@@@ urlTitle<" + urlTitle + ">");
         SampleSB entry = _sampleSBLocalService.getSampleSBByUrlTitle(
-            groupId, urlTitle, WorkflowConstants.STATUS_APPROVED);
+            groupId, urlTitle, WorkflowConstants.STATUS_ANY);
 
+        if(Validator.isNull(entry)) {
+        	return null;
+        }
+        
         return new SampleSBAssetRenderer(entry);
     }
 
@@ -81,7 +98,6 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 
         liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/crud");
         liferayPortletURL.setParameter(Constants.CMD, Constants.ADD);
-        liferayPortletURL.setParameter("fromAsset", "true");
 
         return liferayPortletURL;
     }
@@ -91,12 +107,12 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
         LiferayPortletResponse liferayPortletResponse,
         WindowState windowState) {
 
-        String portletId = PortletProviderUtil.getPortletId(
-            SampleSB.class.getName(), PortletProvider.Action.VIEW);
-
         LiferayPortletURL liferayPortletURL =
             liferayPortletResponse.createLiferayPortletURL(
-                portletId, PortletRequest.RENDER_PHASE);
+                SampleSBPortletKeys.SAMPLESB, PortletRequest.RENDER_PHASE);
+
+        liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/view");
+        liferayPortletURL.setParameter(Constants.CMD, Constants.VIEW);
 
         try {
             liferayPortletURL.setWindowState(windowState);
@@ -113,6 +129,11 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
         PermissionChecker permissionChecker, long groupId, long classTypeId)
         throws Exception {
 
+        if( !SampleSBResourcePermissionChecker.contains(
+                permissionChecker, groupId, ActionKeys.VIEW) ) {
+        	return false;
+        }
+        
         return SampleSBResourcePermissionChecker.contains(
             permissionChecker, groupId, ActionKeys.ADD_ENTRY);
     }
