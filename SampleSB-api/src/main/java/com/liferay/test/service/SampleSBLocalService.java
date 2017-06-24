@@ -323,6 +323,19 @@ public interface SampleSBLocalService extends BaseLocalService,
 	public java.lang.String getOSGiServiceIdentifier();
 
 	/**
+	* Returns the record's unique URL title.
+	*
+	* @param groupId the primary key of the record's group
+	* @param primaryKey the primary key of the record
+	* @param urlTitle the record's accessible URL title
+	* @return the record's unique URL title
+	*/
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.lang.String getUniqueUrlTitle(long groupId,
+		java.lang.String primaryKey, java.lang.String urlTitle)
+		throws PortalException;
+
+	/**
 	* Converte Date Time into Date()
 	*
 	* @param request PortletRequest

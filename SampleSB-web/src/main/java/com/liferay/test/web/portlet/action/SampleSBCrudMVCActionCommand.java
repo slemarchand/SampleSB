@@ -113,7 +113,7 @@ public class SampleSBCrudMVCActionCommand
 				.split(ParamUtil.getString(request, "deleteEntryIds"), 0L);
 		}
 
-		List<TrashedModel> trashedModels = new ArrayList<>();
+		List<TrashedModel> trashedModels = new ArrayList<TrashedModel>();
 
 		for (long deleteEntryId : deleteEntryIds) {
 
@@ -167,7 +167,7 @@ public class SampleSBCrudMVCActionCommand
 		// Permission check
 		if (!SampleSBResourcePermissionChecker.contains(permissionChecker,
 			themeDisplay.getScopeGroupId(), ActionKeys.ADD_ENTRY)) {
-			List<String> error = new ArrayList<>();
+			List<String> error = new ArrayList<String>();
 			error.add("permission-error");
 			throw new SampleSBValidateException(error);
 		}
@@ -203,7 +203,7 @@ public class SampleSBCrudMVCActionCommand
 		// Permission check
 		if (!SampleSBPermissionChecker.contains(permissionChecker,
 			entry.getPrimaryKey(), ActionKeys.UPDATE)) {
-            List<String> error = new ArrayList<>();
+            List<String> error = new ArrayList<String>();
             error.add("permission-error");
             throw new SampleSBValidateException(error);			
 		}

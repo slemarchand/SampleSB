@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Yasuyuki Takeo
  */
 @Component(
+    immediate = true,
     property = {
         "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
         "path=" + SampleSBPortletKeys.SAMPLESB_FIND_ENTRY

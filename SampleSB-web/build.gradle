@@ -25,10 +25,6 @@ repositories {
 	}
 }
 
-task getHomeDir << {
-    println gradle.gradleHomeDir
-}
-
 dependencies {
 	compile 'biz.aQute.bnd:biz.aQute.bndlib:3.1.0'
 	compile 'com.google.errorprone:error_prone_annotations:2.0.19'

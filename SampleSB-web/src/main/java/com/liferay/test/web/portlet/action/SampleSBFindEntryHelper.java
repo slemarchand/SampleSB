@@ -64,12 +64,6 @@ public class SampleSBFindEntryHelper extends BaseFindActionHelper {
 		return _portletLayoutFinder;
 	}
 
-	@Reference(unbind = "-")
-	protected void setSampleSBLocalService(
-		SampleSBLocalService samplesblocalservice) {
-		_sampleSBLocalService = samplesblocalservice;
-	}
-
 	@Reference(
 		target = "(model.class.name=com.liferay.test.model.SampleSB)",
 		unbind = "-"
@@ -80,6 +74,7 @@ public class SampleSBFindEntryHelper extends BaseFindActionHelper {
 		_portletLayoutFinder = portletPageFinder;
 	}
 
+	@Reference
 	private SampleSBLocalService _sampleSBLocalService;
 	private PortletLayoutFinder _portletLayoutFinder;
 

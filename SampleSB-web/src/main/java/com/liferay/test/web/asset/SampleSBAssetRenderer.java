@@ -1,19 +1,27 @@
 package com.liferay.test.web.asset;
 
-import com.liferay.asset.kernel.model.*;
-import com.liferay.portal.kernel.model.*;
-import com.liferay.portal.kernel.portlet.*;
-import com.liferay.portal.kernel.security.permission.*;
-import com.liferay.portal.kernel.service.*;
-import com.liferay.portal.kernel.trash.*;
-import com.liferay.portal.kernel.util.*;
-import com.liferay.test.constants.*;
-import com.liferay.test.model.*;
-import com.liferay.test.service.permission.*;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.model.BaseJSPAssetRenderer;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.trash.TrashRenderer;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.test.constants.SampleSBPortletKeys;
+import com.liferay.test.model.SampleSB;
+import com.liferay.test.service.permission.SampleSBPermissionChecker;
 
-import javax.portlet.*;
-import javax.servlet.http.*;
-import java.util.*;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+import javax.portlet.PortletURL;
+import javax.portlet.WindowState;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Yasuyuki Takeo
@@ -22,8 +30,7 @@ public class SampleSBAssetRenderer
 	extends BaseJSPAssetRenderer<SampleSB>
 	implements TrashRenderer {
 
-	public SampleSBAssetRenderer(
-		SampleSB entry) {
+	public SampleSBAssetRenderer(SampleSB entry) {
 		_entry = entry;
 	}
 
@@ -84,7 +91,6 @@ public class SampleSBAssetRenderer
 
 	@Override
 	public String getTitle(Locale locale) {
-		// TODO : This need to be customized 
 		return _entry.getSamplesbTitleName();
 	}
 
@@ -94,9 +100,45 @@ public class SampleSBAssetRenderer
 	}
 
 	@Override
+	public PortletURL getURLEdit(
+			LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletResponse liferayPortletResponse)
+		throws Exception {
+
+        LiferayPortletURL liferayPortletURL =
+            liferayPortletResponse.createLiferayPortletURL(
+                SampleSBPortletKeys.SAMPLESB, PortletRequest.RENDER_PHASE);
+
+        liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/crud");
+        liferayPortletURL.setParameter(Constants.CMD, Constants.UPDATE);
+        liferayPortletURL.setParameter("resourcePrimKey", String.valueOf(_entry.getPrimaryKey()));
+
+        return liferayPortletURL;
+	}
+	
+	@Override
 	public String getUrlTitle() {
-		// TODO : This need to be customized 
-		return _entry.getSamplesbTitleName();
+		return _entry.getUrlTitle();
+	}
+	
+	@Override
+	public String getURLView(
+			LiferayPortletResponse liferayPortletResponse,
+			WindowState windowState)
+		throws Exception {
+
+		AssetRendererFactory<SampleSB> assetRendererFactory =
+			getAssetRendererFactory();
+
+		PortletURL portletURL = assetRendererFactory.getURLView(
+			liferayPortletResponse, windowState);
+
+		portletURL.setParameter("mvcRenderCommandName", "/samplesb/crud");
+		portletURL.setParameter(Constants.CMD, Constants.VIEW);
+		portletURL.setWindowState(windowState);
+		portletURL.setParameter("resourcePrimKey", String.valueOf(_entry.getPrimaryKey()));
+
+		return portletURL.toString();
 	}
 	
 	@Override
@@ -123,11 +165,6 @@ public class SampleSBAssetRenderer
 	@Override
 	public String getUuid() {
 		return _entry.getUuid();
-	}
-
-	public boolean hasDeletePermission(PermissionChecker permissionChecker) {
-		return SampleSBPermissionChecker.contains(permissionChecker, _entry,
-			ActionKeys.DELETE);
 	}
 
 	@Override
