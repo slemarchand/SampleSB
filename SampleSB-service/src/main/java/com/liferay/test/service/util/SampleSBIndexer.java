@@ -16,14 +16,13 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.test.model.SampleSB;
 import com.liferay.test.service.SampleSBLocalService;
-import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
+import com.liferay.test.service.permission.SampleSBPermissionChecker;
 
 import java.util.Locale;
 
@@ -71,8 +70,8 @@ public class SampleSBIndexer
 		PermissionChecker permissionChecker, String entryClassName,
 		long entryClassPK, String actionId) throws Exception {
 
-		return SampleSBResourcePermissionChecker.contains(permissionChecker, entryClassPK,
-			ActionKeys.VIEW);
+		return SampleSBPermissionChecker.contains(
+				permissionChecker, entryClassPK, actionId);
 	}
 
 	@Override

@@ -30,8 +30,9 @@ public class SampleSBPermissionChecker
 		throws PortalException {
 
 		if (!contains(permissionChecker, entry, actionId)) {
-			throw new PrincipalException.MustHavePermission(permissionChecker,
-				SampleSB.class.getName(), entry.getSamplesbId(), actionId);
+			throw new PrincipalException.MustHavePermission(
+					permissionChecker,SampleSB.class.getName(),
+					entry.getPrimaryKey(), actionId);
 		}
 	}
 
@@ -40,24 +41,14 @@ public class SampleSBPermissionChecker
 		throws PortalException, SystemException {
 
 		if (!contains(permissionChecker, entryId, actionId)) {
-			throw new PrincipalException.MustHavePermission(permissionChecker,
-				SampleSB.class.getName(), entryId, actionId);
+			throw new PrincipalException.MustHavePermission(
+					permissionChecker, SampleSB.class.getName(), 
+					entryId, actionId);
 		}
 	}
 
 	public static boolean contains(
 		PermissionChecker permissionChecker, SampleSB entry, String actionId) {
-
-		String portletId = PortletProviderUtil.getPortletId(
-			SampleSB.class.getName(), PortletProvider.Action.EDIT);
-
-		Boolean hasPermission = StagingPermissionUtil.hasPermission(
-			permissionChecker, entry.getGroupId(), SampleSB.class.getName(),
-			entry.getSamplesbId(), portletId, actionId);
-
-		if (hasPermission != null) {
-			return hasPermission.booleanValue();
-		}
 
 		if (entry.isDraft() || entry.isScheduled()) {
 			if (actionId.equals(ActionKeys.VIEW)
@@ -66,9 +57,9 @@ public class SampleSBPermissionChecker
 				return false;
 			}
 		} else if (entry.isPending()) {
-			hasPermission = WorkflowPermissionUtil.hasPermission(
+			Boolean hasPermission = WorkflowPermissionUtil.hasPermission(
 				permissionChecker, entry.getGroupId(), SampleSB.class.getName(),
-				entry.getSamplesbId(), actionId);
+				entry.getPrimaryKey(), actionId);
 
 			if (hasPermission != null) {
 				return hasPermission.booleanValue();
@@ -76,14 +67,14 @@ public class SampleSBPermissionChecker
 		}
 
 		if (permissionChecker.hasOwnerPermission(entry.getCompanyId(),
-			SampleSB.class.getName(), entry.getSamplesbId(), entry.getUserId(),
+			SampleSB.class.getName(), entry.getPrimaryKey(), entry.getUserId(),
 			actionId)) {
 
 			return true;
 		}
 
 		return permissionChecker.hasPermission(entry.getGroupId(),
-			SampleSB.class.getName(), entry.getSamplesbId(), actionId);
+			SampleSB.class.getName(), entry.getPrimaryKey(), actionId);
 	}
 
 	public static boolean contains(
@@ -99,6 +90,7 @@ public class SampleSBPermissionChecker
 	public void checkBaseModel(
 		PermissionChecker permissionChecker, long groupId, long primaryKey,
 		String actionId) throws PortalException {
+		
 		check(permissionChecker, primaryKey, actionId);
 
 	}

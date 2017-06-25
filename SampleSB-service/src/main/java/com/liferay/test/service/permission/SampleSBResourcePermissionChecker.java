@@ -1,11 +1,14 @@
 package com.liferay.test.service.permission;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.BaseResourcePermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.ResourcePermissionChecker;
 import com.liferay.test.constants.SampleSBPortletKeys;
+import com.liferay.test.model.SampleSB;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -28,16 +31,18 @@ public class SampleSBResourcePermissionChecker
 
 		if (!contains(permissionChecker, groupId, actionId)) {
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, RESOURCE_NAME, groupId, actionId);
+				permissionChecker.getUserId(), RESOURCE_NAME, groupId, actionId);
 		}
 	}
 
 	public static boolean contains(
 		PermissionChecker permissionChecker, long classPK, String actionId) {
 
+		String portletId = PortletProviderUtil.getPortletId(
+				SampleSB.class.getName(), PortletProvider.Action.EDIT);
+		
 		return contains(
-			permissionChecker, RESOURCE_NAME, SampleSBPortletKeys.SAMPLESB,
-			classPK, actionId);
+			permissionChecker, RESOURCE_NAME, portletId, classPK, actionId);
 	}
 
 	@Override
