@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.test.constants.SampleSBPortletKeys;
@@ -43,9 +44,11 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 
     public SampleSBAssetRendererFactory() {
         setClassName(SampleSB.class.getName());
+        setCategorizable(true);
         setPortletId(SampleSBPortletKeys.SAMPLESB);
         setLinkable(true);
         setSearchable(true);
+        setSelectable(true);        
     }
 
     @Override
@@ -93,10 +96,11 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 
         LiferayPortletURL liferayPortletURL =
             liferayPortletResponse.createLiferayPortletURL(
-                SampleSBPortletKeys.SAMPLESB, PortletRequest.RENDER_PHASE);
+                SampleSBPortletKeys.SAMPLESB_ADMIN, PortletRequest.RENDER_PHASE);
 
         liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/crud");
         liferayPortletURL.setParameter(Constants.CMD, Constants.ADD);
+        liferayPortletURL.setParameter("fromAsset", StringPool.TRUE);
 
         return liferayPortletURL;
     }
@@ -108,10 +112,11 @@ public class SampleSBAssetRendererFactory extends BaseAssetRendererFactory<Sampl
 
         LiferayPortletURL liferayPortletURL =
             liferayPortletResponse.createLiferayPortletURL(
-                SampleSBPortletKeys.SAMPLESB, PortletRequest.RENDER_PHASE);
+                SampleSBPortletKeys.SAMPLESB_ADMIN, PortletRequest.RENDER_PHASE);
 
         liferayPortletURL.setParameter("mvcRenderCommandName", "/samplesb/view");
         liferayPortletURL.setParameter(Constants.CMD, Constants.VIEW);
+        liferayPortletURL.setParameter("fromAsset", StringPool.TRUE);
 
         try {
             liferayPortletURL.setWindowState(windowState);

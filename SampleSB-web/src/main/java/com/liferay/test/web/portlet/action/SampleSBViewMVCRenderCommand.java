@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.Reference;
     immediate = true,
     property = {
         "javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
+		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB_ADMIN,
         "mvc.command.name=/",
         "mvc.command.name=/samplesb/view"
     },

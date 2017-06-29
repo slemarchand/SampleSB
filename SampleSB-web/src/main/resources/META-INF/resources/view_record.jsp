@@ -2,6 +2,10 @@
 <%
 	SampleSB sampleSB = (SampleSB) request.getAttribute("sampleSB");
 	String redirect = ParamUtil.getString(request, "redirect");
+	boolean fromAsset = ParamUtil.getBoolean(request,"fromAsset",false);	
+	
+	portletDisplay.setShowBackIcon(true);
+	portletDisplay.setURLBack(redirect);	
 %>
 
 <div class="container-fluid-1280">
@@ -54,10 +58,7 @@
 		<div class="form-group">
 			<h3><liferay-ui:message key="samplesb-samplesbtext" /></h3>
 			<p class="form-control"><%=sampleSB.getSamplesbText()%></p>
-		</div>										
-		<aui:button-row>
-			<aui:button cssClass="btn-lg" href="<%=redirect%>" name="backToList"
-				primary="<%=true%>" value="back-to-list" />
-		</aui:button-row>
+		</div>		
+
 	</aui:fieldset>
 </div>

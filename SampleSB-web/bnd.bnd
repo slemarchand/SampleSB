@@ -1,9 +1,11 @@
 Bundle-Name: SampleSB-web
 Bundle-SymbolicName: com.liferay.test.web
 Bundle-Version: 1.0.0
+
 Export-Package:\
 	com.liferay.test.web.asset,\
 	com.liferay.test.web.social
+	
 Bundle-ClassPath:\
 	.,\
 	lib/guava.jar,\
@@ -21,4 +23,7 @@ Bundle-ClassPath:\
 	lib/commons-io.jar=commons-io-[0-9]*.jar,\
 	lib/commons-lang3.jar=commons-lang[0-9]*.jar
 	
+Web-ContextPath: /samplesb-web
+	
 -metatype: *
+-dsannotations-options: inherit
