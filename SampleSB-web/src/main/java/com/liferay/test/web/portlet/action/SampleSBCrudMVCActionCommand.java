@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.test.constants.SampleSBPortletKeys;
 import com.liferay.test.exception.SampleSBValidateException;
@@ -26,6 +27,7 @@ import com.liferay.test.service.permission.SampleSBPermissionChecker;
 import com.liferay.test.service.permission.SampleSBResourcePermissionChecker;
 import com.liferay.trash.kernel.util.TrashUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	immediate = true, property = {
 		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB,
+		"javax.portlet.name=" + SampleSBPortletKeys.SAMPLESB_ADMIN,
 		"mvc.command.name=/samplesb/crud" 
 	},
 	service = MVCActionCommand.class
@@ -50,7 +53,7 @@ public class SampleSBCrudMVCActionCommand
 
 	@Override
 	protected
-		void doProcessAction(ActionRequest request, ActionResponse response) {
+		void doProcessAction(ActionRequest request, ActionResponse response) throws IOException {
 
 		try {
 			// Fetch command
@@ -82,6 +85,14 @@ public class SampleSBCrudMVCActionCommand
 			_log.error(t, t);
 			SessionErrors.add(request, PortalException.class);
 			hideDefaultSuccessMessage(request);
+		}
+		
+		//For access from Asset Publisher
+		String redirect = ParamUtil.getString(request, "redirect");
+		Boolean fromAsset = ParamUtil.getBoolean(request, "fromAsset",false);
+		
+		if(Validator.isNotNull(redirect) && true == fromAsset ) {
+			sendRedirect(request, response, redirect);
 		}
 	}
 
