@@ -68,7 +68,7 @@ public class SampleSBAssetRenderer
 		if (template.equals(TEMPLATE_ABSTRACT) || 
 			template.equals(TEMPLATE_FULL_CONTENT)) {
 			request.setAttribute("sampleSB", _entry);
-			return "/asset/" + template + ".jsp";
+			return "/sample_sb/asset/" + template + ".jsp";
 		} else {
 			return null;
 		}

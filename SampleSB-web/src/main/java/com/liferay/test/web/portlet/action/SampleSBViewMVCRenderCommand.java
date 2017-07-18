@@ -34,7 +34,7 @@ public class SampleSBViewMVCRenderCommand implements MVCRenderCommand {
     	  
     	request.setAttribute(SampleSBWebKeys.SAMPLESB_VIEW_HELPER, _sampleSBViewHelper);
     	   
-        return "/view.jsp";
+        return "/sample_sb/view.jsp";
     }
 
     @Reference(unbind = "-")
